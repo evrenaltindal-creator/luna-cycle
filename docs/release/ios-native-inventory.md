@@ -1,7 +1,9 @@
 # iOS Native Integration Inventory
 
 **Application:** Luna Cycle  
-**Bundle identifier:** `com.lunacycle.app`  
+**iOS Bundle identifier:** `com.lunacycle.tracker`
+
+**Android Package ID:** `com.lunacycle.app`
 **App name:** `Luna Cycle`  
 **Deployment target:** iOS 15.0  
 **Dependency manager:** Swift Package Manager through the generated local `ios/App/CapApp-SPM/Package.swift`. No Podfile is present in the current iOS project, so the pipeline must not run `pod install` blindly.
@@ -13,10 +15,10 @@
 | iOS project | `ios/App/App.xcodeproj` | Present in repository |
 | Workspace | `ios/App/App.xcodeproj/project.xcworkspace` | Embedded project workspace path; no separate `.xcworkspace` was found |
 | Xcode scheme | `App` | Native target name in `project.pbxproj`; must be confirmed by `xcodebuild -list` on macOS |
-| Bundle ID | `com.lunacycle.app` | Debug and Release target settings |
+| iOS Bundle ID | `com.lunacycle.tracker` | Debug and Release target settings; intentional iOS-only override |
 | Display name | `Luna Cycle` | `Info.plist` `CFBundleDisplayName` |
 | Marketing version | `1.0.0` | Debug and Release `MARKETING_VERSION` |
-| Build number | `1` | Debug and Release `CURRENT_PROJECT_VERSION` |
+| Build number | `1` | Debug and Release `CURRENT_PROJECT_VERSION`; GitHub Actions release uses `GITHUB_RUN_NUMBER` |
 | Minimum iOS | `15.0` | Project settings and `CapApp-SPM` platforms |
 | Signing | Automatic project setting; no CI credentials committed | Signing-ready configuration only; signed build deferred |
 
@@ -25,7 +27,7 @@
 | Integration | Package/version | iOS support / manager | Registration or compile status |
 |---|---|---|---|
 | Capacitor runtime | `@capacitor/core@8.5.0`, Swift package `capacitor-swift-pm@8.5.0` | iOS 15 / SwiftPM | Present in `CapApp-SPM`; compile must run on macOS |
-| Capacitor iOS CLI package | `@capacitor/ios@8.5.0` | Capacitor 8 | Added to `package.json`; `npx cap sync ios` completed on Windows |
+| Capacitor iOS CLI package | `@capacitor/ios@8.5.0` | Capacitor 8 | Added to `package.json`; `corepack pnpm exec cap sync ios` completed on Windows |
 | Secure storage | `@aparajita/capacitor-secure-storage@8.0.0` | iOS 15 / SwiftPM; `keychain-swift` dependency | `SecureStorage` registered; native compile deferred |
 | Local notifications | `@capacitor/local-notifications@8.3.1` | Capacitor SwiftPM | `LocalNotificationsPlugin` registered; local-only behavior, no push backend |
 | AdMob / UMP | `@capacitor-community/admob@8.1.0` | iOS 15 / SwiftPM; Google Mobile Ads `13.6.0`, UMP `3.1.x` | `AdMobPlugin` registered after latest sync; test IDs only until production config exists |
@@ -44,4 +46,4 @@ The iOS project includes no push backend or push capability in the reviewed proj
 
 ## Important Windows-to-macOS note
 
-The latest Capacitor sync completed on Windows and generated local Swift Package paths using Windows separators in `Package.swift`. Codemagic must run `npx cap sync ios` on macOS before resolving packages; the generated macOS manifest is the source of truth for the build. No manual edit to the generated `Package.swift` should be committed as a substitute for macOS sync.
+The latest Capacitor sync completed on Windows and generated local Swift Package paths using Windows separators in `Package.swift`. GitHub Actions must run `corepack pnpm exec cap sync ios` on macOS before resolving packages; the generated macOS manifest is the source of truth for the build. No manual edit to the generated `Package.swift` should be committed as a substitute for macOS sync.

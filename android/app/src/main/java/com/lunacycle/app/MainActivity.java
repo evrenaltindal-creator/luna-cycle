@@ -1,4 +1,4 @@
-package com.lunacycle.tracker;
+package com.lunacycle.app;
 
 import android.os.Bundle;
 import android.view.WindowManager;

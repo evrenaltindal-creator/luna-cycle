@@ -2,7 +2,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.lunacycle.tracker",
+  appId: "com.lunacycle.app",
   appName: "Luna Cycle",
   webDir: "dist/public",
   bundledWebRuntime: false,

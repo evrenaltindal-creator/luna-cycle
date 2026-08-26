@@ -1,0 +1,286 @@
+name: Luna Cycle iOS TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_testflight:
+        description: Upload the signed IPA to TestFlight after archive/export
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+env:
+  IOS_PROJECT: ios/App/App.xcodeproj
+  IOS_SCHEME: App
+  IOS_BUNDLE_ID: com.lunacycle.tracker
+  IOS_MARKETING_VERSION: 1.0.0
+  DERIVED_DATA_PATH: ${{ github.workspace }}/build/DerivedData
+  ARCHIVE_PATH: ${{ github.workspace }}/build/LunaCycle.xcarchive
+  EXPORT_PATH: ${{ github.workspace }}/build/export
+
+jobs:
+  ios:
+    name: Luna Cycle iOS TestFlight
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Select supported Xcode
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Available Xcode installations:"
+          ls -1 /Applications/Xcode*.app 2>/dev/null || true
+          if [[ -d "/Applications/Xcode_16.4.app" ]]; then
+            sudo xcode-select -s "/Applications/Xcode_16.4.app"
+          fi
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+          swift --version
+
+      - name: Enable Corepack and install pnpm
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack pnpm --version
+          corepack pnpm install --frozen-lockfile
+
+      - name: Unit tests
+        shell: bash
+        run: corepack pnpm test
+
+      - name: TypeScript check
+        shell: bash
+        run: corepack pnpm run check
+
+      - name: Web build
+        shell: bash
+        run: corepack pnpm run build
+
+      - name: Capacitor iOS sync
+        shell: bash
+        run: corepack pnpm exec cap sync ios
+
+      - name: Verify platform identities after sync
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F 'PRODUCT_BUNDLE_IDENTIFIER = com.lunacycle.tracker;' ios/App/App.xcodeproj/project.pbxproj
+          grep -F 'namespace = "com.lunacycle.app"' android/app/build.gradle
+          grep -F 'applicationId "com.lunacycle.app"' android/app/build.gradle
+          grep -F 'package com.lunacycle.app;' android/app/src/main/java/com/lunacycle/app/MainActivity.java
+
+      - name: Resolve Swift Package Manager dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project "$IOS_PROJECT" \
+            -scheme "$IOS_SCHEME" \
+            -resolvePackageDependencies
+
+      - name: List Xcode project and scheme
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -list -project "$IOS_PROJECT"
+
+      - name: Unsigned simulator compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/logs "$DERIVED_DATA_PATH"
+          xcodebuild \
+            -project "$IOS_PROJECT" \
+            -scheme "$IOS_SCHEME" \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath "$DERIVED_DATA_PATH" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build \
+            2>&1 | tee build/logs/simulator-build.log
+
+      - name: Upload simulator app and logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: luna-cycle-ios-simulator-${{ github.run_number }}
+          if-no-files-found: warn
+          path: |
+            build/DerivedData/Build/Products/Debug-iphonesimulator/*.app
+            build/logs/simulator-build.log
+
+      - name: Check signing configuration
+        id: signing
+        if: ${{ inputs.upload_testflight == true }}
+        shell: bash
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          required=(BUILD_CERTIFICATE_BASE64 P12_PASSWORD BUILD_PROVISION_PROFILE_BASE64 KEYCHAIN_PASSWORD APP_STORE_CONNECT_API_KEY_ID APP_STORE_CONNECT_ISSUER_ID APP_STORE_CONNECT_API_PRIVATE_KEY APPLE_TEAM_ID IOS_PROVISIONING_PROFILE_NAME)
+          missing=()
+          for name in "${required[@]}"; do
+            if [[ -z "${!name:-}" ]]; then missing+=("$name"); fi
+          done
+          if (( ${#missing[@]} > 0 )); then
+            printf 'Missing GitHub Secrets: %s\n' "${missing[*]}" >&2
+            exit 1
+          fi
+          echo "Signing secret presence verified; secret values are not printed."
+
+      - name: Prepare temporary signing keychain and profile
+        if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
+        shell: bash
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          set +x
+          TEMP_DIR="$RUNNER_TEMP/luna-signing"
+          KEYCHAIN_PATH="$TEMP_DIR/luna-cycle-build.keychain-db"
+          PROFILE_PATH="$TEMP_DIR/luna-cycle.mobileprovision"
+          mkdir -p "$TEMP_DIR" "$HOME/Library/MobileDevice/Provisioning Profiles"
+          printf '%s' "$BUILD_CERTIFICATE_BASE64" | base64 --decode > "$TEMP_DIR/certificate.p12"
+          printf '%s' "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode > "$PROFILE_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$TEMP_DIR/certificate.p12" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH"
+          security default-keychain -s "$KEYCHAIN_PATH"
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print UUID' /dev/stdin <<< "$(security cms -D -i \"$PROFILE_PATH\")")
+          cp "$PROFILE_PATH" "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
+          echo "SIGNING_KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
+          echo "SIGNING_TEMP_DIR=$TEMP_DIR" >> "$GITHUB_ENV"
+          echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
+          echo "PROFILE_NAME=$IOS_PROVISIONING_PROFILE_NAME" >> "$GITHUB_ENV"
+
+      - name: Create signed Release archive
+        if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
+        shell: bash
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          IOS_PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/logs
+          xcodebuild \
+            -project "$IOS_PROJECT" \
+            -scheme "$IOS_SCHEME" \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -derivedDataPath "$DERIVED_DATA_PATH" \
+            -archivePath "$ARCHIVE_PATH" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            PRODUCT_BUNDLE_IDENTIFIER="$IOS_BUNDLE_ID" \
+            MARKETING_VERSION="$IOS_MARKETING_VERSION" \
+            CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="$IOS_PROVISIONING_PROFILE_NAME" \
+            archive \
+            2>&1 | tee build/logs/archive.log
+
+      - name: Create App Store export options
+        if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
+        shell: bash
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          cat > build/ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>stripSwiftSymbols</key><true/>
+            <key>uploadSymbols</key><true/>
+            <key>provisioningProfiles</key>
+            <dict><key>${IOS_BUNDLE_ID}</key><string>${PROFILE_NAME}</string></dict>
+          </dict>
+          </plist>
+          PLIST
+
+      - name: Export signed IPA
+        if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -exportArchive \
+            -archivePath "$ARCHIVE_PATH" \
+            -exportPath "$EXPORT_PATH" \
+            -exportOptionsPlist build/ExportOptions.plist \
+            2>&1 | tee build/logs/export.log
+          IPA_PATH=$(find "$EXPORT_PATH" -maxdepth 1 -name '*.ipa' -print -quit)
+          test -n "$IPA_PATH"
+          shasum -a 256 "$IPA_PATH" | tee build/ipa.sha256
+          du -h "$IPA_PATH"
+          echo "IPA_PATH=$IPA_PATH" >> "$GITHUB_ENV"
+
+      - name: Upload IPA, archive logs and dSYM
+        if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: luna-cycle-ios-release-${{ github.run_number }}
+          if-no-files-found: error
+          path: |
+            build/export/*.ipa
+            build/ipa.sha256
+            build/logs/*.log
+            build/LunaCycle.xcarchive/dSYMs
+
+      - name: Upload IPA to TestFlight
+        if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
+        shell: bash
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          set +x
+          API_KEY_DIR="$RUNNER_TEMP/appstoreconnect/private_keys"
+          mkdir -p "$API_KEY_DIR"
+          printf '%s' "$APP_STORE_CONNECT_API_PRIVATE_KEY" > "$API_KEY_DIR/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
+          chmod 600 "$API_KEY_DIR/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
+          xcrun iTMSTransporter \
+            -m upload \
+            -assetFile "$IPA_PATH" \
+            -apiKey "$APP_STORE_CONNECT_API_KEY_ID" \
+            -apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+          rm -f "$API_KEY_DIR/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
+
+      - name: Clean temporary signing material
+        if: ${{ always() && inputs.upload_testflight == true }}
+        shell: bash
+        run: |
+          set +e
+          if [[ -n "${SIGNING_KEYCHAIN_PATH:-}" ]]; then
+            security delete-keychain "$SIGNING_KEYCHAIN_PATH" || true
+          fi
+          rm -rf "${SIGNING_TEMP_DIR:-$RUNNER_TEMP/luna-signing}" "$RUNNER_TEMP/appstoreconnect"
