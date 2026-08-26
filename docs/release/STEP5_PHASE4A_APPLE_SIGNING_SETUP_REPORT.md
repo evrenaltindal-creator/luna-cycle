@@ -52,3 +52,13 @@ Run #1 passed Corepack/pnpm install, all unit tests, TypeScript check, web build
 `ios/App/App/Assets.xcassets: error: None of the input catalogs contained a matching ... app icon set named "LunaIcon"`
 
 The Xcode target already referenced `ASSETCATALOG_COMPILER_APPICON_NAME = LunaIcon`, but the repository contained only `AppIcon.appiconset`. A valid `LunaIcon.appiconset` was added using the existing 1024px Luna brand icon, with no credentials or signing material. A follow-up macOS validation run is required to confirm the simulator compile passes.
+
+### Second macOS validation run
+
+After adding `LunaIcon.appiconset`, commit `55e8976` was pushed to `main` and validation-only workflow run **#2** was manually started with `upload_testflight=false`. Run URL: `https://github.com/evrenaltindal-creator/luna-cycle/actions/runs/32974300057`. Latest observed state: **Queued**; final simulator compile result pending.
+
+## Validation closure status
+
+GitHub Actions run **#2** completed with **Success** on a macOS runner using commit `55e8976`. The following gates passed: Corepack/pnpm dependency installation, unit tests, TypeScript check, web build, Capacitor iOS sync, iOS/Android identity verification, Swift Package Manager resolution, Xcode project/scheme discovery, unsigned iOS Simulator compilation, and simulator artifact upload. The produced artifact is `luna-cycle-ios-simulator-2` (5.55 MB; digest `sha256:65d2c5357127c1deb793fe3c13db8190b48d2ef32c26e664e9743de4ef2988aa`).
+
+The workflow’s signed archive, IPA export, and TestFlight upload stages were skipped because the dispatch input `upload_testflight` was set to `false`. Therefore the iOS simulator compile gate is **PASS**, while signed IPA/TestFlight remains **NOT VERIFIED** until GitHub Secrets for certificate, provisioning profile, keychain password, and App Store Connect upload are configured and a signed manual run is executed. GitHub’s only warning was the upstream Node 20 deprecation notice for checkout/upload-artifact actions; it did not affect the build.
