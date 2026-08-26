@@ -38,3 +38,17 @@ Codemagic’in beyaz/boş uygulama paneli nedeniyle alternatif CI yolu belirlend
 Private GitHub repository `evrenaltindal-creator/luna-cycle` oluşturuldu ve Luna Cycle kaynak ağacı temiz secret audit sonrasında push edildi. Repository ana dalında `ios/`, `android/`, `client/`, `capacitor.config.ts`, `package.json` ve release dokümantasyonu mevcut; son commit Codemagic YAML şema düzeltmesini içeriyor.
 
 GitHub Actions macOS hattı henüz oluşturulmadı. Bir sonraki aşama, yalnız iOS tarafında `com.lunacycle.tracker` kullanan workflow’un eklenmesi ve signing secret sözleşmesinin GitHub Secrets için hazırlanmasıdır. Apple `.p8` ve certificate/provisioning özel içerikleri repository’ye eklenmemiştir.
+
+## GitHub Actions first validation run — 26 August 2026
+
+The GitHub Actions workflow is present in the private repository and recognized by GitHub as `Luna Cycle iOS TestFlight`. Manual `workflow_dispatch` run **#1** was started from commit `ccd19fe` on `main` with `upload_testflight=false`, so no signing or TestFlight upload was attempted. Run URL: `https://github.com/evrenaltindal-creator/luna-cycle/actions/runs/32973313351`.
+
+At the latest check the macOS job status was **In progress**. The final Xcode/SPM result and artifacts remain pending until GitHub completes the macOS runner job. The signed path remains intentionally gated behind the manual `upload_testflight=true` input and the required GitHub Secrets.
+
+### First macOS validation failure and fix
+
+Run #1 passed Corepack/pnpm install, all unit tests, TypeScript check, web build, Capacitor iOS sync, platform identity verification, Swift Package Manager resolution, and Xcode project listing. The unsigned simulator compile failed after 52 seconds with the first real native error:
+
+`ios/App/App/Assets.xcassets: error: None of the input catalogs contained a matching ... app icon set named "LunaIcon"`
+
+The Xcode target already referenced `ASSETCATALOG_COMPILER_APPICON_NAME = LunaIcon`, but the repository contained only `AppIcon.appiconset`. A valid `LunaIcon.appiconset` was added using the existing 1024px Luna brand icon, with no credentials or signing material. A follow-up macOS validation run is required to confirm the simulator compile passes.
