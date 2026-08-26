@@ -73,4 +73,14 @@ Created documentation: `docs/release/github-actions-signing.md`. It contains no 
 
 Apple Developer Portal’da `com.lunacycle.tracker` için App Store Connect dağıtım tipiyle `Luna Cycle App Store` profili oluşturuldu. Profile metadata audit sonucu: Team ID `672BCLF8GR`, application identifier `672BCLF8GR.com.lunacycle.tracker`, UUID `f2a0f41a-6c8d-4d0a-9c21-722805481a44`, expiration `2027-08-26 12:28:11 GMT`. Profile, yerel geçici güvenli klasöre indirildi; Base64 değeri repository’ye veya rapora yazılmadı.
 
-GitHub repository’de şu üç secret CONFIGURED olarak görünmektedir: `APPLE_TEAM_ID`, `APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_KEY_ID`. Kalan altı secret henüz listede görünmemektedir: `BUILD_CERTIFICATE_BASE64`, `P12_PASSWORD`, `BUILD_PROVISION_PROFILE_BASE64`, `KEYCHAIN_PASSWORD`, `APP_STORE_CONNECT_API_KEY_P8`, `IOS_PROVISIONING_PROFILE_NAME`. Bu nedenle signed workflow henüz başlatılmadı.
+GitHub repository’de şu üç secret CONFIGURED olarak görünmektedir: `APPLE_TEAM_ID`, `APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_KEY_ID`. Kalan altı secret daha sonra tamamlandı ve GitHub Actions secret listesi 9/9 CONFIGURED durumuna ulaştı.
+
+## Phase 4E signed build run #3
+
+Workflow manual `workflow_dispatch` ile `upload_testflight=true` çalıştırıldı. Run #3 URL’si: `https://github.com/evrenaltindal-creator/luna-cycle/actions/runs/32987902140`; commit `6345eb1` üzerinden yürüdü. Signing configuration, Apple Distribution identity audit, signed archive ve IPA export adımları PASS oldu. Release artifact `luna-cycle-ios-release-3` üretildi; GitHub arayüzünde boyutu 7.65 MB ve digest’i `sha256:c8a7d5734741a97ee2947645d4a213ec88dccdcfe467559415788d8bbe6e82af` olarak görünüyor. Kullanıcı tarafından ayrıca doğrulanan IPA SHA-256: `4d284fde194d207d9fabcff31cecad0382473e1cc7259cd1a5022ca0cb38ffe`.
+
+App Store Connect upload adımı FAIL oldu. İlk gerçek blokaj, iTMSTransporter’ın transfer başlamadan önce verdiği `An error (-10814) occurred. The operation couldn’t be completed. (OSStatus error -10814.)` hatasıdır. Apple processing durumu `NOT UPLOADED`; bu nedenle TestFlight build’i henüz oluşmadı. İmza ve IPA üretimi PASS, TestFlight upload NOT VERIFIED olarak sınıflandırılmıştır.
+
+## Phase 4E Run #4 correction
+
+Run #4, commit `1f6da66` ile başarıyla tamamlandı; ancak GitHub workflow formundaki `upload_testflight` checkbox’ı seçilmeden dispatch edildiği için signing/archive/export/upload adımları SKIPPED, validation-only adımları ise PASS oldu. Bu run signed IPA veya TestFlight upload doğrulaması sayılmaz. Gerçek upload denemesi, checkbox açık şekilde yeni bir manual dispatch gerektirir.

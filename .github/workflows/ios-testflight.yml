@@ -270,26 +270,15 @@ jobs:
 
       - name: Upload IPA to TestFlight
         if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
-        shell: bash
-        env:
-          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          APP_STORE_CONNECT_API_KEY_P8: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8 }}
-        run: |
-          set -euo pipefail
-          set +x
-          API_KEY_DIR="$HOME/.appstoreconnect/private_keys"
-          mkdir -p "$API_KEY_DIR"
-          API_KEY_PATH="$API_KEY_DIR/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
-          printf '%s' "$APP_STORE_CONNECT_API_KEY_P8" > "$API_KEY_PATH"
-          chmod 600 "$API_KEY_PATH"
-          test -s "$API_KEY_PATH"
-          xcrun iTMSTransporter \
-            -m upload \
-            -assetFile "$IPA_PATH" \
-            -apiKey "$APP_STORE_CONNECT_KEY_ID" \
-            -apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
-          rm -f "$API_KEY_PATH"
+        uses: apple-actions/upload-testflight-build@v5
+        with:
+          app-path: ${{ env.IPA_PATH }}
+          issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          api-key-id: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          api-private-key: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8 }}
+          uses-non-exempt-encryption: 'false'
+          wait-for-processing: 'true'
+          backend: AppStoreAPI
 
       - name: Clean temporary signing material
         if: ${{ always() && inputs.upload_testflight == true }}
@@ -299,4 +288,4 @@ jobs:
           if [[ -n "${SIGNING_KEYCHAIN_PATH:-}" ]]; then
             security delete-keychain "$SIGNING_KEYCHAIN_PATH" || true
           fi
-          rm -rf "${SIGNING_TEMP_DIR:-$RUNNER_TEMP/luna-signing}" "$HOME/.appstoreconnect"
+          rm -rf "${SIGNING_TEMP_DIR:-$RUNNER_TEMP/luna-signing}"
