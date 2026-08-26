@@ -81,6 +81,18 @@ Workflow manual `workflow_dispatch` ile `upload_testflight=true` çalıştırıl
 
 App Store Connect upload adımı FAIL oldu. İlk gerçek blokaj, iTMSTransporter’ın transfer başlamadan önce verdiği `An error (-10814) occurred. The operation couldn’t be completed. (OSStatus error -10814.)` hatasıdır. Apple processing durumu `NOT UPLOADED`; bu nedenle TestFlight build’i henüz oluşmadı. İmza ve IPA üretimi PASS, TestFlight upload NOT VERIFIED olarak sınıflandırılmıştır.
 
+## Phase 4E Run #7 — upload PASS
+
+Run #7, commit `f4e63ae` ile `upload_testflight=true` olarak çalıştırıldı ve GitHub Actions job’u 2 dakika 56 saniyede başarıyla tamamlandı. Unit tests, TypeScript check, web build, Capacitor iOS sync, SPM resolution, unsigned simulator compile, Apple Distribution signing identity, signed Release archive, IPA export ve artifact yükleme adımları PASS oldu. App Store API backend’i IPA parçalarını başarıyla yükledi ve `wait-for-processing: false` nedeniyle yetkisiz processing sorgusu beklenmeden başarıyla sonlandı. Logda `Finished uploading build chunks` ve upload action completion çıktıları görüldü. Run URL’si: `https://github.com/evrenaltindal-creator/luna-cycle/actions/runs/33006027537`; job URL’si: `https://github.com/evrenaltindal-creator/luna-cycle/actions/runs/33006027537/job/98299873442`.
+
+Apple processing durumu bu no-wait run için workflow tarafından sorgulanmadı; App Store Connect portalında bağımsız doğrulama gereklidir. Gerçek iPhone TestFlight acceptance’ı da bu CI sonucu kapsamında henüz doğrulanmış değildir.
+
+## Phase 4E independent portal check
+
+App Store Connect’te `Luna Cycle` → `TestFlight` → `Builds` ekranı, Run #7 upload’ından sonra yeniden yüklendi ve yaklaşık 20 dakikadan uzun süre sonra da `No Builds` göstermeye devam etti. Bu gözlem, GitHub Actions logundaki upload completion mesajına rağmen Apple portalında build’in henüz görünür/işlenmiş olarak doğrulanamadığını gösterir. TestFlight processing sonucu bu aşamada `NOT VERIFIED`; gerçek cihaz kurulumu başlatılamaz.
+
+App Store Connect `App Information` ekranındaki Bundle ID seçimi ayrıca doğrulandı: `Luna Cycle - com.lunacycle.tracker`. Bu nedenle mevcut blocker, uygulama kaydının yanlış Bundle ID’ye bağlı olması değildir; Apple’ın build görünürlüğü/processing tarafında çözülmesi gereken bir durum olarak kalmaktadır.
+
 ## Phase 4E Run #4 correction
 
 Run #4, commit `1f6da66` ile başarıyla tamamlandı; ancak GitHub workflow formundaki `upload_testflight` checkbox’ı seçilmeden dispatch edildiği için signing/archive/export/upload adımları SKIPPED, validation-only adımları ise PASS oldu. Bu run signed IPA veya TestFlight upload doğrulaması sayılmaz. Gerçek upload denemesi, checkbox açık şekilde yeni bir manual dispatch gerektirir.
