@@ -1,0 +1,13 @@
+{
+  "name": "Luna Cycle",
+  "short_name": "Luna",
+  "description": "Döngünü sakin ve özel biçimde takip et.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F1E8",
+  "theme_color": "#52655A",
+  "lang": "tr",
+  "icons": [
+    { "src": "/luna-mark.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

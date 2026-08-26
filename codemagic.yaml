@@ -1,0 +1,168 @@
+# Luna Cycle — Codemagic iOS build readiness
+# Style/engineering note: release-safe, deterministic, local-first health data boundary.
+# This file does not contain Apple credentials, certificates, provisioning profiles,
+# production AdMob identifiers, or App Store Connect API keys.
+
+workflows:
+  luna-cycle-ios:
+    name: Luna Cycle iOS Simulator / Validation
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      xcode: latest
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+        - pattern: develop
+          include: true
+          source: true
+      cancel_previous_builds: true
+    scripts:
+      - name: Print toolchain
+        script: |
+          set -euo pipefail
+          node --version
+          npm --version
+          corepack pnpm --version
+          xcodebuild -version
+          swift --version
+      - name: Enable Corepack
+        script: |
+          set -euo pipefail
+          corepack enable
+          pnpm --version
+      - name: Install dependencies
+        script: |
+          set -euo pipefail
+          corepack pnpm install --frozen-lockfile
+      - name: Unit tests
+        script: |
+          set -euo pipefail
+          pnpm test
+      - name: TypeScript check
+        script: |
+          set -euo pipefail
+          pnpm run check
+      - name: Web build
+        script: |
+          set -euo pipefail
+          pnpm run build
+      - name: Capacitor iOS sync
+        script: |
+          set -euo pipefail
+          pnpm exec cap sync ios
+      - name: Resolve Swift Package dependencies
+        script: |
+          set -euo pipefail
+          xcodebuild -resolvePackageDependencies \
+            -project "$CM_BUILD_DIR/ios/App/App.xcodeproj" \
+            -scheme App
+      - name: Inspect iOS project metadata
+        script: |
+          set -euo pipefail
+          xcodebuild -list -project "$CM_BUILD_DIR/ios/App/App.xcodeproj"
+          xcodebuild -showBuildSettings \
+            -project "$CM_BUILD_DIR/ios/App/App.xcodeproj" \
+            -scheme App \
+            -configuration Debug | grep -E 'PRODUCT_BUNDLE_IDENTIFIER|PRODUCT_NAME|MARKETING_VERSION|CURRENT_PROJECT_VERSION|INFOPLIST_FILE|IPHONEOS_DEPLOYMENT_TARGET'
+      - name: Build unsigned iOS Simulator app
+        script: |
+          set -euo pipefail
+          mkdir -p "$CM_BUILD_DIR/artifacts/ios-simulator"
+          xcodebuild build \
+            -project "$CM_BUILD_DIR/ios/App/App.xcodeproj" \
+            -scheme App \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            -derivedDataPath "$CM_BUILD_DIR/derived-data" \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee "$CM_BUILD_DIR/artifacts/ios-simulator/xcodebuild.log"
+          APP_PATH=$(find "$CM_BUILD_DIR/derived-data/Build/Products" -type d -name '*.app' -print -quit)
+          test -n "$APP_PATH"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$CM_BUILD_DIR/artifacts/ios-simulator/Luna-Cycle-Simulator.app.zip"
+      - name: Check available simulator targets
+        script: |
+          set -euo pipefail
+          xcrun simctl list devices available || true
+    artifacts:
+      - $CM_BUILD_DIR/artifacts/ios-simulator/*.zip
+      - $CM_BUILD_DIR/artifacts/ios-simulator/*.log
+      - $CM_BUILD_DIR/derived-data/Build/**/*.app
+      - $CM_BUILD_DIR/derived-data/Build/**/*.dSYM
+
+  luna-cycle-ios-release:
+    name: Luna Cycle iOS App Store Archive
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      xcode: latest
+      # Configure the App Store Connect API key and signing files in Codemagic UI.
+      # Do not commit secrets or add guessed group names here.
+    ios_signing:
+      distribution_type: app_store
+      bundle_identifier: com.lunacycle.tracker
+    scripts:
+      - name: Print release toolchain
+        script: |
+          set -euo pipefail
+          node --version
+          npm --version
+          corepack pnpm --version
+          xcodebuild -version
+      - name: Enable Corepack
+        script: |
+          set -euo pipefail
+          corepack enable
+          pnpm --version
+      - name: Install dependencies
+        script: |
+          set -euo pipefail
+          corepack pnpm install --frozen-lockfile
+      - name: Unit tests
+        script: |
+          set -euo pipefail
+          pnpm test
+      - name: TypeScript check
+        script: |
+          set -euo pipefail
+          pnpm run check
+      - name: Web build
+        script: |
+          set -euo pipefail
+          pnpm run build
+      - name: Capacitor iOS sync
+        script: |
+          set -euo pipefail
+          pnpm exec cap sync ios
+      - name: Resolve Swift Package dependencies
+        script: |
+          set -euo pipefail
+          xcodebuild -resolvePackageDependencies \
+            -project "$CM_BUILD_DIR/ios/App/App.xcodeproj" \
+            -scheme App
+      - name: Apply Codemagic signing profiles
+        script: |
+          set -euo pipefail
+          xcode-project use-profiles
+      - name: Build signed IPA
+        script: |
+          set -euo pipefail
+          mkdir -p "$CM_BUILD_DIR/artifacts/ios-release"
+          xcode-project build-ipa \
+            --project "$CM_BUILD_DIR/ios/App/App.xcodeproj" \
+            --scheme App \
+            --archive-directory "$CM_BUILD_DIR/artifacts/ios-release/archive" \
+            --ipa-directory "$CM_BUILD_DIR/artifacts/ios-release"
+    artifacts:
+      - $CM_BUILD_DIR/artifacts/ios-release/*.ipa
+      - $CM_BUILD_DIR/artifacts/ios-release/**/*.xcarchive
+      - $CM_BUILD_DIR/artifacts/ios-release/**/*.dSYM
+      - /tmp/xcodebuild_logs/*.log

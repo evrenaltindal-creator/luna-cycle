@@ -1,0 +1,29 @@
+# Google Play Data Safety — Hazırlık Matrisi
+
+**Uygulama:** Luna Cycle  
+**Package:** `com.lunacycle.app`  
+**Durum:** Store formu için hazırlık notu; final checkbox seçimi, production SDK yapılandırması ve Google Play Console formundaki güncel tanımlarla yeniden doğrulanmalıdır.
+
+## Değerlendirme ilkesi
+
+Google Play Data Safety beyanında “collected” kavramı yalnızca uygulama içinde bir alanın bulunmasına göre değil, verinin uygulama veya dahil edilen SDK’lar tarafından cihaz dışına aktarılıp aktarılmadığına göre değerlendirilmelidir. Luna Cycle’ın health/cycle kayıtları mevcut uygulama mimarisinde cihazda kalır ve Luna tarafından işletilen bir health backend’ine gönderilmez. Buna karşılık AdMob/UMP ve store billing hizmetleri, kendi teknik işleyişleri kapsamında health dışı teknik, consent veya işlem bilgileri işleyebilir. Final form, gerçek production SDK ve hesap ayarlarıyla karşılaştırılmalıdır.
+
+| Data type / kategori | Luna tarafından toplanıyor mu? | Paylaşılıyor mu? | Geçici işleme? | Zorunlu / isteğe bağlı | Amaç | Kullanıcı silebilir mi? | Transit şifreleme | Sadece lokal mi? | Submission notu |
+|---|---|---|---|---|---|---|---|---|---|
+| Health & fitness: period/cycle records, DailyLog, symptoms, moods, notes | **Hayır — current local-only implementation** | **Hayır** | Hayır; cihazda saklanabilir | Kullanıcı tarafından isteğe bağlı girilir | Period tracking, Daily Check-In, calendar, estimates, insights | Evet; düzenleme/silme, Clear All Data veya uygulama depolamasını kaldırma | Luna remote transferi yok; uygulanmaz | **Evet** | Health data remote collection olarak beyan edilmemeli; final SDK audit’iyle doğrula |
+| App activity: in-app interaction analytics | **Hayır — analytics SDK yok** | **Hayır** | Uygulama analitik olayı yok | Uygulanmaz | Uygulanmaz | Uygulanmaz | Uygulanmaz | **Evet** | Play platform diagnostics/automatic reporting ayrı kontrol edilmeli |
+| Device or other IDs: advertising/device identifiers | Luna uygulama katmanında **kullanmıyor**; AdMob SDK davranışı production config ile yeniden doğrulanmalı | Sağlayıcı işleme potansiyeli **incelenmeli** | Sağlayıcıya bağlı | Free ads için teknik gereklilik olabilir | Banner serving / fraud / delivery, provider policy | Provider controls / platform controls; Luna’da Clear All Data bunu silemez | Provider documentation ile doğrulanmalı | Hayır, SDK ağına bağlı olabilir | Final production AdMob formu için **NEEDS REVIEW**; test config’te AD_ID manifestten kaldırıldı |
+| Purchase history / subscription status | Luna backend’ine gönderilmez; uygulama entitlement refresh için store durumunu sorgulayabilir | Google Play/App Store ile mağaza işlemi kapsamında | Store API response sınırında | Luna Plus satın alan kullanıcı için | Entitlement, restore, subscription management | Store hesabı üzerinden; Luna Clear All Data mağaza satın almasını silmez | Store provider documentation ile doğrulanmalı | Hayır, store boundary’sine bağlı | Google Play Console gerçek formunda store guidance ile doğrula |
+| Financial information / payment card details | **Hayır — Luna ham kart bilgisi işlemez** | **Hayır, Luna tarafından** | Store provider kendi işleminde olabilir | Satın alma sırasında mağaza tarafından yönetilir | Payment processing | Store hesabı ve provider süreçleri | Store provider documentation ile doğrulanmalı | Luna’da **evet**, store dışı | Raw card data için “collected by Luna” iddiası yapılmamalı |
+| Diagnostics | Uygulama içinde diagnostics/analytics SDK yok | **Hayır — mevcut implementasyonda** | Platforma bağlı | Uygulanmaz | Uygulama çalışması için gerekli hata/diagnostic davranışları; ürün analytics’i değil | Platform controls | Platform/provider ile doğrulanmalı | Büyük ölçüde cihaz/OS sınırı | Play automatic collection seçeneklerini final formdan önce kontrol et |
+| Advertising data | Luna health data’yı reklam için toplamaz | Health data paylaşılmaz; AdMob teknik işleme potansiyeli var | Banner request / provider işlemi sınırında | Free tier için; Luna Plus’ta ad request hard-stop | Contextual/non-personalized-first banner delivery | Ad consent/privacy options ve platform/provider controls | Provider documentation ile doğrulanmalı | Hayır, ad SDK’ya bağlı olabilir | Production AdMob account/config olmadan kesin provider field beyanı yapılmamalı |
+| Consent-related information | Ham consent response health backup’a girmez; minimal policy snapshot tutulabilir | UMP/provider ile consent management kapsamında | Consent request/form response süresince olabilir | Bölge ve consent durumuna bağlı | Ad consent and privacy options | Privacy options/provider controls | Provider documentation ile doğrulanmalı | Consent cache policy-only; provider network flow ayrı | Final UMP configuration ile doğrula |
+| User-entered preferences: theme, reminder, private notification setting | **Hayır — remote collection yok** | **Hayır** | Hayır | Kullanıcı seçimine bağlı | App behavior and local reminders | Evet; Settings/Clear All Data | Remote transfer yok | **Evet** | Health backup içinde tercih olabilir; raw ad consent ve purchase token olmamalı |
+
+## Sağlık verisi açıklaması
+
+Luna Cycle’ın current release uygulama mantığında PeriodRecord, DailyLog, flow, spotting, cramps, energy, moods, symptoms, notes, cycle dates, predictions ve estimated ovulation cihazda tutulur. Bu kayıtlar Luna’nın uzak health backend’ine, analytics servisine, reklam isteğine veya billing payload’ına gönderilmez. “Local-only” ifadesi üçüncü taraf platformların bağımsız teknik işleyişi için blanket garanti değildir.
+
+## Final form öncesi kontrol
+
+Data Safety formu submit edilmeden önce production AdMob/UMP hesap ayarları, gerçek mobile SDK privacy disclosures, Play Billing data handling, Play automatic diagnostics seçenekleri ve Google Play Console’un güncel kategori açıklamaları birlikte incelenmelidir. Bu belge tek başına Google’ın nihai checkbox seçiminin yerine geçmez.
