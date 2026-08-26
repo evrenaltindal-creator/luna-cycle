@@ -170,12 +170,26 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security list-keychains -d user -s "$KEYCHAIN_PATH"
           security default-keychain -s "$KEYCHAIN_PATH"
-          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print UUID' /dev/stdin <<< "$(security cms -D -i \"$PROFILE_PATH\")")
+          PROFILE_PLIST=$(security cms -D -i "$PROFILE_PATH")
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print UUID' /dev/stdin <<< "$PROFILE_PLIST")
+          PROFILE_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print Entitlements:application-identifier' /dev/stdin <<< "$PROFILE_PLIST")
+          PROFILE_TEAM_ID=$(/usr/libexec/PlistBuddy -c 'Print TeamIdentifier:0' /dev/stdin <<< "$PROFILE_PLIST")
+          [[ "$PROFILE_BUNDLE_ID" == *"$IOS_BUNDLE_ID" ]] || { echo "Provisioning profile bundle mismatch" >&2; exit 1; }
+          [[ "$PROFILE_TEAM_ID" == "$APPLE_TEAM_ID" ]] || { echo "Provisioning profile team mismatch" >&2; exit 1; }
+          echo "Provisioning profile audit passed for expected bundle and team."
           cp "$PROFILE_PATH" "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
           echo "SIGNING_KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
           echo "SIGNING_TEMP_DIR=$TEMP_DIR" >> "$GITHUB_ENV"
           echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
           echo "PROFILE_NAME=$IOS_PROVISIONING_PROFILE_NAME" >> "$GITHUB_ENV"
+
+      - name: Verify Apple Distribution signing identity
+        if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          security find-identity -v -p codesigning | grep -F 'Apple Distribution' >/dev/null
+          echo "Apple Distribution signing identity is available."
 
       - name: Create signed Release archive
         if: ${{ inputs.upload_testflight == true && steps.signing.outcome == 'success' }}
