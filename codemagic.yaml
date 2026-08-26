@@ -106,9 +106,9 @@ workflows:
       xcode: latest
       # Configure the App Store Connect API key and signing files in Codemagic UI.
       # Do not commit secrets or add guessed group names here.
-    ios_signing:
-      distribution_type: app_store
-      bundle_identifier: com.lunacycle.tracker
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.lunacycle.tracker
     scripts:
       - name: Print release toolchain
         script: |
