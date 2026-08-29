@@ -24,7 +24,7 @@ env:
 jobs:
   ios:
     name: Luna Cycle iOS TestFlight
-    runs-on: macos-15
+    runs-on: macos-26
 
     steps:
       - name: Checkout source
@@ -36,11 +36,17 @@ jobs:
           set -euo pipefail
           echo "Available Xcode installations:"
           ls -1 /Applications/Xcode*.app 2>/dev/null || true
-          if [[ -d "/Applications/Xcode_16.4.app" ]]; then
-            sudo xcode-select -s "/Applications/Xcode_16.4.app"
+          if [[ -d "/Applications/Xcode_26.6.app" ]]; then
+            sudo xcode-select -s "/Applications/Xcode_26.6.app"
           fi
           xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-version
+          IOS_SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
+          echo "iOS SDK: $IOS_SDK_VERSION"
+          IOS_SDK_MAJOR=${IOS_SDK_VERSION%%.*}
+          if (( IOS_SDK_MAJOR < 26 )); then
+            echo "App Store Connect requires the iOS 26 SDK or later; found $IOS_SDK_VERSION" >&2
+            exit 1
+          fi
           swift --version
 
       - name: Enable Corepack and install pnpm
