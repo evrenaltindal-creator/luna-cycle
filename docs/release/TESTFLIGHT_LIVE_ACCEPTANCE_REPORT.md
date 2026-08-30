@@ -26,7 +26,11 @@ App Store Connect reports upload processing for version `1.0.0` build `10` as `C
 | Internal group | **ASSIGNED** | Internal group `test` is attached to Build 10 |
 | Internal testers | **0** | No tester was added or invited |
 | What to Test | **NOT SET** | Tester-facing build notes require approved text before saving |
-| StoreKit products | **NOT CONFIGURED** | App Store Connect has no subscription group or subscription products; `luna_plus_monthly` and `luna_plus_yearly` cannot be purchased until configured |
+| StoreKit products | **CREATED / INCOMPLETE** | `Luna Plus` group contains `luna_plus_monthly` (1 month, Türkiye base price ₺99,99) and `luna_plus_yearly` (1 year, Türkiye base price ₺899,99); Turkish and English (U.S.) localizations are saved |
+| Subscription availability | **NOT SET** | No country or region is enabled; an explicit distribution decision is required, especially because EU availability is tied to DSA trader compliance |
+| Subscription review media | **NOT SET** | Apple review screenshots must be captured from the actual purchase UI before submission |
+| Paid Apps Agreement | **NOT ACTIVE** | App Store Connect shows the agreement as `New`; legal entity information and account-holder acceptance are required before paid distribution |
+| EU DSA compliance | **NOT COMPLETE** | Trader status and required contact verification must be completed by the account holder before EU distribution |
 | TestFlight install | **NOT VERIFIED** | No real-device installation was performed |
 | Real iPhone acceptance | **NOT COMPLETE** | Device testing remains outside this CI/upload acceptance run |
 
