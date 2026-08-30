@@ -2,56 +2,48 @@
 
 ## Current decision
 
-Run #7’nin signed archive, IPA export ve App Store API upload adımları GitHub Actions’ta başarılıdır. App Store Connect TestFlight Builds ekranı bağımsız olarak yenilendiğinde yaklaşık 20 dakikadan sonra da `No Builds` göstermektedir. Bu nedenle Apple processing sonucu **NOT FOUND**, TestFlight build **NOT READY** ve gerçek iPhone acceptance **NOT VERIFIED** olarak kalır. Yeni build upload edilmemiştir.
+GitHub Actions Run #8 completed successfully with Xcode 26.6 and the iOS 26.5 SDK. The workflow prepared the signing keychain and provisioning profile, verified the Apple Distribution identity, created the signed archive, exported the IPA, uploaded the release artifacts, and uploaded the IPA to TestFlight.
 
-| Alan | Sonuç | Kanıt / not |
+App Store Connect reports upload processing for version `1.0.0` build `8` as `Complete`. Export compliance was resolved by declaring that the app implements none of the proprietary or non-OS standard encryption algorithms listed by Apple. The build's TestFlight beta status is `Ready to Submit`, which makes it eligible for internal distribution. No App Review or TestFlight external beta review submission was made.
+
+| Field | Result | Evidence / note |
 |---|---|---|
-| Apple Processing | **NOT FOUND** | App Store Connect → Luna Cycle → TestFlight → Builds: `No Builds` |
-| Version | **1.0.0** | Run #7 archive logu |
-| Build | **7** | Run #7 `CURRENT_PROJECT_VERSION=7` |
-| TestFlight Build | **NOT READY** | Portalda build görünmüyor |
-| Internal Group | **NOT CONFIGURED** | Build görünmediği için assignment yapılmadı |
-| Internal Tester | **NOT ASSIGNED** | Gerçek tester bilgisi kullanılmadı |
-| Device | **NOT VERIFIED** | Gerçek iPhone testi başlatılmadı |
-| iOS | **com.lunacycle.tracker** | App Store Connect Bundle ID ile eşleşiyor |
-| TestFlight Install | **NOT VERIFIED** | TestFlight build’i yok |
-| Cold Launch | **NOT VERIFIED** | Gerçek TestFlight kurulumu yok |
-| Core Navigation | **NOT VERIFIED** | Gerçek TestFlight kurulumu yok |
-| Daily Check-In | **NOT VERIFIED** | Gerçek TestFlight kurulumu yok |
-| Persistence | **NOT VERIFIED** | Gerçek TestFlight kurulumu yok |
-| Calendar | **NOT VERIFIED** | Gerçek TestFlight kurulumu yok |
-| Insights | **NOT VERIFIED** | Gerçek TestFlight kurulumu yok |
-| Theme | **NOT VERIFIED** | Gerçek TestFlight kurulumu yok |
-| Face ID | **NOT VERIFIED** | Gerçek cihaz testi yok |
-| Local Notifications | **NOT VERIFIED** | Gerçek cihaz testi yok |
-| Background Privacy | **NOT VERIFIED** | Gerçek cihaz testi yok |
-| Import / Export | **NOT VERIFIED** | Gerçek cihaz testi yok |
-| Safe Area | **NOT VERIFIED** | Gerçek cihaz testi yok |
-| Keyboard | **NOT VERIFIED** | Gerçek cihaz testi yok |
-| Crashes | **NOT VERIFIED** | TestFlight kabulü başlamadı |
-| StoreKit | **DEFERRED** | Core TestFlight acceptance için ayrıca engel oluşturulmadı |
-| AdMob / UMP | **DEFERRED** | Core TestFlight acceptance için ayrıca engel oluşturulmadı |
-| TestFlight Core Acceptance | **NOT COMPLETE** | Apple build görünürlüğü bekleniyor |
-| Real iPhone Acceptance | **NOT COMPLETE** | Apple build görünürlüğü bekleniyor |
+| Repository secrets | **9/9** | GitHub repository secret-name count; values were not read or recorded |
+| Workflow | **PASS** | GitHub Actions Run #8 completed successfully |
+| Xcode | **26.6 (17F113)** | Workflow toolchain validation |
+| iOS SDK | **26.5** | Workflow SDK validation; required major version 26 or later |
+| Archive | **PASS** | `Create signed Release archive` completed successfully |
+| Code signing | **PASS** | Signing configuration, temporary keychain/profile preparation, and Apple Distribution identity verification completed successfully |
+| IPA | **GENERATED** | Downloaded release artifact contains the exported IPA |
+| IPA size | **3,187,212 bytes** | Local artifact verification |
+| IPA SHA-256 | `76bb35673038fc3785d0d08e24abdf292ab180ea64ba13737243c93329586f10` | Local SHA-256 verification |
+| App Store Connect upload | **PASS** | `Upload IPA to TestFlight` completed successfully |
+| Apple upload processing | **COMPLETE / READY FOR TESTING** | App Store Connect Build Uploads reports `Complete` |
+| Version | **1.0.0** | App Store Connect build metadata |
+| Build | **8** | App Store Connect build metadata |
+| TestFlight beta status | **READY TO SUBMIT** | Build can be distributed to internal testers; it was not submitted for external testing or App Review |
+| Export compliance | **RESOLVED** | `Missing Compliance` cleared after the approved exemption declaration |
+| Internal group | **ASSIGNED** | Internal group `test` is attached to Build 8 |
+| Internal testers | **0** | No tester was added or invited |
+| TestFlight install | **NOT VERIFIED** | No real-device installation was performed |
+| Real iPhone acceptance | **NOT COMPLETE** | Device testing remains outside this CI/upload acceptance run |
 
-## Run #7 upload evidence
+## Run #8 evidence
 
-GitHub Actions Run #7 URL: https://github.com/evrenaltindal-creator/luna-cycle/actions/runs/33006027537
+GitHub Actions Run #8: https://github.com/evrenaltindal-creator/luna-cycle/actions/runs/33278435742
 
-Job URL: https://github.com/evrenaltindal-creator/luna-cycle/actions/runs/33006027537/job/98299873442
+The run used commit `4c2f2849639303d9869b01c6e94deb369a4d1d13` and completed on August 30, 2026. Every workflow step completed successfully, including unit tests, TypeScript validation, web build, Capacitor sync, Swift package resolution, signing checks, archive creation, IPA export, artifact upload, TestFlight upload, and temporary signing-material cleanup.
 
-The archive log reports marketing version `1.0.0`, build number `7`, bundle ID `com.lunacycle.tracker`, Xcode `16.4`, and the successful artifact `luna-cycle-ios-release-7`. The artifact digest recorded by GitHub Actions is `159179f4ff2ce44164ac3359fbbffae6aa11b055f08327f2e48af3948da52bc3`.
+## Scope boundary
 
-The upload action reports `Finished uploading build chunks` and completes successfully with `wait-for-processing: false`. The prior processing wait attempt returned `401 NOT_AUTHORIZED`; the no-wait workflow avoids treating that visibility query as an upload failure.
+No secret value, signing file, provisioning profile, Base64 payload, certificate private key, P12 password, keychain password, or App Store Connect API private key is recorded in this report or committed to the repository.
 
-## Internal testing and device gate
-
-Internal Testing, real tester assignment, TestFlight installation and device acceptance were intentionally not attempted because App Store Connect does not currently expose the uploaded build. No tester email, device result or installation result has been fabricated.
+No tester was added, no tester invitation was sent, no external testing review was requested, and no App Review submission was made.
 
 ## Final status
 
-TESTFLIGHT STATUS: **BLOCKED — APPLE PROCESSING / BUILD VISIBILITY NOT VERIFIED**
+CI / SIGNING / IPA / UPLOAD ACCEPTANCE: **PASS**
 
-NEXT ACTION: **WAIT FOR APPLE PROCESSING / INVESTIGATE ACTUAL APPLE BUILD VISIBILITY BLOCKER WITHOUT REUPLOADING**
+APPLE UPLOAD PROCESSING: **COMPLETE — READY FOR TESTING**
 
-The sentence `TESTFLIGHT IS READY — INSTALL THE BUILD FROM TESTFLIGHT` must not be used until the build is visible and reaches `READY TO TEST`.
+REAL DEVICE ACCEPTANCE: **NOT VERIFIED — REQUIRES AN AUTHORIZED TESTER AND DEVICE SESSION**
