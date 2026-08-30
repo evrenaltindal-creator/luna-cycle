@@ -25,5 +25,5 @@ export function createStoreBillingService(): BillingService {
 
 export const billingReadiness = {
   android: { status: "READY" as const, target: ANDROID_BILLING_TARGET, purchase: "NOT_VERIFIED" as const },
-  ios: { status: "PREPARED" as const, target: IOS_STOREKIT_TARGET, purchase: "NOT_VERIFIED" as const },
+  ios: { status: "READY" as const, target: IOS_STOREKIT_TARGET, purchase: "NOT_VERIFIED" as const },
 };
