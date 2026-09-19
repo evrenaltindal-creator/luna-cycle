@@ -15,10 +15,6 @@ export const PRODUCT_CONFIG = [
 
 export const PREMIUM_FEATURES: readonly MonetizationFeature[] = [
   "advanced_insights",
-  "long_term_trends",
-  "advanced_reports",
-  "extended_history",
-  "advanced_reminders",
   "ad_free",
 ];
 

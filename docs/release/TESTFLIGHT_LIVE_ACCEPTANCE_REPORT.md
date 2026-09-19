@@ -24,7 +24,7 @@ App Store Connect reports upload processing for version `1.0.0` build `10` as `C
 | TestFlight beta status | **READY TO SUBMIT** | Build can be distributed to internal testers; it was not submitted for external testing or App Review |
 | Export compliance | **RESOLVED** | `Missing Compliance` cleared after the approved exemption declaration |
 | Internal group | **ASSIGNED** | Internal group `test` is attached to Build 10 |
-| Internal testers | **0** | No tester was added or invited |
+| Internal testers | **1 INVITED** | Evren Altındal is assigned to the internal group `test` |
 | What to Test | **NOT SET** | Tester-facing build notes require approved text before saving |
 | StoreKit products | **CREATED / INCOMPLETE** | `Luna Plus` group contains `luna_plus_monthly` (1 month, Türkiye base price ₺99,99) and `luna_plus_yearly` (1 year, Türkiye base price ₺899,99); Turkish and English (U.S.) localizations are saved |
 | Subscription availability | **NOT SET** | No country or region is enabled; an explicit distribution decision is required, especially because EU availability is tied to DSA trader compliance |
@@ -44,7 +44,7 @@ The run used commit `4b81f6867ad684d222af78b8387e5d5f7a1b9dcd` and completed on 
 
 No secret value, signing file, provisioning profile, Base64 payload, certificate private key, P12 password, keychain password, or App Store Connect API private key is recorded in this report or committed to the repository.
 
-No tester was added, no tester invitation was sent, no external testing review was requested, and no App Review submission was made.
+One authorized internal tester was invited to the `test` group. No external testing review was requested and no App Review submission was made.
 
 ## Final status
 

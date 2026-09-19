@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useMonetization } from "./MonetizationContext";
 import { PRODUCT_IDS } from "./monetization.config";
 
-const benefits = ["Reklamsız deneyim", "Gelişmiş kişisel içgörüler", "Uzun dönem eğilimleri", "Gelişmiş raporlar"];
+const benefits = ["Reklamsız deneyim", "Kayıtlarından kişisel örüntüler", "Sık belirtilerinin özeti"];
 
 export function LunaPlusPanel({ onClose }: { onClose?: () => void }) {
   const { entitlement, isPremium, isLoading, getProducts, purchase, restore, manageSubscription } = useMonetization();
@@ -30,7 +30,7 @@ export function LunaPlusPanel({ onClose }: { onClose?: () => void }) {
       <div><span className="tiny-label">LUNA PLUS</span><h3 id="luna-plus-title">Daha uzun bir bakış.</h3></div>
       <Sparkles size={20} className="sage-icon" />
     </div>
-    <p>Temel döngü takibi ücretsiz kalır. Luna Plus, yalnızca gelişmiş içgörü yüzeylerini ve reklamsız deneyimi destekler.</p>
+    <p>Temel döngü takibi ücretsiz kalır. Luna Plus, kayıtlarından üretilen kişisel içgörüleri ve reklamsız deneyimi açar.</p>
     <div className="luna-plus-status"><strong>{isLoading ? "Durum kontrol ediliyor…" : isPremium ? "Luna Plus aktif" : "Mevcut plan: Free"}</strong><span>{entitlement === "luna_plus" ? "Mağaza durumu doğrulandı." : "Temel özelliklerin tamamı açık."}</span></div>
     {!isPremium && <div className="luna-plus-actions">{[PRODUCT_IDS.monthly, PRODUCT_IDS.yearly].map((productId) => { const product = products.find((item) => item.id === productId); const label = productId === PRODUCT_IDS.monthly ? "Aylık plan" : "Yıllık plan"; const available = Boolean(product?.localizedPrice); return <button className="secondary-button" key={productId} onClick={() => void buy(productId)} disabled={isLoading || !available}>{label} <small>{available ? `${product?.localizedPrice ?? ""} · ${product?.billingPeriod === "P1Y" ? "yıllık" : "aylık"}` : "Mağazada kullanılamıyor"}</small></button>; })}</div>}
     <div className="luna-plus-benefits">{benefits.map((benefit) => <span key={benefit}>· {benefit}</span>)}</div>

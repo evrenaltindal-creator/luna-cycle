@@ -1,23 +1,20 @@
-/* Style: Sessiz Ay Takvimi — warm editorial wellness, sage ink, lemon accent, asymmetric surfaces. */
+/* Style: Sessiz Gül Günlüğü — warm editorial wellness with a private crimson identity. */
 @import "tailwindcss";
 @import "tw-animate-css";
 
-:root { --bone:#f5f1e8; --paper:#fbfaf6; --ink:#202526; --ink-soft:#68706d; --sage:#52655a; --sage-soft:#dfe7df; --lemon:#e8c85a; --line:#dfe1d8; --radius:18px; --ease-out:cubic-bezier(.23,1,.32,1); }
+:root { --bone:#f8f1f3; --paper:#fffafb; --ink:#2f1d26; --ink-soft:#80656f; --sage:#8d1c3f; --sage-soft:#f0dbe2; --lemon:#e05068; --line:#ead5dc; --radius:18px; --ease-out:cubic-bezier(.23,1,.32,1); }
 * { box-sizing:border-box; }
 html { background:var(--bone); }
 body { margin:0; min-width:320px; background:var(--bone); color:var(--ink); font-family:"Manrope",sans-serif; }
 button { font:inherit; border:0; cursor:pointer; color:inherit; }
 button:focus-visible { outline:3px solid var(--lemon); outline-offset:3px; }
-.app-shell { min-height:100vh; display:flex; background:radial-gradient(circle at 88% 6%, rgba(232,200,90,.12), transparent 22rem), var(--bone); transition:background .3s ease,color .3s ease; }
-.app-shell.dark-mode { --bone:#202827; --paper:#2a3330; --ink:#f4f0e8; --ink-soft:#aab6ae; --sage:#a8bda9; --sage-soft:#3d4d46; --line:#44524d; --lemon:#e7c65c; background:#202827; }
-.side-nav { width:232px; min-height:100vh; position:sticky; top:0; display:flex; flex-direction:column; padding:30px 18px 22px; border-right:1px solid var(--line); background:rgba(245,241,232,.54); backdrop-filter:blur(20px); }
-.dark-mode .side-nav { background:rgba(32,40,39,.82); }
-.nav-brand { padding:0 14px 48px; position:relative; } .nav-brand:after { content:"AY ARŞİVİ / 01"; display:block; margin-top:23px; padding-top:9px; border-top:1px solid var(--line); color:var(--ink-soft); font-size:8px; letter-spacing:.16em; }
+.app-shell { min-height:100vh; display:flex; background:radial-gradient(circle at 88% 6%, rgba(224,80,104,.12), transparent 22rem), var(--bone); transition:background .3s ease,color .3s ease; }
+.app-shell.dark-mode { --bone:#1a0d16; --paper:#291520; --ink:#fff4f6; --ink-soft:#caa8b4; --sage:#ef8195; --sage-soft:#492333; --line:#563040; --lemon:#ffb0bd; color:var(--ink); background:#1a0d16; }
+.side-nav { width:232px; min-height:100vh; position:sticky; top:0; display:flex; flex-direction:column; padding:30px 18px 22px; border-right:1px solid var(--line); background:rgba(248,241,243,.62); backdrop-filter:blur(20px); }
+.dark-mode .side-nav { background:rgba(26,13,22,.86); }
+.nav-brand { padding:0 14px 48px; position:relative; } .nav-brand:after { content:"DÖNGÜ ARŞİVİ / 01"; display:block; margin-top:23px; padding-top:9px; border-top:1px solid var(--line); color:var(--ink-soft); font-size:8px; letter-spacing:.16em; }
 .brand-mark { display:flex; align-items:center; gap:10px; position:relative; height:38px; }
-.mark-orbit { width:30px; height:30px; border:1.5px solid var(--sage); border-radius:50%; transform:rotate(-29deg); position:relative; }
-.mark-orbit:after { content:""; position:absolute; width:8px; height:8px; border-radius:50%; background:var(--lemon); right:-3px; top:2px; }
-.mark-moon { position:absolute; left:8px; top:8px; width:16px; height:16px; background:var(--sage); border-radius:50%; box-shadow:6px -3px 0 0 var(--bone); }
-.dark-mode .mark-moon { box-shadow:6px -3px 0 0 var(--bone); }
+.brand-icon { width:34px; height:34px; border-radius:9px; object-fit:cover; box-shadow:0 5px 14px rgba(80,10,38,.18); }
 .brand-word { display:flex; flex-direction:column; line-height:.84; letter-spacing:-.03em; }
 .brand-word b { font:23px/1 "DM Serif Display",serif; font-weight:400; }
 .brand-word small { font-size:8px; letter-spacing:.26em; margin-top:5px; color:var(--sage); font-weight:800; }
@@ -42,11 +39,8 @@ button:focus-visible { outline:3px solid var(--lemon); outline-offset:3px; }
 .avatar { width:38px; height:38px; border-radius:50%; background:var(--lemon); color:var(--ink); font-weight:800; }
 .home-view,.page-view { max-width:1080px; margin:0 auto; animation:reveal .42s var(--ease-out) both; }
 @keyframes reveal { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
-.hero-card { min-height:300px; display:flex; justify-content:space-between; overflow:hidden; position:relative; border-radius:12px; border-left:6px solid var(--lemon); padding:38px 42px; background:linear-gradient(90deg, rgba(82,101,90,.98) 0%, rgba(82,101,90,.88) 54%, rgba(82,101,90,.55) 100%), url('/manus-storage/luna-cycle-hero_b6a007a8.jpg') right center/cover no-repeat; color:#fff; box-shadow:0 18px 38px rgba(82,101,90,.17); }
-.hero-card:after { content:""; position:absolute; inset:0; background-image:url('/manus-storage/luna-cycle-texture_be74afde.jpg'); mix-blend-mode:soft-light; opacity:.22; pointer-events:none; }
-/* Native runtime: keep the offline shell free of remote image requests while preserving the moonlit texture. */
-html.native-runtime .hero-card { background-image: linear-gradient(90deg, rgba(82,101,90,.98) 0%, rgba(82,101,90,.92) 54%, rgba(82,101,90,.72) 100%); }
-html.native-runtime .hero-card:after { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.08) 0, rgba(255,255,255,.08) 1px, transparent 1px, transparent 12px); opacity:.16; }
+.hero-card { min-height:300px; display:flex; justify-content:space-between; overflow:hidden; position:relative; border-radius:12px; border-left:6px solid var(--lemon); padding:38px 42px; background:linear-gradient(120deg, #3a0b25 0%, #741332 55%, #a72a43 100%); color:#fff; box-shadow:0 18px 38px rgba(98,16,48,.2); }
+.hero-card:after { content:""; position:absolute; inset:0; background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0, rgba(255,255,255,.07) 1px, transparent 1px, transparent 13px); opacity:.14; pointer-events:none; }
 .hero-copy { position:relative; z-index:1; }
 .hero-card .tiny-label { color:#dbe8dc; }
 .hero-card h2 { font:400 clamp(48px,7vw,78px)/.96 "DM Serif Display",serif; margin:22px 0 10px; letter-spacing:-.04em; }
@@ -56,20 +50,22 @@ html.native-runtime .hero-card:after { background-image: repeating-linear-gradie
 .range-line b { color:#fff; font-weight:700; }
 .range-line span { width:7px; height:7px; border-radius:50%; background:var(--lemon); }
 .muted-note { color:#bfcec1; font-size:11px; margin:18px 0 0; }
+.cycle-progress { width:220px; align-self:center; position:relative; z-index:1; padding:18px; border:1px solid rgba(255,255,255,.18); border-radius:14px; background:rgba(40,4,25,.2); backdrop-filter:blur(8px); }
+.progress-heading { display:flex; flex-direction:column; gap:7px; }
+.progress-heading span { color:#f5cbd3; font-size:8px; font-weight:800; letter-spacing:.15em; }
+.progress-heading strong { color:#fff; font-size:13px; line-height:1.35; }
+.progress-track { height:5px; margin:15px 0 13px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.18); }
+.progress-track span { display:block; height:100%; border-radius:inherit; background:var(--lemon); }
+.phase-rail { display:grid; grid-template-columns:1fr 1fr; gap:7px 10px; color:#efdce2; font-size:8px; line-height:1.25; }
 .hero-art { width:240px; position:relative; display:flex; justify-content:center; align-items:center; z-index:1; }
 .hero-art p { position:absolute; right:0; bottom:2px; font:23px/1.05 "DM Serif Display",serif; text-align:right; color:#e8eee6; }
 .hero-art em { color:var(--lemon); font-style:normal; }
-.moon-disc { width:185px; height:185px; border:1px solid rgba(255,255,255,.35); border-radius:50%; position:relative; transform:rotate(-14deg); }
-.moon-disc:before,.moon-disc:after { content:""; position:absolute; border-radius:50%; border:1px solid rgba(255,255,255,.24); inset:17px; }
-.moon-disc:after { inset:35px; border-style:dashed; }
-.moon-disc span { position:absolute; width:31px; height:31px; border-radius:50%; background:var(--lemon); top:20px; left:77px; box-shadow:-2px 0 0 0 rgba(32,37,38,.25) inset; }
-.moon-disc span:nth-child(2) { width:17px; height:17px; top:124px; left:24px; background:#d3ded2; }
-.moon-disc span:nth-child(3) { width:9px; height:9px; top:74px; right:2px; background:#fff; }
+.rose-disc { width:185px; height:185px; border-radius:46px; object-fit:cover; box-shadow:0 18px 42px rgba(24,0,16,.34),0 0 0 1px rgba(255,255,255,.24); transform:rotate(3deg); }
 .dashboard-grid,.lower-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px; }
 .surface { position:relative; overflow:hidden; background:linear-gradient(180deg, color-mix(in srgb,var(--paper) 96%, var(--bone)), var(--paper)); border:1px solid var(--line); border-radius:10px; box-shadow:4px 5px 0 color-mix(in srgb,var(--sage) 10%, transparent), 0 12px 24px rgba(40,46,43,.05); } .surface:before { content:""; position:absolute; top:0; left:24px; width:42px; height:3px; background:var(--sage); opacity:.7; } .surface:after { content:""; position:absolute; inset:0; pointer-events:none; opacity:.2; background:repeating-linear-gradient(0deg, transparent 0, transparent 31px, color-mix(in srgb,var(--line) 55%, transparent) 32px); } .surface > * { position:relative; z-index:1; }
 .today-card,.stats-card,.calendar-preview { padding:25px; }
 .section-top { display:flex; justify-content:space-between; align-items:flex-start; }
-.section-top h3 { font:24px/1.1 "DM Serif Display",serif; font-weight:400; margin:9px 0 0; } .section-top .tiny-label:after, .page-intro .tiny-label:after, .calendar-heading .tiny-label:after { content:"  ─────  AY NOTU"; color:var(--ink-soft); opacity:.55; font-size:8px; letter-spacing:.13em; }
+.section-top h3 { font:24px/1.1 "DM Serif Display",serif; font-weight:400; margin:9px 0 0; } .section-top .tiny-label:after, .page-intro .tiny-label:after, .calendar-heading .tiny-label:after { content:"  ─────  DÖNGÜ NOTU"; color:var(--ink-soft); opacity:.55; font-size:8px; letter-spacing:.13em; }
 .more-button { border:0; width:32px; height:32px; }
 .today-card p { color:var(--ink-soft); font-size:13px; line-height:1.7; max-width:320px; margin:25px 0 24px; }
 .text-link { padding:0; display:inline-flex; align-items:center; gap:6px; background:transparent; color:var(--sage); font-size:12px; font-weight:800; }
@@ -107,10 +103,11 @@ html.native-runtime .hero-card:after { background-image: repeating-linear-gradie
 .mobile-nav { display:none; }
 @media (prefers-reduced-motion:reduce) { *,*:before,*:after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
 @media (max-width:850px) { .side-nav { width:195px; }.main-stage{padding-left:32px;padding-right:32px}.hero-art{width:180px}.calendar-layout{grid-template-columns:1fr}.selected-day{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}.selected-day .tiny-label,.selected-day h3,.selected-day .selected-state,.selected-day p{grid-column:1}.selected-day .wide{grid-column:2;grid-row:1/5;align-self:center} }
-@media (max-width:640px) { .app-shell{display:block;padding-bottom:74px}.side-nav{display:none}.main-stage{padding:21px 18px 16px}.topbar{padding-bottom:28px}.topbar h1{font-size:28px}.top-actions .icon-button,.top-actions .avatar{display:none}.top-actions .secondary-button{font-size:11px;padding:10px 12px}.hero-card{min-height:330px;padding:27px 24px;display:block}.hero-card h2{font-size:58px;margin-top:21px}.hero-art{position:absolute;right:-28px;bottom:-26px;opacity:.55}.hero-art p{display:none}.dashboard-grid,.lower-grid,.settings-layout,.insight-grid{grid-template-columns:1fr}.stats-card{min-height:205px}.side-note{padding:25px 10px}.split-intro,.calendar-heading{display:block}.split-intro p{margin-top:20px}.calendar-heading h2{font-size:45px}.month-switch{margin-top:23px;justify-content:space-between}.large-day{min-height:54px;padding:7px}.large-day small{margin-top:10px;font-size:8px}.history-list{padding:4px 15px}.history-row{gap:9px}.history-index{display:none}.history-metric{min-width:57px}.history-date strong{font-size:12px}.history-date span:not(.history-index){font-size:9px}.delete-button{width:30px;height:30px}.big-stat>strong{font-size:64px}.bar-chart{height:145px}.mobile-nav{position:fixed;z-index:10;bottom:0;left:0;right:0;height:72px;display:flex;justify-content:space-around;align-items:center;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(18px);border-top:1px solid var(--line)}.mobile-nav button{display:flex;flex-direction:column;align-items:center;gap:4px;background:transparent;color:var(--ink-soft);font-size:9px}.mobile-nav button.active{color:var(--sage);font-weight:800}.app-footer{margin-top:36px}.app-footer span:first-child{display:none} }
+@media (max-width:1050px) { .cycle-progress{display:none} }
+@media (max-width:640px) { .app-shell{display:block;padding-bottom:74px}.side-nav{display:none}.main-stage{padding:21px 18px 16px}.topbar{padding-bottom:28px}.topbar h1{font-size:28px}.top-actions .secondary-button{font-size:11px;padding:10px 12px}.hero-card{min-height:330px;padding:27px 24px;display:block}.hero-card h2{font-size:58px;margin-top:21px}.hero-art{position:absolute;right:-28px;bottom:-26px;opacity:.55}.hero-art p{display:none}.dashboard-grid,.lower-grid,.settings-layout,.insight-grid{grid-template-columns:1fr}.stats-card{min-height:205px}.side-note{padding:25px 10px}.split-intro,.calendar-heading{display:block}.split-intro p{margin-top:20px}.calendar-heading h2{font-size:45px}.month-switch{margin-top:23px;justify-content:space-between}.large-day{min-height:54px;padding:7px}.large-day small{margin-top:10px;font-size:8px}.history-list{padding:4px 15px}.history-row{gap:9px}.history-index{display:none}.history-metric{min-width:57px}.history-date strong{font-size:12px}.history-date span:not(.history-index){font-size:9px}.delete-button{width:30px;height:30px}.big-stat>strong{font-size:64px}.bar-chart{height:145px}.mobile-nav{position:fixed;z-index:10;bottom:0;left:0;right:0;height:72px;display:flex;justify-content:space-around;align-items:center;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(18px);border-top:1px solid var(--line)}.mobile-nav button{display:flex;flex-direction:column;align-items:center;gap:4px;background:transparent;color:var(--ink-soft);font-size:9px}.mobile-nav button.active{color:var(--sage);font-weight:800}.app-footer{margin-top:36px}.app-footer span:first-child{display:none} }
 
 /* Style: Sessiz Ay Takvimi — onboarding is a quiet paper cover, not a generic centered auth screen. */
-.onboarding-screen { min-height:100vh; padding:clamp(34px,8vw,88px) clamp(24px,8vw,120px); display:flex; flex-direction:column; justify-content:center; background:radial-gradient(circle at 78% 30%, rgba(232,200,90,.2), transparent 17rem), var(--bone); position:relative; overflow:hidden; }
+.onboarding-screen { min-height:100vh; padding:clamp(34px,8vw,88px) clamp(24px,8vw,120px); display:flex; flex-direction:column; justify-content:center; background:radial-gradient(circle at 78% 30%, rgba(224,80,104,.2), transparent 17rem), var(--bone); position:relative; overflow:hidden; }
 .onboarding-screen:after { content:"LUNA / PRIVATE CYCLE JOURNAL"; position:absolute; right:7vw; bottom:34px; color:var(--ink-soft); font-size:9px; letter-spacing:.18em; }
 .onboarding-orbit { width:118px; height:118px; display:grid; place-items:center; color:var(--sage); border:1px solid var(--sage); border-radius:50%; margin-bottom:38px; position:relative; }
 .onboarding-orbit:before,.onboarding-orbit:after { content:""; position:absolute; border:1px solid var(--line); border-radius:50%; inset:14px; }.onboarding-orbit:after{inset:31px;border-style:dashed}.onboarding-screen .eyebrow{margin-bottom:18px}.onboarding-screen h2{max-width:630px;font:400 clamp(50px,8vw,100px)/.91 "DM Serif Display",serif;letter-spacing:-.05em;margin:0 0 22px}.onboarding-screen p{max-width:430px;color:var(--ink-soft);font-size:15px;line-height:1.75;margin:0 0 34px}.onboarding-screen .secondary-button{width:max-content;padding:13px 19px}.onboarding-dots{display:flex;gap:8px;margin-bottom:26px}.onboarding-dots span{display:block;width:32px;height:3px;background:var(--line)}.onboarding-dots span.active{background:var(--sage)}

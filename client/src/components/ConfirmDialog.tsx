@@ -12,6 +12,7 @@ import {
 
 interface ConfirmDialogProps {
   open: boolean;
+  eyebrow?: string;
   title: string;
   description?: string;
   confirmLabel: string;
@@ -24,6 +25,7 @@ interface ConfirmDialogProps {
 
 export function ConfirmDialog({
   open,
+  eyebrow = "GÜNLÜK KAYIT",
   title,
   description,
   confirmLabel,
@@ -37,7 +39,7 @@ export function ConfirmDialog({
     <AlertDialog open={open} onOpenChange={(nextOpen) => !nextOpen && !loading && onCancel()}>
       <AlertDialogContent className="record-modal confirm-dialog">
         <AlertDialogHeader className="confirm-dialog-header">
-          <span className="tiny-label">GÜNLÜK KAYIT</span>
+          <span className="tiny-label">{eyebrow}</span>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
         </AlertDialogHeader>

@@ -22,10 +22,6 @@ export type EntitlementSource =
 
 export type MonetizationFeature =
   | "advanced_insights"
-  | "long_term_trends"
-  | "advanced_reports"
-  | "extended_history"
-  | "advanced_reminders"
   | "ad_free";
 
 export type PurchaseState =
