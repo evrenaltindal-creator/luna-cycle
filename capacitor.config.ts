@@ -28,6 +28,22 @@ const config: CapacitorConfig = {
     allowMixedContent: false,
     loggingBehavior: "none",
   },
+  ios: {
+    // Keep the Android ad plugin out of Apple's binary entirely.
+    includePlugins: [
+      "@aparajita/capacitor-secure-storage",
+      "@capacitor/app",
+      "@capacitor/filesystem",
+      "@capacitor/haptics",
+      "@capacitor/keyboard",
+      "@capacitor/local-notifications",
+      "@capacitor/privacy-screen",
+      "@capacitor/share",
+      "@capacitor/splash-screen",
+      "@capacitor/status-bar",
+      "@capawesome/capacitor-file-picker",
+    ],
+  },
   server: {
     cleartext: false,
   },

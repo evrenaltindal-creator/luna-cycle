@@ -1,7 +1,7 @@
 // Style: Sessiz Ay Takvimi — reklam izni, sağlık izninden tamamen ayrı ve yalnız policy-derived booleans taşır.
 
 import { AdMob } from "@capacitor-community/admob";
-import { isNativePlatform } from "../../platform/platform";
+import { isAndroid } from "../../platform/platform";
 
 export type ConsentState = "unknown" | "allowed" | "denied";
 export interface AdConsentSnapshot { state: ConsentState; adRequestAllowed: boolean; personalizationAllowed: boolean; privacyOptionsRequired: boolean; }
@@ -39,7 +39,7 @@ export const ConsentService = {
   async initialize(): Promise<AdConsentSnapshot> {
     if (initialization) return initialization;
     initialization = (async () => {
-      if (!isNativePlatform()) { const cached = readCached(); const snapshot: AdConsentSnapshot = { ...cached, state: cached.adRequestAllowed ? "allowed" : "denied" }; writeCached(snapshot); return snapshot; }
+      if (!isAndroid()) { const snapshot: AdConsentSnapshot = { ...defaultSnapshot, state: "denied" }; writeCached(snapshot); return snapshot; }
       try {
         const info = await AdMob.requestConsentInfo();
         let snapshot = fromPlugin(info);
@@ -57,7 +57,7 @@ export const ConsentService = {
   isAdRequestAllowed(snapshot: AdConsentSnapshot) { return snapshot.adRequestAllowed; },
   isPersonalizedAdsAllowed(snapshot: AdConsentSnapshot) { return snapshot.personalizationAllowed; },
   async showPrivacyOptions(): Promise<AdConsentSnapshot> {
-    if (!isNativePlatform()) return readCached();
+    if (!isAndroid()) return { ...defaultSnapshot, state: "denied" };
     try {
       await AdMob.showPrivacyOptionsForm();
       const snapshot = fromPlugin(await AdMob.requestConsentInfo());

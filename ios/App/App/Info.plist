@@ -10,9 +10,6 @@
   <string>Luna Cycle</string>
   <key>NSFaceIDUsageDescription</key>
   <string>Luna Cycle, özel sağlık kayıtlarına erişimi korumak için Face ID kullanır.</string>
-  <!-- Official Google test App ID; replace only through release configuration after production AdMob setup. -->
-  <key>GADApplicationIdentifier</key>
-  <string>ca-app-pub-3940256099942544~1458002511</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
