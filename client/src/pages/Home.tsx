@@ -33,6 +33,7 @@ import {
 } from "../features/cycle/cycle.storage";
 import type { DailyLog } from "../features/symptoms/symptom.types";
 import { calculatePrediction } from "../features/cycle/cyclePrediction.service";
+import { periodLength, validatePeriodRange } from "../features/cycle/periodRecord.validation";
 import { DailyCheckin as RichDailyCheckin } from "../features/symptoms/DailyCheckin";
 import { PreferenceControls } from "../features/preferences/PreferenceControls";
 import { ThemeSelector } from "../features/preferences/ThemeSelector";
@@ -109,13 +110,26 @@ function startOfToday() {
   const d = new Date();
   return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
 }
+function actualPeriodDays(records: RecordItem[]) {
+  const todayKey = iso(startOfToday());
+  return new Set(records.flatMap(record =>
+    Array.from({ length: Math.max(0, Math.min(record.length, 14)) }, (_, index) =>
+      iso(addDays(parseDate(record.date), index))
+    ).filter(day => day <= todayKey)
+  ));
+}
 function greeting() {
   const hour = new Date().getHours();
   return hour < 12 ? "Günaydın" : hour < 18 ? "İyi günler" : "İyi akşamlar";
 }
 
-const prediction = (records: RecordItem[]) =>
-  calculatePrediction(records.map(record => ({ date: record.date })));
+const prediction = (records: RecordItem[]) => {
+  const preferences = getPreferences();
+  return calculatePrediction(records.map(record => ({ date: record.date, endDate: record.endDate, length: record.length })), {
+    fallbackCycleLength: preferences.averageCycleLength,
+    fallbackPeriodLength: preferences.averagePeriodLength,
+  });
+};
 
 function Logo() {
   return (
@@ -221,6 +235,7 @@ function Onboarding({
             Son adet başlangıcı
             <input
               type="date"
+              max={iso(startOfToday())}
               value={startDate}
               onChange={event => setStartDate(event.target.value)}
             />
@@ -251,6 +266,7 @@ function Onboarding({
           onClick={() => {
             const period = Math.max(1, Math.min(14, Number(periodLength) || 5));
             const cycle = Math.max(15, Math.min(90, Number(cycleLength) || 28));
+            if (validatePeriodRange(startDate, startDate, [])) { toast.error("Geçerli bir geçmiş başlangıç tarihi seç."); return; }
             onDone({ startDate, periodLength: period, cycleLength: cycle });
           }}
         >
@@ -422,16 +438,16 @@ function HomeView({
               <span>ortalama gün</span>
             </div>
             <div>
-              <strong>{records.at(-1)?.length ?? 0}</strong>
-              <span>adet süresi</span>
+              <strong>{p.averagePeriodLength}</strong>
+              <span>ortalama adet günü</span>
             </div>
             <div>
               <strong>{p.lengths.length}</strong>
               <span>kayıtlı döngü</span>
             </div>
           </div>
-          <button className="text-link" onClick={() => setActive("insights")}>
-            İçgörülere git <ChevronRight size={16} />
+          <button className="text-link" onClick={() => setActive("history")}>
+            Geçmiş kayıtları gör <ChevronRight size={16} />
           </button>
         </div>
       </section>
@@ -610,13 +626,7 @@ function MiniCalendar({
   base.setDate(1);
   const start = (base.getDay() + 6) % 7;
   const days = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate();
-  const actual = new Set(
-    records.flatMap(r =>
-      Array.from({ length: r.length }, (_, i) =>
-        iso(addDays(parseDate(r.date), i))
-      )
-    )
-  );
+  const actual = actualPeriodDays(records);
   const dailyLogDates = new Set(getDailyLogs<DailyLog>().map(log => log.date));
   return (
     <div className="mini-calendar">
@@ -633,7 +643,7 @@ function MiniCalendar({
           const d = new Date(base.getFullYear(), base.getMonth(), i + 1, 12);
           const id = iso(d);
           const isActual = actual.has(id);
-          const isPred = d >= p.start && d <= p.end;
+          const isPred = p.futurePeriods.some(period => d >= period.start && d <= period.end);
           const isToday = d.toDateString() === startOfToday().toDateString();
           const hasDailyLog = dailyLogDates.has(id);
           return (
@@ -668,7 +678,7 @@ function CalendarView({
   setRecords,
 }: {
   records: RecordItem[];
-  setRecords: (records: RecordItem[]) => void;
+  setRecords: (records: RecordItem[]) => boolean;
 }) {
   const now = startOfToday();
   const [month, setMonth] = useState(now.getMonth());
@@ -685,13 +695,7 @@ function CalendarView({
   const days = new Date(year, month + 1, 0).getDate();
   const selectedDay = Math.min(selected, days);
   const start = (new Date(year, month, 1, 12).getDay() + 6) % 7;
-  const actual = new Set(
-    records.flatMap(r =>
-      Array.from({ length: r.length }, (_, i) =>
-        iso(addDays(parseDate(r.date), i))
-      )
-    )
-  );
+  const actual = actualPeriodDays(records);
   const dailyLogs = getDailyLogs<DailyLog>();
   const dailyLogDates = new Set(dailyLogs.map(log => log.date));
   const selectedId = iso(new Date(year, month, selectedDay, 12));
@@ -750,7 +754,7 @@ function CalendarView({
               const d = new Date(year, month, i + 1, 12);
               const id = iso(d);
               const isActual = actual.has(id);
-              const isPred = d >= p.start && d <= p.end;
+              const isPred = p.futurePeriods.some(period => d >= period.start && d <= period.end);
               const hasDailyLog = dailyLogDates.has(id);
               return (
                 <button
@@ -778,8 +782,9 @@ function CalendarView({
             <span className="state-dot" />
             {actual.has(selectedId)
               ? "Gerçek adet günü"
-              : new Date(year, month, selectedDay, 12) >= p.start &&
-                  new Date(year, month, selectedDay, 12) <= p.end
+              : p.futurePeriods.some(period =>
+                  new Date(year, month, selectedDay, 12) >= period.start &&
+                  new Date(year, month, selectedDay, 12) <= period.end)
                 ? "Tahmini dönem"
                 : "Henüz kayıt yok"}
           </div>
@@ -887,12 +892,14 @@ function CalendarView({
         records={records}
         onClose={() => setModalOpen(false)}
         onSave={next => {
-          setRecords(next);
+          if (!setRecords(next)) return false;
           setModalOpen(false);
+          return true;
         }}
         onDelete={next => {
-          setRecords(next);
+          if (!setRecords(next)) return false;
           setModalOpen(false);
+          return true;
         }}
       />}
       {checkinDate && (
@@ -912,6 +919,7 @@ function CalendarView({
 function CalendarRecordModal({
   open,
   mode,
+  forceCreate = false,
   selectedDate,
   records,
   onClose,
@@ -920,45 +928,34 @@ function CalendarRecordModal({
 }: {
   open: boolean;
   mode: "edit" | "delete";
+  forceCreate?: boolean;
   selectedDate: Date;
   records: RecordItem[];
   onClose: () => void;
-  onSave: (next: RecordItem[]) => void;
-  onDelete: (next: RecordItem[]) => void;
+  onSave: (next: RecordItem[]) => boolean;
+  onDelete: (next: RecordItem[]) => boolean;
 }) {
-  const existing = records.find(record => {
+  const existing = forceCreate ? undefined : records.find(record => {
     const start = parseDate(record.date);
-    const end = addDays(start, record.length - 1);
+    const end = record.endDate ? parseDate(record.endDate) : addDays(start, record.length - 1);
     return selectedDate >= start && selectedDate <= end;
   });
+  const storedEnd = existing?.endDate ?? (existing ? iso(addDays(parseDate(existing.date), existing.length - 1)) : undefined);
+  const futureStoredEnd = Boolean(storedEnd && storedEnd > iso(startOfToday()));
+  const initialEnd = futureStoredEnd ? iso(startOfToday()) : storedEnd ?? iso(selectedDate);
   const [startDate, setStartDate] = useState(
     existing?.date ?? iso(selectedDate)
   );
-  const [endDate, setEndDate] = useState(
-    existing?.endDate ??
-      iso(
-        addDays(
-          parseDate(existing?.date ?? iso(selectedDate)),
-          (existing?.length ?? 5) - 1
-        )
-      )
-  );
-  const [length, setLength] = useState(existing?.length ?? 5);
+  const [endDate, setEndDate] = useState(initialEnd);
+  const [length, setLength] = useState(existing ? periodLength(existing.date, initialEnd) : 1);
   const [confirming, setConfirming] = useState(mode === "delete");
   if (!open) return null;
+  const validationError = validatePeriodRange(startDate, endDate, records, existing?.id);
+  const calculatedLength = validationError ? 0 : periodLength(startDate, endDate);
   const save = () => {
-    const calculatedLength = Math.max(
-      1,
-      Math.min(
-        14,
-        Math.round(
-          (parseDate(endDate).getTime() - parseDate(startDate).getTime()) /
-            86400000
-        ) + 1
-      )
-    );
+    if (validationError) { toast.error(validationError); return; }
     const nextRecord = {
-      id: existing?.id ?? Date.now(),
+      id: existing?.id ?? Math.max(Date.now(), ...records.map(record => record.id + 1)),
       date: startDate,
       endDate,
       length: calculatedLength,
@@ -966,7 +963,7 @@ function CalendarRecordModal({
     const next = existing
       ? records.map(record => (record.id === existing.id ? nextRecord : record))
       : [...records, nextRecord];
-    onSave(next);
+    if (!onSave(next)) return;
     toast.success(existing ? "Adet kaydı güncellendi" : "Adet kaydı eklendi", {
       description: "Takvim ve tahminlerin yenilendi.",
     });
@@ -977,7 +974,7 @@ function CalendarRecordModal({
       onClose();
       return;
     }
-    onDelete(records.filter(record => record.id !== existing.id));
+    if (!onDelete(records.filter(record => record.id !== existing.id))) return;
     toast.success("Adet kaydı silindi");
   };
   return (
@@ -1002,7 +999,7 @@ function CalendarRecordModal({
                 ? "Kaydı sil?"
                 : existing
                   ? "Kaydı düzenle"
-                  : "Bu günü kaydet"}
+                  : forceCreate ? "Geçmiş adet kaydı ekle" : "Bu günü kaydet"}
             </h3>
           </div>
           <button
@@ -1039,13 +1036,12 @@ function CalendarRecordModal({
                 Başlangıç tarihi
                 <input
                   type="date"
+                  max={iso(startOfToday())}
                   value={startDate}
                   onChange={event => {
                     const value = event.target.value;
                     setStartDate(value);
-                    setEndDate(
-                      iso(addDays(parseDate(value), Math.max(1, length) - 1))
-                    );
+                    if (value) setEndDate(existing ? iso(addDays(parseDate(value), Math.max(1, length) - 1)) : value);
                   }}
                 />
               </label>
@@ -1054,46 +1050,24 @@ function CalendarRecordModal({
                 <input
                   type="date"
                   min={startDate}
+                  max={iso(startOfToday())}
                   value={endDate}
                   onChange={event => {
                     const value = event.target.value;
                     setEndDate(value);
-                    setLength(
-                      Math.max(
-                        1,
-                        Math.min(
-                          14,
-                          Math.round(
-                            (parseDate(value).getTime() -
-                              parseDate(startDate).getTime()) /
-                              86400000
-                          ) + 1
-                        )
-                      )
-                    );
+                    if (value && startDate) setLength(Math.max(1, periodLength(startDate, value)));
                   }}
                 />
               </label>
             </div>
             <p className="calculated-duration">
               Otomatik hesaplanan süre:{" "}
-              <strong>
-                {Math.max(
-                  1,
-                  Math.min(
-                    14,
-                    Math.round(
-                      (parseDate(endDate).getTime() -
-                        parseDate(startDate).getTime()) /
-                        86400000
-                    ) + 1
-                  )
-                )}{" "}
-                gün
-              </strong>
+              <strong>{calculatedLength ? `${calculatedLength} gün` : "—"}</strong>
             </p>
+            {validationError && <p className="form-error" role="alert">{validationError}</p>}
             <p className="modal-note">
-              Kayıt yalnızca bu cihazda saklanır. Tahmin kesin değildir.
+              {futureStoredEnd && "Önceki kayıttaki bitiş tarihi henüz gelmediği için formda bugün gösteriliyor; kaydedene kadar mevcut kayıt değişmez. "}
+              Gerçek başlangıç ve bitiş günlerini seç. Adet hâlâ sürüyorsa bitiş gününü kesinleşince düzenle. Kayıt yalnızca bu cihazda saklanır; tahmin kesin değildir.
             </p>
             <div className="modal-actions">
               <button className="ghost-button" onClick={onClose}>
@@ -1107,7 +1081,7 @@ function CalendarRecordModal({
                   Sil
                 </button>
               )}
-              <button className="primary-solid" onClick={save}>
+              <button className="primary-solid" onClick={save} disabled={Boolean(validationError)}>
                 Kaydet
               </button>
             </div>
@@ -1123,8 +1097,13 @@ function HistoryView({
   setRecords,
 }: {
   records: RecordItem[];
-  setRecords: (records: RecordItem[]) => void;
+  setRecords: (records: RecordItem[]) => boolean;
 }) {
+  const [adding, setAdding] = useState(false);
+  const [editing, setEditing] = useState<RecordItem | null>(null);
+  const [deleting, setDeleting] = useState<RecordItem | null>(null);
+  const ordered = records.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const p = prediction(records);
   return (
     <div className="page-view">
       <div className="page-intro">
@@ -1135,48 +1114,54 @@ function HistoryView({
           <em>anlamak</em> için.
         </h2>
         <p>
-          Gerçek kayıtların, tahminlerden ayrı ve yalnızca senin görebileceğin
-          şekilde tutulur.
+          Geçmiş adetlerinin gerçek başlangıç ve bitiş günlerini gir. Döngü ve adet süresi ortalamaları bu kayıtlardan hesaplanır.
         </p>
       </div>
+      <div className="history-toolbar">
+        <div>
+          <strong>{p.average} gün</strong><span>ortalama döngü</span>
+          <strong>{p.averagePeriodLength} gün</strong><span>ortalama adet süresi</span>
+        </div>
+        <button className="secondary-button" onClick={() => setAdding(true)}><Plus size={16} /> Geçmiş adet ekle</button>
+      </div>
       <div className="history-list surface">
-        {records
-          .slice()
-          .reverse()
+        {ordered.length === 0 && <p className="history-empty">Henüz kayıt yok. İlk gerçek adet tarihlerini ekleyebilirsin.</p>}
+        {ordered
+          .slice().reverse()
           .map((record, index) => {
             const date = parseDate(record.date);
-            const next = records.find(item => item.date > record.date);
+            const endDate = record.endDate ?? iso(addDays(date, record.length - 1));
+            const incomplete = endDate > iso(startOfToday());
+            const next = ordered.find(item => item.date > record.date);
             const cycle = next
               ? Math.round(
                   (parseDate(next.date).getTime() - date.getTime()) / 86400000
                 )
-              : prediction(records).average;
+              : null;
             return (
               <div className="history-row" key={record.id}>
                 <div className="history-date">
                   <span className="history-index">
-                    0{records.length - index}
+                    0{ordered.length - index}
                   </span>
                   <div>
-                    <strong>{pretty(date)}</strong>
-                    <span>Gerçek adet kaydı</span>
+                    <strong>{pretty(date)} – {pretty(parseDate(endDate))}</strong>
+                    <span>{incomplete ? "Bitiş tarihi henüz gelmedi; düzenleyebilirsin" : "Gerçek adet başlangıcı ve bitişi"}</span>
                   </div>
                 </div>
                 <div className="history-metric">
                   <strong>{record.length} gün</strong>
-                  <span>adet süresi</span>
+                  <span>{incomplete ? "planlanan süre" : "adet süresi"}</span>
                 </div>
                 <div className="history-metric">
-                  <strong>{cycle} gün</strong>
+                  <strong>{cycle ?? "—"}{cycle ? " gün" : ""}</strong>
                   <span>döngü</span>
                 </div>
+                <button className="text-link" aria-label={`${pretty(date)} kaydını düzenle`} onClick={() => setEditing(record)}>Düzenle</button>
                 <button
                   className="delete-button"
-                  aria-label="Kaydı sil"
-                  onClick={() => {
-                    setRecords(records.filter(item => item.id !== record.id));
-                    toast.success("Kayıt silindi");
-                  }}
+                  aria-label={`${pretty(date)} kaydını sil`}
+                  onClick={() => setDeleting(record)}
                 >
                   <Trash2 size={17} />
                 </button>
@@ -1184,24 +1169,43 @@ function HistoryView({
             );
           })}
       </div>
+      {records.length > 0 && <section className="future-periods surface" aria-label="Gelecek adet tahminleri">
+        <span className="tiny-label">TAHMİNİ GELECEK DÖNEMLER</span>
+        <p>Ortalama {p.average} günlük döngü ve {p.averagePeriodLength} günlük adet süresi kullanılır. Bunlar kesin tarih değildir.</p>
+        <ol>{p.futurePeriods.map(period => <li key={iso(period.start)}><strong>{pretty(period.start)} – {pretty(period.end)}</strong><span>Tahmini adet dönemi</span></li>)}</ol>
+      </section>}
+      {(adding || editing) && <CalendarRecordModal
+        key={adding ? "new-history" : editing?.id}
+        open
+        mode="edit"
+        forceCreate={adding}
+        selectedDate={editing ? parseDate(editing.date) : startOfToday()}
+        records={records}
+        onClose={() => { setAdding(false); setEditing(null); }}
+        onSave={next => { if (!setRecords(next)) return false; setAdding(false); setEditing(null); return true; }}
+        onDelete={next => { if (!setRecords(next)) return false; setAdding(false); setEditing(null); return true; }}
+      />}
+      <ConfirmDialog
+        open={Boolean(deleting)}
+        title="Bu adet kaydı silinsin mi?"
+        description="Bu işlem gelecekteki tahminleri yeniden hesaplar."
+        confirmLabel="Kaydı sil"
+        destructive
+        onCancel={() => setDeleting(null)}
+        onConfirm={() => {
+          if (!deleting) return;
+          if (!setRecords(records.filter(record => record.id !== deleting.id))) return;
+          setDeleting(null);
+          toast.success("Kayıt silindi");
+        }}
+      />
     </div>
   );
 }
 
 function InsightsView({ records }: { records: RecordItem[] }) {
   const p = prediction(records);
-  const cycleLengths = records
-    .slice()
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(1)
-    .map((record, index, sorted) =>
-      Math.round(
-        (parseDate(record.date).getTime() -
-          parseDate(sorted[index].date).getTime()) /
-          86400000
-      )
-    );
-  const bars = cycleLengths.slice(-6);
+  const bars = p.lengths;
   const personal = useMemo(
     () =>
       buildPersonalInsights(
@@ -1232,13 +1236,13 @@ function InsightsView({ records }: { records: RecordItem[] }) {
       </div>
       <div className="insight-grid">
         <div className="surface big-stat">
-          <span className="tiny-label">AĞIRLIKLI ORTALAMA</span>
+          <span className="tiny-label">ORTALAMA DÖNGÜ</span>
           <strong>
             {p.average}
             <small> gün</small>
           </strong>
           <div className="trend">
-            <TrendingUp size={15} /> son döngüler dengeli
+            <TrendingUp size={15} /> Tahmin güveni: {p.confidence}
           </div>
         </div>
         <div className="surface chart-card">
@@ -1247,7 +1251,7 @@ function InsightsView({ records }: { records: RecordItem[] }) {
               <span className="tiny-label">SON 6 DÖNGÜ</span>
               <h3>Uzunluk değişimi</h3>
             </div>
-            <span className="chart-range">15 — 45 gün</span>
+            <span className="chart-range">15 — 90 gün</span>
           </div>
           {bars.length ? (
             <div className="bar-chart">
@@ -1879,26 +1883,33 @@ export default function Home() {
         date: item.startDate,
         endDate: item.endDate,
         length: item.length ?? 5,
-      }));
+      })).sort((a, b) => a.date.localeCompare(b.date));
     } catch {
       return initialRecords;
     }
   });
   const saveRecords = (next: RecordItem[]) => {
-    setRecords(next);
-    savePeriodRecords(
-      next.map(item => ({
+    const ordered = next.slice().sort((a, b) => a.date.localeCompare(b.date));
+    const previous = new Map(getPeriodRecords().map(item => [item.id, item]));
+    const saved = savePeriodRecords(
+      ordered.map(item => ({
         id: String(item.id),
         startDate: item.date,
         endDate:
           item.endDate ?? iso(addDays(parseDate(item.date), item.length - 1)),
-        createdAt: new Date().toISOString(),
+        createdAt: previous.get(String(item.id))?.createdAt ?? new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         length: item.length,
       }))
     );
-    const nextPrediction = prediction(next);
+    if (!saved) {
+      toast.error("Kayıt kaydedilemedi. Lütfen tekrar dene.");
+      return false;
+    }
+    setRecords(ordered);
+    const nextPrediction = prediction(ordered);
     void syncCycleReminder(nextPrediction.next, getPreferences());
+    return true;
   };
   const add = () => setRecordModalOpen(true);
   const view = (() => {
@@ -1923,15 +1934,15 @@ export default function Home() {
       <Onboarding
         onDone={setup => {
           if (setup) {
+            const actualEnd = addDays(parseDate(setup.startDate), setup.periodLength - 1);
+            const endDate = iso(actualEnd > startOfToday() ? startOfToday() : actualEnd);
             const record = {
               id: String(Date.now()),
               startDate: setup.startDate,
-              endDate: iso(
-                addDays(parseDate(setup.startDate), setup.periodLength - 1)
-              ),
+              endDate,
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
-              length: setup.periodLength,
+              length: periodLength(setup.startDate, endDate),
             };
             savePeriodRecords([record]);
             savePreferences({
@@ -1977,6 +1988,7 @@ export default function Home() {
             [
               ["home", HomeIcon],
               ["calendar", CalendarDays],
+              ["history", TrendingUp],
               ["insights", Sparkles],
               ["settings", Settings],
             ] as [Tab, typeof HomeIcon][]
@@ -1992,6 +2004,8 @@ export default function Home() {
                   ? "Ana"
                   : id === "calendar"
                     ? "Takvim"
+                    : id === "history"
+                      ? "Geçmiş"
                     : id === "insights"
                       ? "İçgörü"
                       : "Ayarlar"}
@@ -2008,12 +2022,14 @@ export default function Home() {
           records={records}
           onClose={() => setRecordModalOpen(false)}
           onSave={next => {
-            saveRecords(next);
+            if (!saveRecords(next)) return false;
             setRecordModalOpen(false);
+            return true;
           }}
           onDelete={next => {
-            saveRecords(next);
+            if (!saveRecords(next)) return false;
             setRecordModalOpen(false);
+            return true;
           }}
         />
       )}
