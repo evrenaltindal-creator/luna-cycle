@@ -9,8 +9,8 @@
 | Gambling | **None** | Bahis, kumar, ödül şansı veya gerçek para oyunu yoktur. |
 | User-generated content | **None in current release** | Kullanıcı kayıtları kişisel cihaz verisidir; kamuya açık paylaşım akışı veya sosyal içerik platformu yoktur. |
 | Medical / health-related content | **Yes — informational health-related content** | Menstrual cycle tracking ve informational estimates vardır; medical diagnosis/treatment/clinical decision support yoktur. |
-| Ads | **Yes in Free tier** | Contextual/non-personalized-first banner ads yalnız onaylı düşük hassasiyetli footer slotlarında planlanmıştır. Luna Plus ad-free olarak tasarlanmıştır. |
-| In-app purchases | **Yes** | Luna Plus monthly/yearly store subscriptions için native billing boundary bulunur; gerçek Play/App Store transaction testi henüz deferred’dir. |
+| Ads | **No in first release** | İlk sürümün kullanıcı arayüzünde reklam alanı yoktur; final binary ve SDK davranışı yine kontrol edilmelidir. |
+| In-app purchases | **No in first release** | Satın alma ve abonelik akışı uygulama girişinden çıkarılmıştır; iOS satın alma köprüsü build hedefine dahil değildir. |
 | Age gate | **Not implemented / not verified** | Uygulamada verified age gate bulunmaz. |
 
 ## Reviewer note

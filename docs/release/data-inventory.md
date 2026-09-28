@@ -1,5 +1,7 @@
 # Luna Cycle Final Privacy / Data Inventory
 
+> **Historical inventory (23 August 2026):** This predates the free-first-release decision and describes planned monetization boundaries. Do not use its advertising or purchase rows as current store declarations. See [current release decision](FREE_FIRST_RELEASE_TR.md) and re-audit the final binaries.
+
 **Tarih:** 23 Ağustos 2026  
 **Package:** `com.lunacycle.app`  
 **Scope:** Current React/TypeScript/Vite + Capacitor 8 release candidate.

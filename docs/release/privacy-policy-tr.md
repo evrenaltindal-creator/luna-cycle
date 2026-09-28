@@ -2,7 +2,8 @@
 
 **Son güncelleme / yürürlük tarihi:** [EFFECTIVE DATE]  
 **Uygulama:** Luna Cycle  
-**Paket / bundle kimliği:** `com.lunacycle.app`  
+**iOS bundle kimliği:** `com.lunacycle.tracker` · **Android paket kimliği:** `com.lunacycle.app`
+
 **Geliştirici / veri sorumlusu:** [LEGAL NAME]  
 **İletişim:** [CONTACT EMAIL]  
 **Yargı alanı:** [JURISDICTION]
@@ -17,7 +18,7 @@ Bu çıktılar doğum kontrolü, gebelikten korunma, tanı, tedavi veya acil tı
 
 ## 2. Hesap ve temel kullanım
 
-Mevcut sürümde temel sağlık takibi için Luna hesabı, uzaktan kayıt veya giriş/kayıt akışı gerekmemektedir. Temel özellikler cihaz üzerinde kullanılabilir. Google Play veya App Store hesabı, Luna hesabından ayrı olarak, mağaza aboneliği veya uygulama içi satın alma işlemleri için gerekli olabilir.
+Mevcut sürümde Luna hesabı, uzaktan kayıt veya giriş/kayıt akışı gerekmemektedir. Mevcut özellikler ücretsizdir; uygulama içi satın alma veya abonelik akışı yoktur.
 
 ## 3. Sizin girdiğiniz veriler
 
@@ -33,31 +34,21 @@ Bu ifade, cihazın işletim sistemi, depolama ortamı veya üçüncü taraf plat
 
 ## 5. Üçüncü taraf hizmetleri
 
-Uygulama; mobil platform işlevleri için Capacitor native eklentilerini, native güvenli/yerel depolama katmanını, yerel bildirimleri, Google Play Billing veya Apple StoreKit sınırlarını ve Free katmanında contextual/non-personalized-first reklamlar için AdMob/UMP sınırını kullanır.
+İlk sürüm; mobil platform işlevleri için Capacitor native eklentilerini, yerel depolamayı, yerel bildirimleri ve isteğe bağlı cihaz kilidini kullanır. Uygulama satın alma veya reklam isteği başlatmaz. Geleceğe yönelik kod/bağımlılıklar depoda bulunabilir; dahil edilen SDK'ların gerçek veri işleme davranışı final iOS ve Android paketleri üzerinden ayrıca denetlenmelidir.
 
-Üçüncü taraf hizmetleri kendi teknik belgelerine ve gizlilik politikalarına göre cihaz, ağ, mağaza veya consent yönetimiyle ilişkili teknik bilgileri işleyebilir. Bu hizmetlere sağlık kaydı, döngü tarihi, semptom, ruh hâli, not içeriği veya tahmin durumu reklam veya faturalandırma payload’ı olarak verilmez. Sağlayıcıların kesin alan ve saklama uygulamaları, seçilen SDK sürümü, platform ve hesap yapılandırmasına göre yayın öncesinde ayrıca kontrol edilmelidir.
+Üçüncü taraf platform ve eklentiler kendi teknik belgelerine göre teknik bilgileri işleyebilir. Sağlık kaydı, döngü tarihi, semptom, ruh hâli, not içeriği veya tahmin durumu uygulama tarafından reklam ya da faturalandırma payload’ı olarak gönderilmez. Sağlayıcıların kesin alan ve saklama uygulamaları yayın öncesinde ayrıca kontrol edilmelidir.
 
 ## 6. Reklamlar
 
-Free katmanı, yalnızca izin verilen düşük hassasiyetli yüzeylerde contextual ve non-personalized-first banner reklamlar kullanabilir. Reklam yerleşimleri mevcut tasarımda `home_footer` ve `insights_footer` ile sınırlandırılmıştır. Daily Check-In, günlük özet, takvim ayrıntısı, semptom seçici, not alanı, Privacy Center, biyometrik ekran, bildirim izni, içe/dışa aktarma, paywall ve abonelik ayarlarında reklam gösterilmemesi hedeflenmiştir.
+İlk sürümde uygulama içinde reklam alanı gösterilmez ve reklam isteği başlatılmaz. Luna Cycle sağlık verilerini reklam hedeflemek için kullanmaz. Final pakette yer alan üçüncü taraf SDK'lar, mağaza gizlilik beyanı hazırlanırken ayrıca incelenmelidir.
 
-Luna Cycle sağlık verilerini reklam hedeflemek için kullanmaz. Sağlık verileri reklam isteklerine parametre olarak gönderilmez ve sağlık verileriyle reklam profili oluşturulmaz. Luna Plus entitlement’ı aktif olduğunda reklam başlatma, istek ve aktif banner gösterimi politika gereği durdurulur.
+## 7. Reklam onayı
 
-Reklam ve consent SDK’ları, reklamı veya consent tercihini sunmak/yönetmek için gerekli olabilecek teknik cihaz veya consent bilgilerini işleyebilir. Bu bilgilerin kesin kapsamı, gerçek production SDK ve hesap ayarları yapılandırıldığında ilgili sağlayıcının güncel belgeleriyle doğrulanmalıdır.
+İlk sürümde reklam gösterimi ve buna bağlı reklam onayı ekranı başlatılmaz. Gelecekte reklam özelliği eklenirse bu metin ve mağaza gizlilik beyanları önceden güncellenmelidir.
 
-## 7. Reklam consent’i
+## 8. Satın almalar
 
-Reklam consent’i, uygulamanın sağlık verisiyle ilgili kontrollerinden ayrı tutulur. Reklam consent katmanında yalnızca reklam politikası için gerekli durum alanları saklanır: consent durumu, reklam isteğine izin verilip verilmediği, kişiselleştirmeye izin verilip verilmediği ve privacy options ekranının gerekli olup olmadığı.
-
-Reklam consent’inin ham sağlayıcı yanıtı sağlık yedeğine aktarılmaz. Consent tercihinizi, uygulamada gösterilen reklam gizlilik seçenekleri veya ilgili platform/sağlayıcı ekranı üzerinden yönetebilirsiniz.
-
-## 8. Luna Plus ve satın almalar
-
-Luna Plus; reklamsız kullanım ve gelişmiş içgörüler gibi premium yüzeyler sunan otomatik yenilenen aylık veya yıllık abonelik seçeneklerinden oluşabilir. Ürün adı, süre ve fiyat, kullanıcının mağazasından gelen localized product details üzerinden gösterilmelidir; uygulama bu metinde sabit bir fiyat taahhüt etmez.
-
-Ödeme ve ham kart bilgisi işleme Google Play veya Apple App Store gibi mağaza sağlayıcıları tarafından yürütülür. Luna Cycle’ın sağlık kayıtlarını mağaza satın alma sistemine göndermemesi amaçlanmıştır. Mağaza; satın alma durumu, abonelik durumu ve işlemle ilgili teknik metadata’yı kendi hizmet koşulları ve gizlilik belgelerine göre işleyebilir.
-
-Abonelik yenileme ve iptal işlemleri mağaza hesabı üzerinden yönetilir. Luna uygulamasındaki “restore purchases” işlemi mağaza entitlement durumunu yeniden sorgulamak içindir; yerel health backup dosyası premium yetkisi vermez.
+İlk sürüm tamamen ücretsizdir. Uygulama içinde satın alma, abonelik, premium kilidi veya satın alımları geri yükleme akışı bulunmaz. Gelecekte farklı bir ücretlendirme modeli seçilirse bu politika yayın öncesinde güncellenir.
 
 ## 9. Bildirimler
 
@@ -67,7 +58,7 @@ Hatırlatmalar, desteklenen native cihazlarda yerel bildirim olarak planlanır. 
 
 Kullanıcı açıkça başlattığında uygulama, dönem kayıtlarını, günlük logları ve uygulama tercihlerini içeren bir JSON yedek dosyası oluşturabilir. Bu dosya kullanıcı kontrolündedir ve kullanıcı tarafından seçilen konuma paylaşılabilir veya kaydedilebilir.
 
-Dışa aktarılan dosya uygulama tarafından uzaktan silinemez. Dosyayı saklama, paylaşma ve silme sorumluluğu kullanıcıya aittir. Yedek dosyasında Luna Plus entitlement’i, ham reklam consent yanıtı, satın alma token’ı veya reklam kimliği bulunmaması hedeflenmiştir. İçeri aktarma premium erişimi açmaz.
+Dışa aktarılan dosya uygulama tarafından uzaktan silinemez. Dosyayı saklama, paylaşma ve silme sorumluluğu kullanıcıya aittir. İlk sürümde satın alma veya reklam profili bulunmaz; yedek yalnızca uygulama verileri ve tercihleri içindir.
 
 ## 11. Biyometrik veya cihaz kimliği kilidi
 
@@ -77,7 +68,7 @@ Cihaz kilidi işletim sistemi özelliğidir ve cihaz ayarlarına, üreticiye ve 
 
 ## 12. Veri paylaşımı
 
-Luna Cycle, sağlık kayıtlarını Luna tarafından işletilen uzak bir sağlık backend’i, sağlık analitiği sistemi, reklam hedefleme sistemi veya faturalandırma payload’ı olarak paylaşmaz. Reklam, consent ve mağaza hizmetleri sağlık verisinden bağımsız teknik/işlem bilgileri işleyebilir. Yasal zorunluluklar veya mağaza sağlayıcısının kendi hizmet işlemleri için oluşabilecek üçüncü taraf işleme, ilgili sağlayıcının kendi belgelerine tabidir.
+Luna Cycle, sağlık kayıtlarını Luna tarafından işletilen uzak bir sağlık backend’i, sağlık analitiği sistemi, reklam hedefleme sistemi veya faturalandırma payload’ı olarak paylaşmaz. Platform sağlayıcılarının bağımsız teknik işlemleri kendi belgelerine tabidir.
 
 ## 13. Saklama süresi
 
@@ -87,7 +78,7 @@ Kullanıcı tarafından dışa aktarılan yedek dosyaları uygulama dışında s
 
 ## 14. Tüm yerel verileri silme
 
-“Tüm yerel kayıtları sil” işlevi, uygulamanın yerel sağlık ve döngü verilerini mevcut ürün davranışına göre temizler. Bu işlem Google Play veya App Store aboneliğini iptal etmez ve mağaza satın alma kaydını silmez. Abonelik iptali ilgili mağaza hesabı üzerinden yapılmalıdır.
+“Tüm yerel kayıtları sil” işlevi, uygulamanın yerel sağlık ve döngü verilerini mevcut ürün davranışına göre temizler. İlk sürümde uygulama içi abonelik bulunmaz.
 
 ## 15. Çocukların gizliliği
 
@@ -95,11 +86,11 @@ Uygulama için doğrulanmış bir yaş kapısı uygulanmamıştır. Luna Cycle, 
 
 ## 16. Güvenlik
 
-Luna Cycle, verileri cihazda tutmaya ve sağlık verisini reklam/faturalandırma sınırlarından ayırmaya yönelik teknik önlemler kullanır. Native sürümde platformun güvenli/yerel depolama sınırları ve isteğe bağlı cihaz kilidi kullanılabilir. Bununla birlikte hiçbir yazılım veya cihaz ortamı mutlak olarak risksiz olduğu iddiasıyla sunulmamaktadır.
+Luna Cycle, verileri cihazda tutmaya yönelik teknik önlemler kullanır. Native sürümde platformun güvenli/yerel depolama sınırları ve isteğe bağlı cihaz kilidi kullanılabilir. Bununla birlikte hiçbir yazılım veya cihaz ortamı mutlak olarak risksiz olduğu iddiasıyla sunulmamaktadır.
 
 ## 17. Uluslararası hususlar
 
-Uygulama Android ve iOS platformlarında çalışabilir. Üçüncü taraf mağaza, reklam veya consent hizmetleri farklı ülkelerde teknik bilgi işleyebilir. Uluslararası aktarım, veri sorumlusu bilgileri, yasal dayanaklar ve kullanıcı hakları [JURISDICTION] ile ilgili hukuki incelemede kesinleştirilmelidir.
+Uygulama Android ve iOS platformlarında çalışabilir. Üçüncü taraf platform hizmetleri farklı ülkelerde teknik bilgi işleyebilir. Uluslararası aktarım, veri sorumlusu bilgileri, yasal dayanaklar ve kullanıcı hakları [JURISDICTION] ile ilgili hukuki incelemede kesinleştirilmelidir.
 
 ## 18. Politika değişiklikleri
 

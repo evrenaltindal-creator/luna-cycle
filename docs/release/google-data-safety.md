@@ -1,5 +1,7 @@
 # Google Play Data Safety — Hazırlık Matrisi
 
+> **GÜNCELLEME GEREKİR (28 Eylül 2026):** Aşağıdaki tablo önceki reklam/abonelik planını belgeleyen tarihsel taslaktır; ilk ücretsiz sürüm için Google Play formuna kopyalanmamalıdır. Güncel ürün kararı için [ilk yayın kararına](FREE_FIRST_RELEASE_TR.md) bakın. Android paketindeki SDK'lar ve ağ davranışı cihaz üzerinde yeniden denetlenmeden nihai Data Safety yanıtı verilmez.
+
 **Uygulama:** Luna Cycle  
 **Package:** `com.lunacycle.app`  
 **Durum:** Store formu için hazırlık notu; final checkbox seçimi, production SDK yapılandırması ve Google Play Console formundaki güncel tanımlarla yeniden doğrulanmalıdır.

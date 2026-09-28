@@ -23,23 +23,23 @@
 | Keywords | **READY AS CANDIDATES** | Select final country/language set without competitor names or trademark stuffing. |
 | Screenshot plan | **READY** | Capture only synthetic demo data; verify current device dimensions and store crop requirements. |
 | Age rating inputs | **READY AS INPUT NOTES** | Complete platform questionnaire; do not infer final age rating. |
-| Monetization disclosure | **READY WITH CONFIG PLACEHOLDERS** | Add real store product links/details and production AdMob disclosure only after configuration. |
+| Pricing disclosure | **FREE FIRST RELEASE** | Verify App Store Connect price is Free; no subscription, purchase or ad placement is included in this release. |
 
 ## Product and privacy gates
 
-Before submission, verify that basic tracking remains Free, Advanced Insights is the only intended premium-gated surface currently documented, and the paywall has visible close, localized product price, monthly/yearly options, restore and store-managed cancellation information. Confirm that no fake countdown, hidden close, deceptive discount or medical claim appears in the app or metadata.
+Before submission, verify that all current features, including personal insights, work without payment; no paywall, purchase button, subscription or ad placement appears. Confirm that no false medical claim appears in the app or metadata.
 
-Confirm that PeriodRecord, DailyLog, flow, spotting, cramps, energy, moods, symptoms, notes, cycle dates, predictions and estimated ovulation remain local-first and are not sent to a Luna health backend, analytics service, ad request or billing payload. Confirm that backup/import contains no entitlement, raw consent, purchase token or ad ID and cannot unlock premium.
+Confirm that PeriodRecord, DailyLog, flow, spotting, cramps, energy, moods, symptoms, notes, cycle dates and predictions remain local-first and are not sent to a Luna health backend or analytics service. Confirm that backup/import does not trigger any purchase or ad flow.
 
 ## Android and iOS technical gates
 
 Android local RC checks are complete for TypeScript, 59/59 tests, web build, Capacitor sync, `assembleDebug`, `bundleRelease`, manifest `AD_ID` removal and RC artifact hashes. Android device runtime network audit, UMP runtime, real Play Billing, internal testing install source and fingerprint hardware QA remain deferred/not verified.
 
-iOS StoreKit 2 and native ads remain deferred. Before iOS submission, run Xcode/Codemagic archive, StoreKit sandbox purchase/restore/cancel, UMP/AdMob runtime, ATT/IDFA review, safe area, notification, biometric and export/import checks.
+Before iOS submission, run an Xcode archive and check that the first-release binary has no registered StoreKit purchase bridge, no ad request/placement, and accurate ATT/IDFA and SDK privacy declarations. Test safe area, notification, biometric and export/import behavior on device.
 
 ## Store-specific work not yet completed
 
-Google Play Console app setup, subscription products/base plans, tester account and internal test track are not configured in this documentation task. Real AdMob App ID/ad units are not configured. Store prices must be read from localized product details; no price in this checklist is a promise.
+Google Play Console app setup, tester account and internal test track require separate verification. Confirm App Store Connect price is Free before any iOS submission. Future paid models are outside this release.
 
 ## Final sign-off
 

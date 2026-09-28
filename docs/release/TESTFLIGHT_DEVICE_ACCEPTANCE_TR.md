@@ -1,6 +1,6 @@
 # Luna Cycle — TestFlight Cihaz Kabul Kontrolü
 
-Bu kontrol listesi TestFlight'tan yüklenen gerçek iPhone build'i içindir. Test boyunca yalnızca sentetik veri kullanın; kişisel sağlık verisi, parola veya satın alma belirteci kaydetmeyin ya da paylaşmayın.
+Bu kontrol listesi TestFlight'tan yüklenen gerçek iPhone build'i içindir. Test boyunca yalnızca sentetik veri kullanın; kişisel sağlık verisi veya parola kaydetmeyin ya da paylaşmayın.
 
 ## Test bilgileri
 
@@ -31,13 +31,12 @@ Bu kontrol listesi TestFlight'tan yüklenen gerçek iPhone build'i içindir. Tes
 - [ ] Uygulama arka plana alınınca hassas içerik app switcher'da gizleniyor.
 - [ ] Notch / Dynamic Island, safe-area ve klavye davranışı içeriği kapatmıyor.
 
-## Luna Plus / StoreKit sandbox
+## Ücretsiz ilk sürüm
 
-- [ ] Aylık ve yıllık ürünler Apple'dan fiyatlarıyla yükleniyor.
-- [ ] Satın alma penceresi açılıyor; sandbox satın alma sonucu entitlement'ı etkinleştiriyor.
-- [ ] Uygulama zorla kapatılıp açılınca entitlement korunuyor.
-- [ ] Satın alımları geri yükle akışı çalışıyor.
-- [ ] Premium değilken yalnızca gerçekte mevcut premium faydalar gösteriliyor.
+- [ ] Ayarlar ve içgörülerde Luna Plus, premium kilidi veya satın alma düğmesi görünmüyor.
+- [ ] Kişisel içgörüler uygun veri oluştuğunda ödeme gerektirmeden açılıyor.
+- [ ] Ana ekran ve içgörülerde reklam alanı görünmüyor.
+- [ ] App Store Connect uygulama fiyatı Free olarak doğrulandı.
 
 ## Hata kaydı
 

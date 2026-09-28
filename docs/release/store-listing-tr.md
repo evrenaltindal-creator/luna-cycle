@@ -1,7 +1,8 @@
 # Luna Cycle — Türkçe Store Listing Taslağı
 
 **Uygulama adı:** Luna Cycle  
-**Paket / bundle:** `com.lunacycle.app`  
+**iOS bundle:** `com.lunacycle.tracker` · **Android paket:** `com.lunacycle.app`
+
 **Durum:** Yayın öncesi metadata taslağı. 2026 mağaza karakter limitleri ve kategori alanları final submission öncesinde ilgili Google Play Console ve App Store Connect ekranlarından tekrar doğrulanmalıdır.
 
 ## Kısa başlık / subtitle alternatifleri
@@ -27,11 +28,11 @@ Luna Cycle, adet dönemlerini ve döngü ritmini sade bir takvim ve anlaşılır
 
 ### Günlük Check-In
 
-Flow, lekelenme, kramplar, enerji, ruh hâli, belirtiler ve kişisel notlarla günlük deneyimini kaydet. Kayıtlarını düzenleyebilir veya silebilirsin. Temel takip özellikleri Free katmanda erişilebilir kalır.
+Flow, lekelenme, kramplar, enerji, ruh hâli, belirtiler ve kişisel notlarla günlük deneyimini kaydet. Kayıtlarını düzenleyebilir veya silebilirsin. Mevcut özelliklerin tamamı ücretsizdir.
 
 ### Tahminler ve içgörüler
 
-Luna Cycle, mevcut kayıtlarından yaklaşık döngü bilgileri ve bilgilendirme amaçlı tahminler üretebilir. Ovülasyon ve doğurganlık penceresi bilgileri kesin tıbbi sonuç değildir. Bu çıktılar doğum kontrolü, gebelikten korunma, tanı, tedavi veya acil tıbbi kararlar için kullanılmamalıdır.
+Luna Cycle, yeterli başlangıç kaydı oluştuktan sonra yaklaşık adet başlangıç aralıkları ve kişisel içgörüler sunabilir. Bir veya iki döngüyle kesin tarih üretmez. Bu çıktılar doğum kontrolü, gebelikten korunma, tanı, tedavi veya acil tıbbi kararlar için kullanılmamalıdır.
 
 ### Hatırlatmalar
 
@@ -39,23 +40,21 @@ Desteklenen cihazlarda yerel hatırlatmalar planlayabilirsin. Özel bildirim met
 
 ### Gizlilik önce gelir
 
-Döngü kayıtların mevcut sürümde öncelikle cihazında tutulacak şekilde tasarlanmıştır. Luna Cycle’ın bu kayıtlar için uzak bir sağlık veri hesabı veya backend’i yoktur. Sağlık kayıtların reklam hedeflemesi için kullanılmaz, reklam isteğine parametre olarak gönderilmez ve billing sistemleriyle paylaşılmaz.
+Döngü kayıtların mevcut sürümde öncelikle cihazında tutulacak şekilde tasarlanmıştır. Luna Cycle’ın bu kayıtlar için uzak bir sağlık veri hesabı veya backend’i yoktur.
 
 Kullanıcı tarafından açıkça başlatılan JSON yedekleme ve içe/dışa aktarma kontrolleri cihaz içindeki kayıtlarını yönetmene yardımcı olur. Dışa aktardığın dosyanın saklanması ve silinmesi senin sorumluluğundadır.
 
-### Luna Plus
+### Ücretsiz ilk sürüm
 
-Luna Plus, otomatik yenilenen aylık veya yıllık mağaza aboneliği olarak sunulabilir. Premium deneyim reklamsız kullanım ve gelişmiş kişisel içgörüler gibi özellikleri kapsayabilir. Ürün adı, süre ve fiyat ilgili mağazanın localized product details ekranından gösterilir.
-
-Free katmanda yalnızca düşük hassasiyetli alanlarda contextual/non-personalized-first banner reklamlar kullanılabilir. Sağlık verileri reklam hedeflemesinde kullanılmaz. Luna Plus aktif olduğunda reklam istekleri durmalıdır. Abonelik yenileme ve iptal işlemleri Google Play veya App Store hesabından yönetilir.
+Luna Cycle'ın bu sürümünde bütün mevcut özellikler ücretsizdir. Uygulama içi satın alma, abonelik, premium kilidi veya uygulama içi reklam gösterimi yoktur.
 
 ### Önemli sağlık açıklaması
 
 Luna Cycle bir tıbbi cihaz değildir ve tıbbi tavsiye, tanı veya tedavi sağlamaz. Tahminler yaklaşık ve bilgilendirme amaçlıdır. Tıbbi soruların için yetkin bir sağlık profesyoneline danış. Acil durumlarda yerel acil yardım hizmetlerini kullan.
 
-## Monetization disclosure
+## Ücretlendirme açıklaması
 
-Free: contextual/non-personalized-first banner ads may be shown in approved low-sensitivity footer placements. Luna Cycle does not use health data to target ads or build ad profiles. Luna Plus is an auto-renewing monthly/yearly store subscription and is designed to remove ads. Renewal and cancellation are managed in the relevant store account. Fiyat ve deneme/indirim bilgisi yalnız mağazanın gerçek ürün ekranından alınmalıdır.
+İlk sürüm ücretsizdir; abonelik, uygulama içi satın alma ve reklam gösterimi yoktur. Daha sonraki olası ücretlendirme ayrı bir ürün kararıdır.
 
 ## Gizlilik ve koşullar bağlantıları
 

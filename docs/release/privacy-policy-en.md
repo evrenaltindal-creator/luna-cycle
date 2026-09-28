@@ -2,7 +2,8 @@
 
 **Last updated / effective date:** [EFFECTIVE DATE]  
 **Application:** Luna Cycle  
-**Package / bundle identifier:** `com.lunacycle.app`  
+**iOS bundle identifier:** `com.lunacycle.tracker` · **Android package:** `com.lunacycle.app`
+
 **Developer / data controller:** [LEGAL NAME]  
 **Contact:** [CONTACT EMAIL]  
 **Jurisdiction:** [JURISDICTION]
@@ -17,7 +18,7 @@ These outputs must not be used for contraception, pregnancy prevention, diagnosi
 
 ## 2. Account and core use
 
-The current release does not require a Luna account, remote registration or login for core health tracking. Core features can be used on the device. A Google Play or Apple App Store account may be required separately for store subscriptions or in-app purchases.
+The current release does not require a Luna account, remote registration or login. All current features are free; there is no in-app purchase or subscription flow.
 
 ## 3. Information you enter
 
@@ -33,31 +34,21 @@ This wording does not mean that operating-system, device-storage or third-party 
 
 ## 5. Third-party services
 
-The app uses Capacitor native plugins for mobile platform functions, a native/local storage layer, local notifications, Google Play Billing or Apple StoreKit boundaries, and an AdMob/UMP boundary for contextual, non-personalized-first advertising in the Free tier.
+The first release uses Capacitor native plugins for mobile platform functions, local storage, local notifications and optional device lock. App code does not start purchase or advertising requests. Future-oriented code or dependencies may remain in the repository; the behavior of packaged SDKs must still be audited in the final iOS and Android binaries.
 
-Third-party services may process technical device, store, network or consent-management information under their own documentation and privacy practices. Health records, cycle dates, symptoms, moods, note contents and prediction state are not provided to advertising or billing payloads. The precise fields and retention practices must be checked against the provider’s current documentation, SDK version, platform and production configuration before publication.
+Third-party platforms and plugins may process technical information under their own documentation and privacy practices. Health records, cycle dates, symptoms, moods, note contents and prediction state are not provided by the app to advertising or billing payloads. Precise fields and retention practices must be checked before publication.
 
 ## 6. Advertising
 
-The Free tier may use contextual and non-personalized-first banner advertising only in low-sensitivity placements. The current placement policy is limited to `home_footer` and `insights_footer`. Ads are not intended to appear in Daily Check-In, daily summary, calendar details, symptom selection, notes, Privacy Center, biometric, notification-permission, import/export, paywall or subscription-settings surfaces.
-
-Luna Cycle does not use health data to target advertisements. Health data is not sent as advertising request parameters and is not used to create advertising profiles. When the Luna Plus entitlement is active, advertising initialization, requests and active banner display are stopped by policy.
-
-Advertising and consent SDKs may process technical device or consent-related information required to serve or manage advertising. The exact scope must be verified against the final production SDK and account configuration.
+The first release does not show in-app advertising placements or start advertising requests. Luna Cycle does not use health data to target advertisements. Third-party SDKs packaged in the final binary must still be reviewed for store privacy declarations.
 
 ## 7. Advertising consent
 
-Advertising consent is kept separate from the app’s health-data controls. The consent layer stores only policy fields required for advertising: consent state, whether an ad request is allowed, whether personalization is allowed and whether privacy options are required.
+The first release does not start an advertising-consent screen. If advertising is added in a later release, this policy and the store privacy declarations must be updated beforehand.
 
-The raw provider consent response is not included in the health backup. Advertising preferences can be managed through the privacy-options surface shown by the app or the relevant platform/provider flow.
+## 8. Purchases
 
-## 8. Luna Plus and purchases
-
-Luna Plus may provide an ad-free experience and premium surfaces such as advanced insights through auto-renewing monthly or yearly subscription options. Product name, duration and price should be displayed from localized store product details; this policy does not promise a hardcoded price.
-
-Payment processing and raw card details are handled by Google Play or the Apple App Store. Luna Cycle is designed not to send health records to store billing systems. A store provider may process purchase state, subscription status and transaction-related technical metadata under its own terms and privacy documentation.
-
-Renewal and cancellation are managed through the relevant store account. The app’s restore-purchases action re-queries store entitlement; importing a local health backup does not grant premium access.
+The first release is entirely free. It contains no in-app purchase, subscription, premium gate or restore-purchases flow. If a different pricing model is introduced later, this policy will be updated before that release.
 
 ## 9. Notifications
 
@@ -67,7 +58,7 @@ On supported native devices, reminders are scheduled as local notifications. Whe
 
 When explicitly initiated by the user, the app may create a JSON backup containing period records, daily logs and application preferences. The file is controlled by the user and may be saved or shared to a location selected by the user.
 
-The app cannot remotely delete an exported file. The user is responsible for storing, sharing and deleting that file. The backup is designed not to contain Luna Plus entitlement, raw advertising consent responses, purchase tokens or advertising identifiers. Importing a backup does not unlock premium access.
+The app cannot remotely delete an exported file. The user is responsible for storing, sharing and deleting that file. The first release has no purchase or advertising profile; the backup is intended for app records and preferences.
 
 ## 11. Biometric or device-credential lock
 
@@ -77,7 +68,7 @@ Device-lock behavior may differ by operating system, manufacturer and device set
 
 ## 12. Data sharing
 
-Luna Cycle does not send health records to a Luna-operated remote health backend, health analytics system, advertising-targeting system or billing payload in the current release. Advertising, consent and store services may process independent technical or transaction information. Processing required by law or by a store/provider’s own service operation is governed by that provider’s documentation.
+Luna Cycle does not send health records to a Luna-operated remote health backend, health analytics system, advertising-targeting system or billing payload in the current release. Independent technical processing by platform providers is governed by their documentation.
 
 ## 13. Retention
 
@@ -87,7 +78,7 @@ Backups exported by the user are stored outside the app. Luna Cycle cannot remot
 
 ## 14. Clear All Data
 
-The “Clear All Data” action removes local Luna health and cycle data according to the current app behavior. It does not cancel a Google Play or Apple App Store subscription and does not remove a store purchase record. Subscription cancellation must be completed through the relevant store account.
+The “Clear All Data” action removes local Luna health and cycle data according to the current app behavior. There is no in-app subscription in the first release.
 
 ## 15. Children’s privacy
 
@@ -95,11 +86,11 @@ The app does not implement a verified age gate. Luna Cycle is not designed for c
 
 ## 16. Security
 
-Luna Cycle uses technical measures intended to keep records on the device and separate health records from advertising and billing boundaries. The native release may use platform storage protections and an optional device lock. No software or device environment is represented as absolutely risk-free.
+Luna Cycle uses technical measures intended to keep records on the device. The native release may use platform storage protections and an optional device lock. No software or device environment is represented as absolutely risk-free.
 
 ## 17. International considerations
 
-The app may operate on Android and iOS. Store, advertising or consent services may process technical information in different countries. International transfers, legal bases, data-controller details and user rights must be finalized through legal review for [JURISDICTION].
+The app may operate on Android and iOS. Third-party platform services may process technical information in different countries. International transfers, legal bases, data-controller details and user rights must be finalized through legal review for [JURISDICTION].
 
 ## 18. Changes to this policy
 

@@ -17,7 +17,7 @@ Luna Cycle, uygulanabilir dijital rıza yaşının altındaki çocuklara yöneli
 
 ## 3. Hizmetin açıklaması
 
-Luna Cycle, adet ve döngü kayıtları, Daily Check-In, takvim, yaklaşık döngü tahminleri, içgörüler, yerel hatırlatmalar, veri yedekleme ve gizlilik kontrolleri sağlayan bir uygulamadır. Temel döngü takibi Free katmanda kullanılabilir. Luna Plus, mağaza hesabı üzerinden sunulabilen otomatik yenilenen aylık veya yıllık abonelik seçenekleriyle reklamsız deneyim ve gelişmiş içgörüler gibi premium yüzeyler sağlayabilir.
+Luna Cycle, adet ve döngü kayıtları, Daily Check-In, takvim, yaklaşık döngü tahminleri, içgörüler, yerel hatırlatmalar, veri yedekleme ve gizlilik kontrolleri sağlayan bir uygulamadır. İlk sürümde mevcut özelliklerin tamamı ücretsizdir; premium katman veya abonelik bulunmaz.
 
 ## 4. Tıbbi tavsiye değildir
 
@@ -35,19 +35,15 @@ Mevcut sürümde temel sağlık takibi için Luna hesabı veya uzak kayıt akı�
 
 ## 7. Yedekleme sorumluluğu
 
-Kullanıcı açıkça başlattığında uygulama JSON yedek dosyası oluşturabilir. Bu dosya kullanıcı tarafından seçilen konuma aktarılır; dosyanın saklanması, paylaşılması, korunması ve silinmesi kullanıcının sorumluluğundadır. Luna Cycle, uygulama dışına aktarılmış bir dosyayı uzaktan silemez. Yedek dosyası premium erişim sağlamaz.
+Kullanıcı açıkça başlattığında uygulama JSON yedek dosyası oluşturabilir. Bu dosya kullanıcı tarafından seçilen konuma aktarılır; dosyanın saklanması, paylaşılması, korunması ve silinmesi kullanıcının sorumluluğundadır. Luna Cycle, uygulama dışına aktarılmış bir dosyayı uzaktan silemez.
 
-## 8. Abonelik koşulları
+## 8. Ücretlendirme
 
-Luna Plus seçenekleri aylık veya yıllık, otomatik yenilenen mağaza abonelikleri olabilir. Gösterilen ürün adı, süre ve fiyat ilgili mağazanın localized product details verisinden gelmelidir; bu metin sabit fiyat bildirmez.
-
-Ödeme, ham kredi kartı bilgisi ve mağaza hesabı işlemleri Google Play veya Apple App Store tarafından yürütülür. Yenileme ve iptal, ilgili mağaza hesabından yönetilir. Ücretsiz deneme veya indirim yalnız mağaza ürün ekranında açıkça gösteriliyorsa geçerlidir; Luna Cycle bu taslakta sahte geri sayım, gizli indirim veya garanti edilmiş fiyat iddia etmez.
+İlk sürüm ücretsizdir; uygulama içi satın alma, abonelik veya premium katman sunulmaz. Gelecekte ücretlendirme değişirse kullanıcılara uygulanacak koşullar ve bu metin önceden ayrıca güncellenir. Bir yıl sonra otomatik ücretlendirme başlamaz.
 
 ## 9. Reklamlar
 
-Free katmanda contextual ve non-personalized-first banner reklamlar kullanılabilir. Reklamlar yalnız izin verilen düşük hassasiyetli yüzeylerde planlanmıştır. Sağlık verileri reklam hedeflemesinde, reklam isteği parametrelerinde veya reklam profili oluşturulmasında kullanılmaz.
-
-Luna Plus entitlement’ı aktif olduğunda reklam isteği ve banner gösterimi durdurulmalıdır. Reklam/consent sağlayıcıları, kendi belgeleri ve yapılandırmaları kapsamında teknik cihaz veya consent bilgileri işleyebilir. Reklam ve consent katmanı sağlık kayıtlarına erişmemelidir.
+İlk sürümde uygulama içi reklam gösterimi yoktur. Sağlık verileri reklam hedeflemesinde veya reklam profili oluşturulmasında kullanılmaz. Gelecekte reklam eklenirse ilgili açıklamalar ve izinler önceden güncellenir.
 
 ## 10. Fikri mülkiyet
 
@@ -59,7 +55,7 @@ Uygulamayı hukuka aykırı, kötüye kullanıma yönelik, başkalarının gizli
 
 ## 12. Hizmetin kullanılabilirliği
 
-Uygulama ve üçüncü taraf mağaza, bildirim, reklam veya consent hizmetleri her zaman erişilebilir olmayabilir. Cihaz, işletim sistemi, mağaza hesabı, ağ veya üçüncü taraf değişikliklerinden kaynaklanan kesintiler olabilir. Luna Cycle, özelliklerin belirli bir zamanda veya her cihazda çalışacağını garanti etmez.
+Uygulama ve üçüncü taraf platform veya bildirim hizmetleri her zaman erişilebilir olmayabilir. Cihaz, işletim sistemi, ağ veya üçüncü taraf değişikliklerinden kaynaklanan kesintiler olabilir. Luna Cycle, özelliklerin belirli bir zamanda veya her cihazda çalışacağını garanti etmez.
 
 ## 13. Sorumluluğun sınırlandırılması
 
@@ -71,7 +67,7 @@ Hizmet, uygulanabilir hukuk tarafından izin verilen ölçüde “mevcut haliyle
 
 ## 15. Sona erme
 
-Koşullara aykırı kullanım veya uygulanabilir hukuki/mağaza gereklilikleri nedeniyle erişim sonlandırılabilir. Uygulamayı kaldırmanız yerel verileri cihazdan silebilir; kullanıcı tarafından dışa aktarılmış dosyalar ve harici mağaza aboneliği ayrı kalır. Abonelik iptali mağaza hesabı üzerinden yapılmalıdır.
+Koşullara aykırı kullanım veya uygulanabilir hukuki/mağaza gereklilikleri nedeniyle erişim sonlandırılabilir. Uygulamayı kaldırmanız yerel verileri cihazdan silebilir; kullanıcı tarafından dışa aktarılmış dosyalar ayrı kalır.
 
 ## 16. Değişiklikler
 

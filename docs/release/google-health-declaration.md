@@ -10,7 +10,7 @@ Luna Cycle için en doğru ürün açıklaması **period / menstrual cycle track
 
 ## Sağlık işlevi
 
-Uygulamanın sağlıkla ilişkili işlevi, kullanıcının girdiği period/cycle kayıtlarını cihazda saklamak ve bu kayıtlardan yaklaşık döngü tahminleri ile bilgilendirme amaçlı estimated ovulation/fertile-window bilgisi üretmektir. Çıktılar tanı, tedavi veya klinik karar desteği değildir.
+Uygulamanın sağlıkla ilişkili işlevi, kullanıcının girdiği period/cycle kayıtlarını cihazda saklamak ve yeterli geçmiş başlangıç kaydı oluştuğunda yaklaşık adet başlangıç aralıkları göstermektir. Ovülasyon veya doğurganlık günü tahmini sunulmaz. Çıktılar tanı, tedavi veya klinik karar desteği değildir.
 
 ## Medical device değerlendirmesi
 
@@ -18,7 +18,7 @@ Uygulamanın sağlıkla ilişkili işlevi, kullanıcının girdiği period/cycle
 
 ## Health data işleme notu
 
-Kullanıcı tarafından girilen PeriodRecord, DailyLog, flow, spotting, cramps, energy, moods, symptoms, notes, cycle dates, predictions ve estimated ovulation verileri current release’te öncelikle cihazda tutulur. Luna tarafından işletilen uzak bir health backend’i veya health analytics sistemi yoktur. Bu veriler reklam hedeflemesi, ad request parametresi veya billing payload’ı olarak kullanılmaz.
+Kullanıcı tarafından girilen PeriodRecord, DailyLog, flow, spotting, cramps, energy, moods, symptoms, notes, cycle dates ve tahminler current release’te öncelikle cihazda tutulur. Luna tarafından işletilen uzak bir health backend’i veya health analytics sistemi yoktur. Bu veriler reklam hedeflemesi veya ödeme payload’ı olarak kullanılmaz.
 
 ## Risk ve disclaimer metni
 
@@ -26,11 +26,11 @@ Store listing ve uygulama içi yasal metinlerde şu kapsam korunmalıdır: tahmi
 
 ## Account ve access
 
-Current release’te temel health tracking için Luna hesabı, remote login veya register akışı bulunmamaktadır. Reviewer’ın core functionality’yi görmek için Luna hesabı açması gerekmemelidir. Google Play billing sandbox/test hesabı, varsa, Luna hesabından bağımsız store mekanizmasıdır.
+Current release’te Luna hesabı, remote login veya register akışı bulunmamaktadır. Reviewer’ın tüm mevcut özellikleri görmek için hesap açması veya satın alma yapması gerekmez.
 
 ## Advertising ve monetization notu
 
-Free tier’de contextual/non-personalized-first banner ads yalnız düşük hassasiyetli `home_footer` ve `insights_footer` slotlarında kullanılabilir. Health data ads için kullanılmaz ve ad request’e eklenmez. Luna Plus active entitlement durumunda ad init/request/banner gösterimi policy gereği durur. Bu açıklama, gerçek production AdMob hesabı yapılandırılmadan production ads’in hazır olduğu anlamına gelmez.
+İlk sürüm ücretsizdir; uygulama içi satın alma, abonelik, premium kilidi veya reklam alanı gösterilmez. Paketlenen SDK'ların gerçek veri işleme davranışı final binary üzerinden ayrıca denetlenmelidir.
 
 ## Declaration öncesi doğrulama
 

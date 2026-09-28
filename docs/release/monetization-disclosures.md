@@ -1,31 +1,19 @@
-# Monetization Disclosures
+# First-release pricing disclosure
 
 ## Türkçe
 
-Luna Cycle’ın Free katmanı, yalnızca düşük hassasiyetli onaylı footer alanlarında contextual ve non-personalized-first banner reklamlar gösterebilir. Sağlık ve döngü kayıtları reklam hedeflemesinde kullanılmaz, reklam isteği parametrelerine eklenmez ve reklam profili oluşturmak için kullanılmaz. Reklam ve consent SDK’ları, kendi belgeleri ve production yapılandırmaları kapsamında gerekli teknik cihaz veya consent bilgilerini işleyebilir.
+Luna Cycle'ın ilk sürümü tamamen ücretsizdir. Mevcut özelliklerin tamamı ödeme gerektirmeden kullanılabilir. Uygulama içi satın alma, abonelik, premium kilidi veya uygulama içi reklam gösterimi yoktur.
 
-Luna Plus, aylık veya yıllık **otomatik yenilenen mağaza aboneliği** olarak sunulabilir. Aktif Luna Plus entitlement’ı reklamsız deneyim ve advanced insights gibi premium yüzeyler sağlayabilir. Ürün adı, süre ve fiyat uygulamada mağazadan gelen localized product details üzerinden gösterilmelidir; fiyat, deneme veya indirim bu dokümanda sabitlenmemiştir.
-
-Yenileme ve iptal Google Play veya App Store hesabı üzerinden yönetilir. “Restore purchases” mağazadaki entitlement durumunu yeniden sorgular. Local health backup premium erişim vermez. Ödeme ve ham kredi kartı bilgileri mağaza sağlayıcısı tarafından işlenir; Luna Cycle sağlık kayıtlarını billing payload’ına göndermez.
+İlk halka açık yayın tarihinden yaklaşık bir yıl sonra ücretlendirme stratejisi yeniden değerlendirilecektir. Bu bir otomatik ücretlendirme tarihi veya gelecekteki fiyat taahhüdü değildir. Fiyatlandırma modeli, mevcut kullanıcıların hakları ve güncel mağaza/hukuk gereklilikleri ayrıca kararlaştırılacaktır.
 
 ## English
 
-The Luna Cycle Free tier may show contextual, non-personalized-first banner advertising only in approved low-sensitivity footer placements. Health and cycle records are not used for ad targeting, are not included in ad-request parameters and are not used to create advertising profiles. Advertising and consent SDKs may process technical device or consent-related information under their own documentation and final production configuration.
+The first release of Luna Cycle is entirely free. All current features are available without payment. There are no in-app purchases, subscriptions, premium gates or in-app advertising placements.
 
-Luna Plus may be offered as an **auto-renewing monthly or yearly store subscription**. An active Luna Plus entitlement may provide an ad-free experience and premium surfaces such as advanced insights. Product name, duration and price must be displayed from localized store product details; no hardcoded price, trial or discount is stated here.
+The pricing strategy may be reconsidered about one year after the first public release. This is not an automatic charging date or a promise of a future price. Any paid model and treatment of existing users require a separate decision and updated store/legal disclosures.
 
-Renewal and cancellation are managed through the Google Play or Apple App Store account. “Restore purchases” re-queries store entitlement. A local health backup does not grant premium access. Payment processing and raw card details are handled by the store provider; Luna Cycle does not send health records in billing payloads.
+## Before publication
 
-## Required UI/store fields before publication
-
-| Field | Source / rule |
-|---|---|
-| Subscription title | Real Google Play / StoreKit product detail |
-| Duration | Real monthly or yearly store product |
-| Price | Localized store price; never hardcode in copy |
-| Auto-renewal | Must be visible before purchase |
-| Cancellation | Managed through the relevant store account |
-| Privacy Policy link | `[PRIVACY POLICY URL]` |
-| Terms link | `[TERMS URL]` |
-| Support contact | `[CONTACT EMAIL]` |
-| Production AdMob ID | Configure only after real AdMob account approval; do not invent |
+- Confirm the app price is **Free** in App Store Connect and other relevant stores.
+- Verify the final binary has no active purchase or advertising UI/request path and review included SDK privacy manifests.
+- Replace `[PRIVACY POLICY URL]`, `[TERMS URL]` and `[CONTACT EMAIL]` placeholders in store metadata before submission.

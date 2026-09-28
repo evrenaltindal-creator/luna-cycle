@@ -17,7 +17,7 @@ Luna Cycle is not designed for children below the applicable digital-consent age
 
 ## 3. Description of the service
 
-Luna Cycle provides period and cycle records, Daily Check-In, calendar views, approximate cycle estimates, insights, local reminders, backup and privacy controls. Core tracking remains available in the Free tier. Luna Plus may provide an ad-free experience and premium surfaces such as advanced insights through auto-renewing monthly or yearly subscription options offered through a store account.
+Luna Cycle provides period and cycle records, Daily Check-In, calendar views, approximate cycle estimates, insights, local reminders, backup and privacy controls. All current features are free in the first release; there is no premium tier or subscription.
 
 ## 4. No medical advice
 
@@ -35,19 +35,15 @@ The current release does not require a Luna account or remote registration flow 
 
 ## 7. Backup responsibility
 
-The app may create a JSON backup when explicitly initiated by the user. The file is exported to a user-selected location, and the user is responsible for storing, sharing, protecting and deleting it. Luna Cycle cannot remotely delete a file exported outside the app. A backup does not grant premium access.
+The app may create a JSON backup when explicitly initiated by the user. The file is exported to a user-selected location, and the user is responsible for storing, sharing, protecting and deleting it. Luna Cycle cannot remotely delete a file exported outside the app.
 
-## 8. Subscription terms
+## 8. Pricing
 
-Luna Plus may be offered as an auto-renewing monthly or yearly store subscription. Product name, duration and price must come from the relevant store’s localized product details; these Terms do not state a hardcoded price.
-
-Payment processing, raw credit-card information and store-account operations are handled by Google Play or the Apple App Store. Renewal and cancellation are managed through the relevant store account. A free trial or discount applies only when clearly shown by the store product or offer; this draft does not authorize fake countdowns, hidden discounts or guaranteed pricing.
+The first release is free, with no in-app purchases, subscriptions or premium tier. If the pricing model changes later, the applicable terms and this document will be updated separately in advance. No automatic charge begins after one year.
 
 ## 9. Advertising
 
-The Free tier may use contextual and non-personalized-first banner advertising in approved low-sensitivity surfaces. Health data is not used for ad targeting, sent as ad-request parameters or used to create advertising profiles.
-
-When the Luna Plus entitlement is active, ad requests and banner display should stop. Advertising and consent providers may process technical device or consent information under their own documentation and configuration. The advertising and consent boundary must not access health records.
+The first release does not show in-app advertising. Health data is not used for ad targeting or advertising profiles. Any future advertising feature would require updated disclosures and permissions before release.
 
 ## 10. Intellectual property
 
@@ -59,7 +55,7 @@ You must not use the app unlawfully, abusively, to violate another person’s pr
 
 ## 12. Service availability
 
-The app and third-party store, notification, advertising or consent services may not always be available. Interruptions may result from the device, operating system, store account, network or third-party changes. Luna Cycle does not guarantee that every feature will work at every time or on every device.
+The app and third-party platform or notification services may not always be available. Interruptions may result from the device, operating system, network or third-party changes. Luna Cycle does not guarantee that every feature will work at every time or on every device.
 
 ## 13. Limitation of liability
 
@@ -71,7 +67,7 @@ To the extent permitted by applicable law, the service is provided “as is” a
 
 ## 15. Termination
 
-Access may be terminated for misuse or when required by law or store requirements. Uninstalling the app may remove local data from the device; exported files and external store subscriptions are separate. Subscription cancellation must be completed through the relevant store account.
+Access may be terminated for misuse or when required by law or store requirements. Uninstalling the app may remove local data from the device; exported files remain separate.
 
 ## 16. Changes
 

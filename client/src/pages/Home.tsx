@@ -42,7 +42,7 @@ import {
   buildPersonalInsights,
   mostFrequentSymptoms,
 } from "../features/insights/personalInsights.service";
-import { isAndroid, isNativePlatform } from "../platform/platform";
+import { isNativePlatform } from "../platform/platform";
 import { useNativeLifecycle } from "../platform/useNativeLifecycle";
 import {
   checkBiometricAvailability,
@@ -57,10 +57,6 @@ import {
   exportNativeBackup,
   importNativeBackup,
 } from "../features/backup/nativeBackup.service";
-import { LunaPlusPanel } from "../features/monetization/LunaPlusPanel";
-import { useMonetization } from "../features/monetization/MonetizationContext";
-import { PremiumInsightsGate } from "../features/monetization/PremiumInsightsGate";
-import { PrivacySafeAdSlot } from "../features/monetization/PrivacySafeAdSlot";
 import {
   addDays as addLocalDays,
   formatDateTR,
@@ -1242,7 +1238,6 @@ function InsightsView({ records }: { records: RecordItem[] }) {
           </p>
         </div>
       </div>
-      <PremiumInsightsGate>
         <div className="personal-insights">
           <div>
             <span className="tiny-label">KİŞİSEL İÇGÖRÜLER</span>
@@ -1263,7 +1258,6 @@ function InsightsView({ records }: { records: RecordItem[] }) {
             </div>
           )}
         </div>
-      </PremiumInsightsGate>
       <p className="disclaimer">
         Bu bilgiler tıbbi değerlendirme yerine geçmez. Takvim yalnızca yaklaşık adet başlangıcını gösterir; ovülasyon, doğurganlık veya gebelikten korunma amacıyla kullanılmamalıdır.
       </p>
@@ -1272,7 +1266,6 @@ function InsightsView({ records }: { records: RecordItem[] }) {
 }
 
 function NativeSettingsPanel() {
-  const { adConsent, showAdPrivacyOptions } = useMonetization();
   const [native] = useState(isNativePlatform());
   const [biometricAvailable, setBiometricAvailable] = useState<
     "available" | "unavailable" | "not-enrolled" | "unknown"
@@ -1406,25 +1399,6 @@ function NativeSettingsPanel() {
             <span className={biometricEnabled ? "on" : ""} />
           </button>
         </div>
-        {isAndroid() && adConsent.privacyOptionsRequired && (
-          <div className="setting-row">
-            <div className="setting-icon">
-              <LockKeyhole size={17} />
-            </div>
-            <div>
-              <strong>Reklam gizlilik seçenekleri</strong>
-              <span>
-                Reklam tercihlerini mağazanın consent ekranında yönet.
-              </span>
-            </div>
-            <button
-              className="text-link"
-              onClick={() => void showAdPrivacyOptions()}
-            >
-              Aç
-            </button>
-          </div>
-        )}
       </div>
       {showNotificationIntro && (
         <ConfirmDialog
@@ -1478,7 +1452,10 @@ function SettingsView({
         </p>
       </div>
       <div className="settings-layout">
-        <LunaPlusPanel />
+        <div className="settings-group" aria-label="Ücretsiz sürüm">
+          <span className="tiny-label">BU SÜRÜM</span>
+          <p>Tüm mevcut özellikler ücretsizdir. Uygulama içi satın alma veya abonelik yoktur.</p>
+        </div>
         <div className="settings-group">
           <span className="tiny-label">GÖRÜNÜM</span>
           <div className="setting-row">
@@ -1923,10 +1900,6 @@ export default function Home() {
           <Header active={active} onAdd={add} />
           {view}
           <footer className="app-footer">
-            {active === "home" && <PrivacySafeAdSlot slot="home_footer" />}
-            {active === "insights" && (
-              <PrivacySafeAdSlot slot="insights_footer" />
-            )}
             <span>v1.0 · Tasarım gereği özel</span>
             <span>
               <LockKeyhole size={13} /> kayıtların cihazında kalır

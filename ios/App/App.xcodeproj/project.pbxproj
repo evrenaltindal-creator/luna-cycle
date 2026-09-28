@@ -17,7 +17,6 @@
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9582B6822FE993A50072D4E8 /* SceneDelegate.swift */; };
 		A1B2C3D42FF0000000000001 /* LunaBridgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF0000000000011 /* LunaBridgeViewController.swift */; };
-		A1B2C3D42FF0000000000002 /* NativeBillingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF0000000000012 /* NativeBillingPlugin.swift */; };
 		A1B2C3D42FF0000000000003 /* NativeBiometricPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF0000000000013 /* NativeBiometricPlugin.swift */; };
 /* End PBXBuildFile section */
 
@@ -170,7 +169,6 @@
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */,
 				A1B2C3D42FF0000000000001 /* LunaBridgeViewController.swift in Sources */,
-				A1B2C3D42FF0000000000002 /* NativeBillingPlugin.swift in Sources */,
 				A1B2C3D42FF0000000000003 /* NativeBiometricPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
