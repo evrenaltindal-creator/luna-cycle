@@ -18,4 +18,11 @@ describe("historical period range", () => {
   it("allows editing the same record without flagging self-overlap", () => {
     expect(validatePeriodRange("2026-01-01", "2026-01-06", existing, 1, "2026-09-24")).toBeNull();
   });
+  it("accepts a start without a known end date", () => {
+    expect(validatePeriodRange("2026-02-01", null, existing, undefined, "2026-09-24")).toBeNull();
+  });
+  it("rejects overlapping or future start-only entries", () => {
+    expect(validatePeriodRange("2026-01-03", null, existing, undefined, "2026-09-24")).toMatch(/çakışıyor/);
+    expect(validatePeriodRange("2026-09-25", null, existing, undefined, "2026-09-24")).toMatch(/gelecek/);
+  });
 });

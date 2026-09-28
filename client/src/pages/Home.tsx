@@ -113,7 +113,7 @@ function startOfToday() {
 function actualPeriodDays(records: RecordItem[]) {
   const todayKey = iso(startOfToday());
   return new Set(records.flatMap(record =>
-    Array.from({ length: Math.max(0, Math.min(record.length, 14)) }, (_, index) =>
+    Array.from({ length: Math.max(1, Math.min(record.length, 14)) }, (_, index) =>
       iso(addDays(parseDate(record.date), index))
     ).filter(day => day <= todayKey)
   ));
@@ -187,16 +187,10 @@ function Nav({
 function Onboarding({
   onDone,
 }: {
-  onDone: (setup?: {
-    startDate: string;
-    periodLength: number;
-    cycleLength: number;
-  }) => void;
+  onDone: (setup?: { startDate: string }) => void;
 }) {
   const [step, setStep] = useState(0);
   const [startDate, setStartDate] = useState(iso(startOfToday()));
-  const [periodLength, setPeriodLength] = useState("5");
-  const [cycleLength, setCycleLength] = useState("28");
   const slides = [
     {
       title: "Döngünü takip et",
@@ -227,8 +221,7 @@ function Onboarding({
           <em>buradan başlat.</em>
         </h2>
         <p>
-          Son adet başlangıcını ve yaklaşık sürelerini gir. Bu bilgiler yalnızca
-          cihazında saklanır.
+          Bildiğin son adet başlangıcını ekle. Bitiş tarihini ve geçmiş başlangıçları sonra da girebilirsin; kişisel tahmin için birkaç döngüye zaman tanıyacağız.
         </p>
         <div className="setup-fields">
           <label>
@@ -240,34 +233,12 @@ function Onboarding({
               onChange={event => setStartDate(event.target.value)}
             />
           </label>
-          <label>
-            Ortalama adet süresi (gün)
-            <input
-              type="number"
-              min="1"
-              max="14"
-              value={periodLength}
-              onChange={event => setPeriodLength(event.target.value)}
-            />
-          </label>
-          <label>
-            Ortalama döngü uzunluğu (gün)
-            <input
-              type="number"
-              min="15"
-              max="90"
-              value={cycleLength}
-              onChange={event => setCycleLength(event.target.value)}
-            />
-          </label>
         </div>
         <button
           className="secondary-button"
           onClick={() => {
-            const period = Math.max(1, Math.min(14, Number(periodLength) || 5));
-            const cycle = Math.max(15, Math.min(90, Number(cycleLength) || 28));
-            if (validatePeriodRange(startDate, startDate, [])) { toast.error("Geçerli bir geçmiş başlangıç tarihi seç."); return; }
-            onDone({ startDate, periodLength: period, cycleLength: cycle });
+            if (validatePeriodRange(startDate, null, [])) { toast.error("Geçerli bir geçmiş başlangıç tarihi seç."); return; }
+            onDone({ startDate });
           }}
         >
           Takibi başlat <ChevronRight size={16} />
@@ -340,61 +311,31 @@ function HomeView({
   const [checkinRequest, setCheckinRequest] = useState(0);
   const openDailyCheckin = () => setCheckinRequest(value => value + 1);
   const p = prediction(records);
-  const daysLeft = Math.max(
-    0,
-    Math.ceil((p.next.getTime() - startOfToday().getTime()) / 86400000)
-  );
   return (
     <div className="home-view">
       <section className="hero-card">
         <div className="hero-copy">
-          <span className="tiny-label">BİR SONRAKİ DÖNEM</span>
-          <h2>{pretty(p.next, false)}</h2>
-          <p className="hero-count">
-            <strong>{daysLeft}</strong> gün kaldı{" "}
-            <span className="confidence-badge">
-              Tahmin güveni: {p.confidence}
-            </span>
+          <span className="tiny-label">{p.hasPersonalizedPrediction ? "YAKLAŞIK BAŞLANGIÇ ARALIĞI" : "DÖNGÜNÜ TANIMAYA BAŞLIYORUZ"}</span>
+          {p.hasPersonalizedPrediction ? (
+            <h2 className="hero-window">{pretty(p.futureWindows[0].start, false)} – {pretty(p.futureWindows[0].end, false)}</h2>
+          ) : (
+            <h2 className="hero-learning-title">{p.stage === "stale" ? "Yeni bir kayıtla devam." : "Zamanla netleşir."}</h2>
+          )}
+          <p className="hero-guidance">
+            {p.stage === "learning"
+              ? `${p.resetAfterLongGap ? "Uzun boşluktan sonra " : ""}${p.recordedStarts} başlangıç kayıtlı · kişisel aralık için ${p.remainingCycles} tamamlanmış döngü daha gerekiyor.`
+              : p.stage === "stale"
+                ? "Önceki yaklaşık aralık geçti. Yeni başlangıç kaydı eklediğinde yeniden hesaplayacağız."
+                : p.stage === "tentative"
+                  ? "Bu ilk yaklaşık aralık. Birkaç döngü daha kaydettikçe değişebilir."
+                  : "Bu aralık kendi kayıtlarından hesaplanır; kesin bir gün değildir."}
           </p>
-          <div className="range-line">
-            <span />
-            Tahmini aralık:{" "}
-            <b>
-              {pretty(p.start, false)} – {pretty(p.end, false)}
-            </b>
-          </div>
-          <p className="muted-note">
-            {records.length ? (
-              <>
-                Döngünün {p.cycleDay}. günü · {p.phase} · {p.confidenceReason}
-              </>
-            ) : (
-              <>Döngü gününü hesaplamak için ilk adet kaydını ekle.</>
-            )}
-          </p>
-        </div>
-        <div className="cycle-progress" aria-label="Döngü ilerlemesi">
-          <div className="progress-heading">
-            <span>DÖNGÜ İLERLEMESİ</span>
-            <strong>
-              {records.length
-                ? `Döngünün ${p.cycleDay}. günü`
-                : "İlk kayıt bekleniyor"}
-            </strong>
-          </div>
-          <div className="progress-track">
-            <span
-              style={{
-                width: `${records.length ? Math.min(100, (p.cycleDay / Math.max(1, p.average)) * 100) : 0}%`,
-              }}
-            />
-          </div>
-          <div className="phase-rail">
-            <span>Adet</span>
-            <span>Foliküler</span>
-            <span>Tahmini ovülasyon</span>
-            <span>Luteal</span>
-          </div>
+          <p className="muted-note">{p.confidenceReason}</p>
+          {!p.hasPersonalizedPrediction && (
+            <button className="hero-history-link" onClick={() => setActive("history")}>
+              Geçmiş başlangıçları ekle <ChevronRight size={16} />
+            </button>
+          )}
         </div>
         <div className="hero-art">
           <img className="rose-disc" src="/luna-icon-512.png" alt="" />
@@ -434,12 +375,12 @@ function HomeView({
           </div>
           <div className="stat-row">
             <div>
-              <strong>{p.average}</strong>
-              <span>ortalama gün</span>
+              <strong>{p.hasPersonalizedPrediction ? p.average : "—"}</strong>
+              <span>{p.hasPersonalizedPrediction ? "yaklaşık döngü günü" : "ortalama için erken"}</span>
             </div>
             <div>
-              <strong>{p.averagePeriodLength}</strong>
-              <span>ortalama adet günü</span>
+              <strong>{p.hasPeriodDurationEstimate ? p.averagePeriodLength : "—"}</strong>
+              <span>{p.hasPeriodDurationEstimate ? "ortalama adet günü" : "bitiş kaydı bekleniyor"}</span>
             </div>
             <div>
               <strong>{p.lengths.length}</strong>
@@ -643,7 +584,7 @@ function MiniCalendar({
           const d = new Date(base.getFullYear(), base.getMonth(), i + 1, 12);
           const id = iso(d);
           const isActual = actual.has(id);
-          const isPred = p.futurePeriods.some(period => d >= period.start && d <= period.end);
+          const isPred = p.futureWindows.some(window => d >= window.start && d <= window.end);
           const isToday = d.toDateString() === startOfToday().toDateString();
           const hasDailyLog = dailyLogDates.has(id);
           return (
@@ -666,7 +607,7 @@ function MiniCalendar({
         </span>
         <span>
           <i className="dot predicted-dot" />
-          Tahmini
+          Yaklaşık başlangıç
         </span>
       </div>
     </div>
@@ -754,7 +695,7 @@ function CalendarView({
               const d = new Date(year, month, i + 1, 12);
               const id = iso(d);
               const isActual = actual.has(id);
-              const isPred = p.futurePeriods.some(period => d >= period.start && d <= period.end);
+              const isPred = p.futureWindows.some(window => d >= window.start && d <= window.end);
               const hasDailyLog = dailyLogDates.has(id);
               return (
                 <button
@@ -764,7 +705,7 @@ function CalendarView({
                 >
                   <span>{i + 1}</span>
                   {isActual && <small>kayıt</small>}
-                  {isPred && <small>tahmini</small>}
+                  {isPred && <small>yaklaşık</small>}
                   {hasDailyLog && (
                     <i className="daily-indicator" aria-label="Günlük kayıt" />
                   )}
@@ -782,10 +723,10 @@ function CalendarView({
             <span className="state-dot" />
             {actual.has(selectedId)
               ? "Gerçek adet günü"
-              : p.futurePeriods.some(period =>
-                  new Date(year, month, selectedDay, 12) >= period.start &&
-                  new Date(year, month, selectedDay, 12) <= period.end)
-                ? "Tahmini dönem"
+              : p.futureWindows.some(window =>
+                  new Date(year, month, selectedDay, 12) >= window.start &&
+                  new Date(year, month, selectedDay, 12) <= window.end)
+                ? "Yaklaşık başlangıç aralığı"
                 : "Henüz kayıt yok"}
           </div>
           <p>
@@ -937,35 +878,36 @@ function CalendarRecordModal({
 }) {
   const existing = forceCreate ? undefined : records.find(record => {
     const start = parseDate(record.date);
-    const end = record.endDate ? parseDate(record.endDate) : addDays(start, record.length - 1);
+    const end = record.endDate ? parseDate(record.endDate) : addDays(start, Math.max(1, record.length) - 1);
     return selectedDate >= start && selectedDate <= end;
   });
-  const storedEnd = existing?.endDate ?? (existing ? iso(addDays(parseDate(existing.date), existing.length - 1)) : undefined);
+  const storedEnd = existing?.endDate ?? (existing && existing.length > 0 ? iso(addDays(parseDate(existing.date), existing.length - 1)) : undefined);
   const futureStoredEnd = Boolean(storedEnd && storedEnd > iso(startOfToday()));
   const initialEnd = futureStoredEnd ? iso(startOfToday()) : storedEnd ?? iso(selectedDate);
+  const [hasEndDate, setHasEndDate] = useState(Boolean(storedEnd));
   const [startDate, setStartDate] = useState(
     existing?.date ?? iso(selectedDate)
   );
   const [endDate, setEndDate] = useState(initialEnd);
-  const [length, setLength] = useState(existing ? periodLength(existing.date, initialEnd) : 1);
+  const [length, setLength] = useState(existing && storedEnd ? periodLength(existing.date, initialEnd) : 1);
   const [confirming, setConfirming] = useState(mode === "delete");
   if (!open) return null;
-  const validationError = validatePeriodRange(startDate, endDate, records, existing?.id);
-  const calculatedLength = validationError ? 0 : periodLength(startDate, endDate);
+  const validationError = validatePeriodRange(startDate, hasEndDate ? endDate : null, records, existing?.id);
+  const calculatedLength = validationError || !hasEndDate ? 0 : periodLength(startDate, endDate);
   const save = () => {
     if (validationError) { toast.error(validationError); return; }
     const nextRecord = {
       id: existing?.id ?? Math.max(Date.now(), ...records.map(record => record.id + 1)),
       date: startDate,
-      endDate,
+      endDate: hasEndDate ? endDate : null,
       length: calculatedLength,
     };
     const next = existing
       ? records.map(record => (record.id === existing.id ? nextRecord : record))
       : [...records, nextRecord];
     if (!onSave(next)) return;
-    toast.success(existing ? "Adet kaydı güncellendi" : "Adet kaydı eklendi", {
-      description: "Takvim ve tahminlerin yenilendi.",
+    toast.success(existing ? "Başlangıç kaydı güncellendi" : "Başlangıç kaydı eklendi", {
+      description: "Kişisel tahmin için geçmiş başlangıçlarını eklemeye devam edebilirsin.",
     });
   };
   const remove = () => {
@@ -999,7 +941,7 @@ function CalendarRecordModal({
                 ? "Kaydı sil?"
                 : existing
                   ? "Kaydı düzenle"
-                  : forceCreate ? "Geçmiş adet kaydı ekle" : "Bu günü kaydet"}
+                  : forceCreate ? "Geçmiş başlangıç ekle" : "Bu günü kaydet"}
             </h3>
           </div>
           <button
@@ -1041,12 +983,19 @@ function CalendarRecordModal({
                   onChange={event => {
                     const value = event.target.value;
                     setStartDate(value);
-                    if (value) setEndDate(existing ? iso(addDays(parseDate(value), Math.max(1, length) - 1)) : value);
+                    if (value && hasEndDate) setEndDate(existing ? iso(addDays(parseDate(value), Math.max(1, length) - 1)) : value);
                   }}
                 />
               </label>
-              <label className="field-label">
-                Bitiş tarihi
+              <label className="optional-end-toggle">
+                <input type="checkbox" checked={hasEndDate} onChange={event => {
+                  setHasEndDate(event.target.checked);
+                  if (event.target.checked && !endDate) setEndDate(startDate);
+                }} />
+                Bitiş tarihini de biliyorum
+              </label>
+              {hasEndDate && <label className="field-label">
+                Bitiş tarihi (isteğe bağlı)
                 <input
                   type="date"
                   min={startDate}
@@ -1058,16 +1007,16 @@ function CalendarRecordModal({
                     if (value && startDate) setLength(Math.max(1, periodLength(startDate, value)));
                   }}
                 />
-              </label>
+              </label>}
             </div>
-            <p className="calculated-duration">
+            {hasEndDate && <p className="calculated-duration">
               Otomatik hesaplanan süre:{" "}
               <strong>{calculatedLength ? `${calculatedLength} gün` : "—"}</strong>
-            </p>
+            </p>}
             {validationError && <p className="form-error" role="alert">{validationError}</p>}
             <p className="modal-note">
               {futureStoredEnd && "Önceki kayıttaki bitiş tarihi henüz gelmediği için formda bugün gösteriliyor; kaydedene kadar mevcut kayıt değişmez. "}
-              Gerçek başlangıç ve bitiş günlerini seç. Adet hâlâ sürüyorsa bitiş gününü kesinleşince düzenle. Kayıt yalnızca bu cihazda saklanır; tahmin kesin değildir.
+              Başlangıç günü yeterli; bitişi bilmiyorsan boş bırak. Adet süresi ancak bitişi eklediğinde hesaplanır. Kayıt yalnızca bu cihazda saklanır; tahmin kesin değildir.
             </p>
             <div className="modal-actions">
               <button className="ghost-button" onClick={onClose}>
@@ -1114,24 +1063,31 @@ function HistoryView({
           <em>anlamak</em> için.
         </h2>
         <p>
-          Geçmiş adetlerinin gerçek başlangıç ve bitiş günlerini gir. Döngü ve adet süresi ortalamaları bu kayıtlardan hesaplanır.
+          Geçmiş başlangıç günlerini ekle; bitişi bilmiyorsan boş bırakabilirsin. Herkesin döngüsü aynı uzunlukta değildir, bu yüzden kişisel tahmine birkaç kayıtla zaman tanıyoruz.
         </p>
       </div>
       <div className="history-toolbar">
         <div>
-          <strong>{p.average} gün</strong><span>ortalama döngü</span>
-          <strong>{p.averagePeriodLength} gün</strong><span>ortalama adet süresi</span>
+          <strong>{p.hasPersonalizedPrediction ? `${p.average} gün` : "—"}</strong><span>yaklaşık döngü ortalaması</span>
+          <strong>{p.hasPeriodDurationEstimate ? `${p.averagePeriodLength} gün` : "—"}</strong><span>adet süresi ortalaması</span>
         </div>
-        <button className="secondary-button" onClick={() => setAdding(true)}><Plus size={16} /> Geçmiş adet ekle</button>
+        <button className="secondary-button" onClick={() => setAdding(true)}><Plus size={16} /> Geçmiş başlangıç ekle</button>
       </div>
+      {!p.hasPersonalizedPrediction && <section className="learning-panel surface" aria-label="Kişisel tahmin durumu">
+        <span className="tiny-label">KİŞİSEL TAHMİN DURUMU</span>
+        <h3>{p.stage === "stale" ? "Yeni kayıtlarla devam edelim" : "Önce kendi ritmini tanıyalım"}</h3>
+        <p>{p.stage === "stale" ? "Önceki yaklaşık aralık geçti. Yeni bir başlangıç eklenmeden tahmini kendiliğinden sonraki aya taşımıyoruz." : `${p.resetAfterLongGap ? "Uzun boşluktan sonra " : "Şu anda "}${p.recordedStarts} başlangıç ve ${p.lengths.length} tamamlanmış döngü aralığı kayıtlı. İlk kişisel tahmin için ${p.remainingCycles} aralık daha gerekiyor.`}</p>
+        {p.stage === "learning" && <div className="learning-progress" role="progressbar" aria-label="Kişisel tahmin için tamamlanan döngüler" aria-valuenow={p.lengths.length} aria-valuemin={0} aria-valuemax={3}><span style={{ width: `${Math.min(100, p.lengths.length / 3 * 100)}%` }} /></div>}
+        <small>Bu bir tıbbi değerlendirme eşiği değil, erken ve yanıltıcı tahmin vermemek için uygulama kuralıdır.</small>
+      </section>}
       <div className="history-list surface">
-        {ordered.length === 0 && <p className="history-empty">Henüz kayıt yok. İlk gerçek adet tarihlerini ekleyebilirsin.</p>}
+        {ordered.length === 0 && <p className="history-empty">Henüz kayıt yok. İlk başlangıç gününü ekleyebilirsin.</p>}
         {ordered
           .slice().reverse()
           .map((record, index) => {
             const date = parseDate(record.date);
-            const endDate = record.endDate ?? iso(addDays(date, record.length - 1));
-            const incomplete = endDate > iso(startOfToday());
+            const endDate = record.endDate ?? (record.length > 0 ? iso(addDays(date, record.length - 1)) : null);
+            const incomplete = Boolean(endDate && endDate > iso(startOfToday()));
             const next = ordered.find(item => item.date > record.date);
             const cycle = next
               ? Math.round(
@@ -1145,17 +1101,17 @@ function HistoryView({
                     0{ordered.length - index}
                   </span>
                   <div>
-                    <strong>{pretty(date)} – {pretty(parseDate(endDate))}</strong>
-                    <span>{incomplete ? "Bitiş tarihi henüz gelmedi; düzenleyebilirsin" : "Gerçek adet başlangıcı ve bitişi"}</span>
+                    <strong>{pretty(date)}{endDate ? ` – ${pretty(parseDate(endDate))}` : ""}</strong>
+                    <span>{!endDate ? "Yalnızca başlangıç kayıtlı" : incomplete ? "Bitiş tarihi henüz gelmedi; düzenleyebilirsin" : "Başlangıç ve bitiş kayıtlı"}</span>
                   </div>
                 </div>
                 <div className="history-metric">
-                  <strong>{record.length} gün</strong>
+                  <strong>{endDate ? `${record.length} gün` : "—"}</strong>
                   <span>{incomplete ? "planlanan süre" : "adet süresi"}</span>
                 </div>
                 <div className="history-metric">
                   <strong>{cycle ?? "—"}{cycle ? " gün" : ""}</strong>
-                  <span>döngü</span>
+                  <span>iki başlangıç arası</span>
                 </div>
                 <button className="text-link" aria-label={`${pretty(date)} kaydını düzenle`} onClick={() => setEditing(record)}>Düzenle</button>
                 <button
@@ -1169,10 +1125,10 @@ function HistoryView({
             );
           })}
       </div>
-      {records.length > 0 && <section className="future-periods surface" aria-label="Gelecek adet tahminleri">
-        <span className="tiny-label">TAHMİNİ GELECEK DÖNEMLER</span>
-        <p>Ortalama {p.average} günlük döngü ve {p.averagePeriodLength} günlük adet süresi kullanılır. Bunlar kesin tarih değildir.</p>
-        <ol>{p.futurePeriods.map(period => <li key={iso(period.start)}><strong>{pretty(period.start)} – {pretty(period.end)}</strong><span>Tahmini adet dönemi</span></li>)}</ol>
+      {p.hasPersonalizedPrediction && <section className="future-periods surface" aria-label="Yaklaşık başlangıç aralıkları">
+        <span className="tiny-label">YAKLAŞIK BAŞLANGIÇ ARALIKLARI</span>
+        <p>Son {p.lengths.length} tamamlanmış aralığın ortalaması {p.average} gün. Bunlar kesin tarihler değil; yeni kayıtlarla değişir. {p.excludedGaps > 0 && "Uzun bir kayıt boşluğu tahmine katılmadı; atlanmış kayıt varsa ekleyebilirsin."}</p>
+        <ol>{p.futureWindows.map(window => <li key={iso(window.start)}><strong>{pretty(window.start)} – {pretty(window.end)}</strong><span>Olası adet başlangıcı</span></li>)}</ol>
       </section>}
       {(adding || editing) && <CalendarRecordModal
         key={adding ? "new-history" : editing?.id}
@@ -1205,7 +1161,7 @@ function HistoryView({
 
 function InsightsView({ records }: { records: RecordItem[] }) {
   const p = prediction(records);
-  const bars = p.lengths;
+  const bars = p.hasPersonalizedPrediction ? p.lengths : [];
   const personal = useMemo(
     () =>
       buildPersonalInsights(
@@ -1236,13 +1192,13 @@ function InsightsView({ records }: { records: RecordItem[] }) {
       </div>
       <div className="insight-grid">
         <div className="surface big-stat">
-          <span className="tiny-label">ORTALAMA DÖNGÜ</span>
+          <span className="tiny-label">{p.hasPersonalizedPrediction ? "YAKLAŞIK DÖNGÜ ORTALAMASI" : "KAYIT BİRİKİYOR"}</span>
           <strong>
-            {p.average}
-            <small> gün</small>
+            {p.hasPersonalizedPrediction ? p.average : "—"}
+            {p.hasPersonalizedPrediction && <small> gün</small>}
           </strong>
           <div className="trend">
-            <TrendingUp size={15} /> Tahmin güveni: {p.confidence}
+            <TrendingUp size={15} /> {p.hasPersonalizedPrediction ? "Kayıtlarına dayalı yaklaşık değer" : p.stage === "stale" ? "Yeni başlangıç kaydı bekleniyor" : `${p.remainingCycles} döngü aralığı daha bekleniyor`}
           </div>
         </div>
         <div className="surface chart-card">
@@ -1251,7 +1207,6 @@ function InsightsView({ records }: { records: RecordItem[] }) {
               <span className="tiny-label">SON 6 DÖNGÜ</span>
               <h3>Uzunluk değişimi</h3>
             </div>
-            <span className="chart-range">15 — 90 gün</span>
           </div>
           {bars.length ? (
             <div className="bar-chart">
@@ -1273,7 +1228,7 @@ function InsightsView({ records }: { records: RecordItem[] }) {
             </div>
           ) : (
             <div className="empty-insight">
-              Daha fazla istatistik görmek için birkaç döngü daha kaydet.
+              {p.stage === "stale" ? "Yeni bir başlangıç kaydıyla güncel içgörülere dön." : "Üç tamamlanmış döngü aralığından sonra kişisel değişimi göstereceğiz."}
             </div>
           )}
         </div>
@@ -1281,8 +1236,9 @@ function InsightsView({ records }: { records: RecordItem[] }) {
           <Sparkles size={20} />
           <h3>Bir not düşelim</h3>
           <p>
-            Son döngülerin arasında küçük farklılıklar var. Bu, verinin
-            bozulduğu değil, bedeninin değişken olduğu anlamına gelebilir.
+            {p.hasPersonalizedPrediction
+              ? "Döngülerin arasında farklılıklar olabilir. Bu grafik bir sağlık değerlendirmesi değil, kaydettiklerinin özeti."
+              : "Bir veya iki aralıktan kişisel ritim belirlemiyoruz. Başlangıç günlerini kaydetmeye devam etmen yeterli."}
           </p>
         </div>
       </div>
@@ -1309,9 +1265,7 @@ function InsightsView({ records }: { records: RecordItem[] }) {
         </div>
       </PremiumInsightsGate>
       <p className="disclaimer">
-        Bu bilgiler tıbbi değerlendirme yerine geçmez. Tahmini ovülasyon
-        bilgilendirme amaçlıdır ve gebelikten korunma yöntemi olarak
-        kullanılmamalıdır.
+        Bu bilgiler tıbbi değerlendirme yerine geçmez. Takvim yalnızca yaklaşık adet başlangıcını gösterir; ovülasyon, doğurganlık veya gebelikten korunma amacıyla kullanılmamalıdır.
       </p>
     </div>
   );
@@ -1881,13 +1835,17 @@ export default function Home() {
       return getPeriodRecords().map(item => ({
         id: Number(item.id) || Date.now(),
         date: item.startDate,
-        endDate: item.endDate,
-        length: item.length ?? 5,
+        endDate: item.endDate ?? (item.length && item.length > 0 ? iso(addDays(parseDate(item.startDate), item.length - 1)) : null),
+        length: item.length ?? (item.endDate ? periodLength(item.startDate, item.endDate) : 0),
       })).sort((a, b) => a.date.localeCompare(b.date));
     } catch {
       return initialRecords;
     }
   });
+  useEffect(() => {
+    const current = prediction(records);
+    void syncCycleReminder(current.futureWindows[0]?.start ?? null, getPreferences());
+  }, [records, onboarded]);
   const saveRecords = (next: RecordItem[]) => {
     const ordered = next.slice().sort((a, b) => a.date.localeCompare(b.date));
     const previous = new Map(getPeriodRecords().map(item => [item.id, item]));
@@ -1895,8 +1853,7 @@ export default function Home() {
       ordered.map(item => ({
         id: String(item.id),
         startDate: item.date,
-        endDate:
-          item.endDate ?? iso(addDays(parseDate(item.date), item.length - 1)),
+        endDate: item.endDate ?? null,
         createdAt: previous.get(String(item.id))?.createdAt ?? new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         length: item.length,
@@ -1907,8 +1864,6 @@ export default function Home() {
       return false;
     }
     setRecords(ordered);
-    const nextPrediction = prediction(ordered);
-    void syncCycleReminder(nextPrediction.next, getPreferences());
     return true;
   };
   const add = () => setRecordModalOpen(true);
@@ -1934,23 +1889,18 @@ export default function Home() {
       <Onboarding
         onDone={setup => {
           if (setup) {
-            const actualEnd = addDays(parseDate(setup.startDate), setup.periodLength - 1);
-            const endDate = iso(actualEnd > startOfToday() ? startOfToday() : actualEnd);
             const record = {
               id: String(Date.now()),
               startDate: setup.startDate,
-              endDate,
+              endDate: null,
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
-              length: periodLength(setup.startDate, endDate),
+              length: 0,
             };
-            savePeriodRecords([record]);
-            savePreferences({
-              ...getPreferences(),
-              onboardingCompleted: true,
-              averageCycleLength: setup.cycleLength,
-              averagePeriodLength: setup.periodLength,
-            });
+            if (!savePeriodRecords([record]) || !savePreferences({ ...getPreferences(), onboardingCompleted: true })) {
+              toast.error("Başlangıç kaydı saklanamadı. Lütfen tekrar dene.");
+              return;
+            }
             setRecords([
               {
                 id: Number(record.id),

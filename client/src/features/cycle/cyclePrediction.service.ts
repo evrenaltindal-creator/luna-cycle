@@ -3,6 +3,8 @@ import { getCyclePhase } from "./cyclePhase.service";
 
 export type PredictionConfidence = "high" | "medium" | "low";
 export type PredictedPeriod = { start: Date; end: Date };
+export type PredictionStage = "learning" | "tentative" | "familiar" | "stale";
+export const MIN_COMPLETED_CYCLES = 3;
 export type PredictionResult = {
   last: Date;
   average: number;
@@ -12,8 +14,16 @@ export type PredictionResult = {
   start: Date;
   end: Date;
   futurePeriods: PredictedPeriod[];
+  futureWindows: PredictedPeriod[];
   lengths: number[];
   periodLengths: number[];
+  recordedStarts: number;
+  remainingCycles: number;
+  excludedGaps: number;
+  resetAfterLongGap: boolean;
+  stage: PredictionStage;
+  hasPersonalizedPrediction: boolean;
+  hasPeriodDurationEstimate: boolean;
   variability: number;
   confidence: "Yüksek" | "Orta" | "Düşük";
   confidenceKey: PredictionConfidence;
@@ -32,6 +42,7 @@ const addDays = (date: Date, days: number) => { const next = new Date(date); nex
 const dayGap = (first: Date, second: Date) => Math.round((second.getTime() - first.getTime()) / 86400000);
 const today = () => { const date = new Date(); return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12); };
 const mean = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
+const median = (values: number[]) => { const sorted = [...values].sort((a, b) => a - b); const middle = Math.floor(sorted.length / 2); return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2; };
 
 export function calculatePrediction(records: InputRecord[], options: PredictionOptions = {}): PredictionResult {
   const reference = options.referenceDate ? toDate(dateKey(options.referenceDate)) : today();
@@ -43,10 +54,21 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
     .sort((a, b) => a.startDate.localeCompare(b.startDate));
   const distinct = sorted.filter((record, index) => index === 0 || record.startDate !== sorted[index - 1].startDate);
   const last = distinct.length ? toDate(distinct[distinct.length - 1].startDate) : reference;
-  const lengths = distinct.slice(1)
-    .map((record, index) => dayGap(toDate(distinct[index].startDate), toDate(record.startDate)))
+  const allGaps = distinct.slice(1)
+    .map((record, index) => dayGap(toDate(distinct[index].startDate), toDate(record.startDate)));
+  // After a very long untracked interval, old rhythm is not evidence for a new start.
+  const lastUntrackedGap = allGaps.findLastIndex(value => value > 90);
+  const resetAfterLongGap = lastUntrackedGap >= 0;
+  const recent = resetAfterLongGap ? distinct.slice(lastUntrackedGap + 1) : distinct;
+  const candidateLengths = recent.slice(1)
+    .map((record, index) => dayGap(toDate(recent[index].startDate), toDate(record.startDate)))
     .filter(value => value >= 15 && value <= 90)
-    .slice(-6);
+    .slice(-8);
+  // A single long gap among shorter cycles may be a missed entry, not a new personal rhythm.
+  const longGapLimit = candidateLengths.length >= 3 ? Math.max(45, median(candidateLengths) * 1.6) : 90;
+  const usableLengths = candidateLengths.filter(value => value <= longGapLimit);
+  const lengths = usableLengths.slice(-6);
+  const excludedGaps = candidateLengths.length - usableLengths.length;
   const periodLengths = distinct
     .map(record => {
       if (record.endDate && validDateKey(record.endDate) && toDate(record.endDate) <= reference) {
@@ -63,20 +85,31 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
   const cycleDays = Math.round(average);
   const periodDays = Math.round(averagePeriodLength);
   const variability = lengths.length > 1 ? Math.sqrt(mean(lengths.map(value => (value - average) ** 2))) : 7;
-  const spread = Math.max(2, Math.min(7, Math.round(variability)));
+  const tentativeSpread = Math.min(14, Math.max(4, Math.ceil(variability * 1.5)));
+  // Do not roll an expired window forward by assuming an unrecorded period happened.
+  const stale = distinct.length > 0 && lengths.length >= MIN_COMPLETED_CYCLES && dayGap(last, reference) > cycleDays + tentativeSpread;
+  const stage: PredictionStage = lengths.length < MIN_COMPLETED_CYCLES ? "learning" : stale ? "stale" : lengths.length >= 6 && variability <= 4 && excludedGaps === 0 ? "familiar" : "tentative";
+  const hasPersonalizedPrediction = stage === "tentative" || stage === "familiar";
+  const hasPeriodDurationEstimate = periodLengths.length >= MIN_COMPLETED_CYCLES;
+  const spread = Math.min(14, Math.max(stage === "familiar" ? 2 : 4, Math.ceil(variability * 1.5)));
   let next = addDays(last, cycleDays);
   while (next < reference) next = addDays(next, cycleDays);
-  const futurePeriods = Array.from({ length: 3 }, (_, index) => {
+  const futureWindows = hasPersonalizedPrediction ? Array.from({ length: stage === "familiar" ? 3 : 1 }, (_, index) => {
+    const start = addDays(next, cycleDays * index);
+    const windowSpread = Math.min(21, Math.floor((cycleDays - 1) / 2), spread + index * 2);
+    const earliest = addDays(start, -windowSpread);
+    return { start: index === 0 && earliest < reference ? reference : earliest, end: addDays(start, windowSpread) };
+  }) : [];
+  const futurePeriods = hasPersonalizedPrediction && hasPeriodDurationEstimate ? Array.from({ length: stage === "familiar" ? 3 : 1 }, (_, index) => {
     const start = addDays(next, cycleDays * index);
     return { start, end: addDays(start, periodDays - 1) };
-  });
-  const stale = distinct.length > 0 && dayGap(last, reference) > 90;
-  const confidenceKey: PredictionConfidence = stale ? "low" : lengths.length >= 4 && variability <= 3 ? "high" : lengths.length >= 2 && variability <= 5 ? "medium" : "low";
+  }) : [];
+  const confidenceKey: PredictionConfidence = stage === "familiar" ? "high" : stage === "tentative" ? "medium" : "low";
   const confidence = confidenceKey === "high" ? "Yüksek" : confidenceKey === "medium" ? "Orta" : "Düşük";
-  const confidenceReason = stale ? "Son gerçek kayıt eski; yeni kayıtlar tahmini güçlendirir." : lengths.length < 2 ? "Daha fazla gerçek döngü kaydı oldukça tahmin güçlenecek." : variability > 5 ? "Döngüler arasındaki değişkenlik aralığı genişletiyor." : "Son gerçek döngü kayıtların birbirine yakın.";
+  const confidenceReason = stage === "learning" && resetAfterLongGap ? "Uzun kayıt boşluğundan sonra yakın dönem kayıtlarıyla yeniden öğreniyoruz." : stage === "learning" ? "Kişisel aralık için üç tamamlanmış döngü kaydı bekleniyor." : stage === "stale" ? "Önceki yaklaşık aralık geçti; yeni kayıt olmadan ileri tarih tahmini yapmıyoruz." : excludedGaps ? "Uzun bir kayıt aralığı tahmine katılmadı; atlanmış bir kayıt olabilir." : variability > 5 ? "Döngüler arasındaki değişkenlik tahmini aralığı genişletiyor." : "Bu aralık kayıtlarına dayanır, kesin bir tarih değildir.";
   const elapsed = Math.max(0, dayGap(last, reference));
-  const cycleDay = distinct.length ? elapsed % cycleDays + 1 : 1;
-  const phase = getCyclePhase(cycleDay, cycleDays, periodDays, distinct.length > 0 && !stale);
+  const cycleDay = distinct.length ? elapsed + 1 : 1;
+  const phase = getCyclePhase(cycleDay, cycleDays, periodDays, hasPersonalizedPrediction);
   return {
     last,
     average: Number(average.toFixed(1)),
@@ -86,8 +119,16 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
     start: addDays(next, -spread),
     end: addDays(next, spread),
     futurePeriods,
+    futureWindows,
     lengths,
     periodLengths,
+    recordedStarts: recent.length,
+    remainingCycles: Math.max(0, MIN_COMPLETED_CYCLES - lengths.length),
+    excludedGaps,
+    resetAfterLongGap,
+    stage,
+    hasPersonalizedPrediction,
+    hasPeriodDurationEstimate,
     variability: Number(variability.toFixed(1)),
     confidence,
     confidenceKey,

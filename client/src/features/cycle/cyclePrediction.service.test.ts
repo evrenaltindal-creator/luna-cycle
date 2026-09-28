@@ -1,67 +1,130 @@
 import { describe, expect, it } from "vitest";
-import { calculatePrediction } from "./cyclePrediction.service";
+import { calculatePrediction, MIN_COMPLETED_CYCLES } from "./cyclePrediction.service";
 
-const starts = (lengths: number[]) => lengths.reduce<string[]>((dates, length) => { const previous = new Date(`${dates.at(-1) ?? "2026-01-01"}T12:00:00`); previous.setDate(previous.getDate() + length); dates.push(previous.toISOString().slice(0, 10)); return dates; }, ["2026-01-01"]);
-const records = (dates: string[]) => dates.map((startDate) => ({ startDate }));
+const day = (key: string, offset = 0) => {
+  const date = new Date(`${key}T12:00:00`);
+  date.setDate(date.getDate() + offset);
+  return date;
+};
+const key = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+const starts = (intervals: number[]) => intervals.reduce<string[]>((dates, interval) => {
+  dates.push(key(day(dates.at(-1) ?? "2026-01-01", interval)));
+  return dates;
+}, ["2026-01-01"]);
+const records = (dates: string[]) => dates.map(startDate => ({ startDate }));
+const afterLast = (dates: string[]) => day(dates.at(-1) ?? "2026-01-01", 1);
 
 describe("calculatePrediction", () => {
-  it("boş ve tek kayıtta güveni düşük tutar", () => {
-    expect(calculatePrediction([]).confidenceKey).toBe("low");
-    expect(calculatePrediction(records(["2026-01-01"]), { referenceDate: new Date(2026, 0, 15) }).next.toISOString().slice(0, 10)).toBe("2026-01-29");
+  it("bir ya da iki tamamlanmış aralıkta kişisel tarih veya ortalama gösterilmesine izin vermez", () => {
+    expect(MIN_COMPLETED_CYCLES).toBe(3);
+    for (const intervals of [[], [21], [21, 24]]) {
+      const dates = starts(intervals);
+      const result = calculatePrediction(records(dates), { referenceDate: afterLast(dates) });
+      expect(result.stage).toBe("learning");
+      expect(result.hasPersonalizedPrediction).toBe(false);
+      expect(result.futureWindows).toEqual([]);
+      expect(result.futurePeriods).toEqual([]);
+      expect(result.remainingCycles).toBe(3 - intervals.length);
+    }
   });
-  it("iki başlangıç arasındaki cycle uzunluğunu hesaplar", () => {
-    const result = calculatePrediction(records(starts([28])));
-    expect(result.lengths).toEqual([28]);
-    expect(result.weightedAverage).toBe(28);
+
+  it("21 ve 24 günlük kişisel döngüler için ilk yaklaşık aralığı üç döngüden sonra çıkarır", () => {
+    const dates = starts([21, 24, 22]);
+    const referenceDate = afterLast(dates);
+    const result = calculatePrediction(records(dates), { referenceDate });
+    expect(result.stage).toBe("tentative");
+    expect(result.hasPersonalizedPrediction).toBe(true);
+    expect(result.lengths).toEqual([21, 24, 22]);
+    expect(result.average).toBe(22.3);
+    expect(result.futureWindows).toHaveLength(1);
+    expect(result.futureWindows[0].start >= referenceDate).toBe(true);
+    expect(result.futureWindows[0].end > result.futureWindows[0].start).toBe(true);
   });
-  it("yeni cycle’a daha yüksek ağırlık verir", () => {
-    const result = calculatePrediction(records(starts([35, 27])));
-    expect(result.average).toBe(31);
-    expect(result.weightedAverage).toBeLessThan(result.average);
-    expect(result.weightedAverage).toBeGreaterThan(27);
-  });
-  it("en son en fazla altı cycle’ı kullanır", () => {
-    const result = calculatePrediction(records(starts([90, 15, 28, 29, 27, 30, 28, 27])));
+
+  it("altı birbirine yakın döngüde aralığı daraltır fakat tek kesin gün iddia etmez", () => {
+    const dates = starts([24, 24, 25, 24, 23, 24]);
+    const result = calculatePrediction(records(dates), { referenceDate: afterLast(dates) });
+    expect(result.stage).toBe("familiar");
     expect(result.lengths).toHaveLength(6);
-    expect(result.lengths).not.toContain(90);
+    expect(result.futureWindows).toHaveLength(3);
+    expect(result.futureWindows[0].start < result.futureWindows[0].end).toBe(true);
+    expect(result.futureWindows[0].end < result.futureWindows[1].start).toBe(true);
   });
-  it("düzenli veride minimum range ve düzensiz veride geniş range üretir", () => {
-    const regular = calculatePrediction(records(starts([28, 28, 29, 28, 27])));
-    const irregular = calculatePrediction(records(starts([24, 34, 27, 36, 25])));
-    expect((regular.end.getTime() - regular.next.getTime()) / 86400000).toBeGreaterThanOrEqual(2);
-    expect((irregular.end.getTime() - irregular.next.getTime())).toBeGreaterThan((regular.end.getTime() - regular.next.getTime()));
-    expect((irregular.end.getTime() - irregular.next.getTime()) / 86400000).toBeLessThanOrEqual(7);
+
+  it("tek uzun kayıt boşluğunu ortalamaya katmadan açıklama üretir", () => {
+    const dates = starts([24, 60, 23, 25]);
+    const result = calculatePrediction(records(dates), { referenceDate: afterLast(dates) });
+    expect(result.lengths).toEqual([24, 23, 25]);
+    expect(result.excludedGaps).toBe(1);
+    expect(result.average).toBe(24);
+    expect(result.stage).toBe("tentative");
+    expect(result.confidenceReason).toContain("atlanmış");
   });
-  it("yüksek değişkenlikte düşük confidence üretir", () => {
-    expect(calculatePrediction(records(starts([20, 50]))).confidenceKey).toBe("low");
+
+  it("90 günü aşan kayıtsız boşluktan sonra eski ritmi yeni kayda taşımaz", () => {
+    const dates = starts([24, 25, 24, 120, 23, 24]);
+    const result = calculatePrediction(records(dates), { referenceDate: afterLast(dates) });
+    expect(result.resetAfterLongGap).toBe(true);
+    expect(result.recordedStarts).toBe(3);
+    expect(result.lengths).toEqual([23, 24]);
+    expect(result.stage).toBe("learning");
+    expect(result.futureWindows).toEqual([]);
+    expect(result.confidenceReason).toContain("yeniden öğreniyoruz");
   });
-  it("kayıt silindiğinde prediction cache kullanmadan değişir", () => {
-    const before = calculatePrediction(records(starts([28, 29, 30])));
-    const after = calculatePrediction(records(starts([28, 29])));
-    expect(after.next.getTime()).not.toBe(before.next.getTime());
+
+  it("bitişi bilinmeyen kayıttan adet süresi uydurmaz", () => {
+    const dates = starts([28, 28, 28]);
+    const result = calculatePrediction(records(dates), { referenceDate: afterLast(dates) });
+    expect(result.hasPersonalizedPrediction).toBe(true);
+    expect(result.periodLengths).toEqual([]);
+    expect(result.hasPeriodDurationEstimate).toBe(false);
+    expect(result.futurePeriods).toEqual([]);
   });
-  it("geçmiş başlangıç ve bitişlerden döngü ile adet süresi ortalamasını çıkarır", () => {
-    const result = calculatePrediction([
-      { startDate: "2026-01-01", endDate: "2026-01-05" },
-      { startDate: "2026-01-29", endDate: "2026-02-02" },
-      { startDate: "2026-02-28", endDate: "2026-03-05" },
-    ], { referenceDate: new Date(2026, 2, 10) });
-    expect(result.lengths).toEqual([28, 30]);
-    expect(result.average).toBe(29);
-    expect(result.periodLengths).toEqual([5, 5, 6]);
-    expect(result.averagePeriodLength).toBe(5.3);
-    expect(result.futurePeriods.map(period => period.start.toISOString().slice(0, 10))).toEqual(["2026-03-29", "2026-04-27", "2026-05-26"]);
-    expect(result.futurePeriods[0].end.toISOString().slice(0, 10)).toBe("2026-04-02");
+
+  it("üç gerçek bitişten sonra adet süresini ayrı hesaplar", () => {
+    const dates = starts([28, 29, 27]);
+    const durations = [5, 6, 4, 5];
+    const result = calculatePrediction(dates.map((startDate, index) => ({
+      startDate,
+      endDate: key(day(startDate, durations[index] - 1)),
+    })), { referenceDate: day(dates.at(-1) ?? "2026-01-01", 10) });
+    expect(result.periodLengths).toEqual(durations);
+    expect(result.averagePeriodLength).toBe(5);
+    expect(result.hasPeriodDurationEstimate).toBe(true);
+    expect(result.futurePeriods).toHaveLength(1);
   });
-  it("eski kayıtlarda bir sonraki gerçek gelecek döneme ilerler", () => {
-    const result = calculatePrediction([{ startDate: "2026-01-01", endDate: "2026-01-05" }], { referenceDate: new Date(2026, 8, 24) });
-    expect(result.next >= new Date(2026, 8, 24)).toBe(true);
-    expect(result.confidenceKey).toBe("low");
+
+  it("yaklaşık aralık geçince kayıt olmadan sonraki ayı tahmin etmez", () => {
+    const dates = starts([28, 28, 28]);
+    const expectedCenter = day(dates.at(-1) ?? "2026-01-01", 28);
+    const result = calculatePrediction(records(dates), { referenceDate: day(key(expectedCenter), 5) });
+    expect(result.stage).toBe("stale");
+    expect(result.hasPersonalizedPrediction).toBe(false);
+    expect(result.futureWindows).toEqual([]);
   });
-  it("yeterli gerçek kayıt yoksa kullanıcının yaklaşık değerlerini kullanır", () => {
-    const result = calculatePrediction([{ startDate: "2026-09-01" }], { referenceDate: new Date(2026, 8, 5), fallbackCycleLength: 32, fallbackPeriodLength: 4 });
+
+  it("eski başlangıçlardan bugüne otomatik yeni tarih taşımayı durdurur", () => {
+    const dates = starts([28, 28, 28]);
+    const result = calculatePrediction(records(dates), { referenceDate: day("2026-09-27") });
+    expect(result.stage).toBe("stale");
+    expect(result.hasPersonalizedPrediction).toBe(false);
+    expect(result.futureWindows).toEqual([]);
+  });
+
+  it("kayıt silinince öğrenme aşamasına geri döner", () => {
+    const dates = starts([21, 24, 22]);
+    const before = calculatePrediction(records(dates), { referenceDate: afterLast(dates) });
+    const after = calculatePrediction(records(dates.slice(0, -1)), { referenceDate: afterLast(dates) });
+    expect(before.hasPersonalizedPrediction).toBe(true);
+    expect(after.hasPersonalizedPrediction).toBe(false);
+  });
+
+  it("kullanıcı tercihi tek kayıtla kişisel tahmin sayılmaz", () => {
+    const result = calculatePrediction([{ startDate: "2026-09-01" }], {
+      referenceDate: day("2026-09-05"), fallbackCycleLength: 32, fallbackPeriodLength: 4,
+    });
     expect(result.average).toBe(32);
-    expect(result.averagePeriodLength).toBe(4);
-    expect(result.futurePeriods[0].end.toISOString().slice(0, 10)).toBe("2026-10-06");
+    expect(result.hasPersonalizedPrediction).toBe(false);
+    expect(result.futureWindows).toEqual([]);
   });
 });

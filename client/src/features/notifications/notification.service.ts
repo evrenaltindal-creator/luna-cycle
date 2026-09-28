@@ -31,14 +31,14 @@ export async function scheduleCycleReminder(predictedStart: Date, preferences: P
   const reminderDate = new Date(predictedStart); reminderDate.setHours(9, 0, 0, 0); reminderDate.setDate(reminderDate.getDate() - preferences.notificationDaysBefore);
   if (reminderDate.getTime() <= Date.now()) return false;
   const title = "Luna'dan bir hatırlatman var.";
-  const body = preferences.privateNotificationText ? title : `Tahmini dönemine yaklaşık ${preferences.notificationDaysBefore} gün kaldı.`;
+  const body = preferences.privateNotificationText ? title : "Yaklaşık adet başlangıç aralığın yaklaşıyor; bu kesin bir tarih değil.";
   if (!isNativePlatform()) return false;
   try { await cancelCycleReminders(); await LocalNotifications.schedule({ notifications: [{ id: LUNA_REMINDER_ID, title, body, isExactNotification: false, schedule: { at: reminderDate, allowWhileIdle: true }, extra: { source: "luna-cycle" } }] }); return true; } catch { return false; }
 }
 
-export async function syncCycleReminder(predictedStart: Date, preferences: UserPreferences) {
+export async function syncCycleReminder(predictedStart: Date | null, preferences: UserPreferences) {
   await cancelCycleReminders();
-  if (!preferences.notificationEnabled) return false;
+  if (!predictedStart || !preferences.notificationEnabled) return false;
   const permission = await getNotificationPermission();
   if (permission !== "granted") return false;
   return scheduleCycleReminder(predictedStart, preferences);
