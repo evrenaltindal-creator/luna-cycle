@@ -22,7 +22,7 @@ Mevcut sürümde Luna hesabı, uzaktan kayıt veya giriş/kayıt akışı gerekm
 
 ## 3. Sizin girdiğiniz veriler
 
-Uygulama kullanırken aşağıdaki türlerde bilgileri cihazınıza girebilirsiniz: adet dönemi başlangıç ve bitiş tarihleri, adet süresi, akış veya lekelenme bilgileri, kramplar, enerji, ruh hâlleri, belirtiler, serbest metin notları, tercih ve hatırlatma ayarları, özel bildirim metni tercihi ve tema tercihi. Uygulama bu girdilerden döngü tahmini ve yaklaşık ovülasyon bilgilendirmesi üretebilir.
+Uygulama kullanırken aşağıdaki türlerde bilgileri cihazınıza girebilirsiniz: adet dönemi başlangıç ve bitiş tarihleri, adet süresi, akış veya lekelenme bilgileri, kramplar, enerji, ruh hâlleri, belirtiler, serbest metin notları, tercih ve hatırlatma ayarları, özel bildirim metni tercihi ve tema tercihi. İlk açılıştaki kullanım koşullarını kabul ederseniz kabul edilen sürüm ve zaman cihazdaki tercihlerde saklanır; bu kayıt yedeğe eklenmez ve yerel verileri temizlediğinizde silinir. Uygulama döngü kayıtlarından tahmin ve yaklaşık ovülasyon bilgilendirmesi üretebilir.
 
 Bu bilgiler sağlıkla ilişkili olabileceğinden hassas kabul edilmelidir. Sağlık kayıtları reklam hedeflemesi için kullanılmaz, reklam isteği parametresi olarak gönderilmez ve faturalandırma sistemleriyle paylaşılmaz.
 

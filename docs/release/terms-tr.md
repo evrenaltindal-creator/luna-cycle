@@ -9,7 +9,7 @@ Bu Kullanım Koşulları, Luna Cycle uygulamasının kullanımını düzenleyen 
 
 ## 1. Koşulların kabulü
 
-Luna Cycle’ı indirerek, kurarak veya kullanarak bu Kullanım Koşullarını okuduğunuzu ve uygulanabilir olduğu ölçüde kabul ettiğinizi belirtirsiniz. Bu koşulları kabul etmiyorsanız uygulamayı kullanmamalısınız.
+Luna Cycle ilk açılışta sürümlü uygulama içi koşulları gösterir ve uygulamaya geçmeden önce açık kabul ister. İndirmek veya kurmak tek başına uygulama içindeki kabul yerine geçmez. Kabul etmiyorsanız uygulamayı kullanamazsınız. Kabul edilen metnin sürümü ve kabul zamanı yalnızca cihazdaki tercihlerde saklanır; yedeğe eklenmez ve “Tüm yerel kayıtları sil” ile temizlenir. Metin önemli ölçüde değiştiğinde yeni sürüm için yeniden kabul istenir. App Store üzerinden edinilen sürümlerde, özel bir lisans sunulmadıkça Apple’ın standart son kullanıcı lisansı da uygulanır.
 
 ## 2. Uygunluk
 

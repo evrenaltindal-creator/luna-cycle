@@ -46,8 +46,16 @@ export const savePreferences = (preferences: UserPreferences) => safeWrite(keys.
 export const getDailyLogs = <T = unknown>(): T[] => safeRead(keys.logs, []);
 export const saveDailyLog = <T extends { id: string; date: string }>(log: T) => safeWrite(keys.logs, [...getDailyLogs<T>().filter((item) => item.id !== log.id && item.date !== log.date), log]);
 export const deleteDailyLog = (id: string) => safeWrite(keys.logs, getDailyLogs<{ id: string }>().filter((item) => item.id !== id));
-export const clearAllData = (keepTheme = true) => { const theme = keepTheme ? getPreferences().theme : "system"; if (isNativePlatform()) nativeReplace({ periods: [], logs: [], preferences: { ...defaultPreferences, theme } }); else { localStorage.removeItem(keys.periods); localStorage.removeItem(keys.logs); localStorage.removeItem(keys.preferences); savePreferences({ ...defaultPreferences, theme }); } };
-export const exportBackup = () => JSON.stringify({ schema: "luna-cycle-backup", version: VERSION, exportedAt: new Date().toISOString(), periodRecords: getPeriodRecords(), dailyLogs: getDailyLogs(), preferences: getPreferences() }, null, 2);
+export const clearAllData = (keepTheme = true) => {
+  const theme = keepTheme ? getPreferences().theme : "system";
+  if (isNativePlatform()) nativeReplace({ periods: [], logs: [], preferences: { ...defaultPreferences, theme } });
+  else { localStorage.removeItem(keys.periods); localStorage.removeItem(keys.logs); localStorage.removeItem(keys.preferences); savePreferences({ ...defaultPreferences, theme }); }
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("luna-terms-cleared"));
+};
+export const exportBackup = () => {
+  const { termsAcceptance: _termsAcceptance, ...preferences } = getPreferences();
+  return JSON.stringify({ schema: "luna-cycle-backup", version: VERSION, exportedAt: new Date().toISOString(), periodRecords: getPeriodRecords(), dailyLogs: getDailyLogs(), preferences }, null, 2);
+};
 
 export const validateBackup = (raw: string) => {
   const parsed: unknown = JSON.parse(raw); if (!parsed || typeof parsed !== "object") throw new Error("Geçersiz Luna yedek dosyası");
@@ -59,4 +67,4 @@ export const validateBackup = (raw: string) => {
   return backup;
 };
 
-export const importBackup = (raw: string) => { const backup = validateBackup(raw); const previous = { periods: getPeriodRecords(), logs: getDailyLogs(), preferences: getPreferences() }; try { if (!safeWrite(keys.periods, backup.periodRecords) || !safeWrite(keys.logs, backup.dailyLogs) || !safeWrite(keys.preferences, backup.preferences)) throw new Error("Yedek yazılamadı"); } catch (error) { safeWrite(keys.periods, previous.periods); safeWrite(keys.logs, previous.logs); safeWrite(keys.preferences, previous.preferences); throw error; } };
+export const importBackup = (raw: string) => { const backup = validateBackup(raw); const previous = { periods: getPeriodRecords(), logs: getDailyLogs(), preferences: getPreferences() }; try { if (!safeWrite(keys.periods, backup.periodRecords) || !safeWrite(keys.logs, backup.dailyLogs) || !safeWrite(keys.preferences, { ...(backup.preferences as Record<string, unknown>), termsAcceptance: previous.preferences.termsAcceptance })) throw new Error("Yedek yazılamadı"); } catch (error) { safeWrite(keys.periods, previous.periods); safeWrite(keys.logs, previous.logs); safeWrite(keys.preferences, previous.preferences); throw error; } };

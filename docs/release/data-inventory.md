@@ -19,12 +19,13 @@
 | Cycle dates / predictions | Derived from local records | Computed in app; no remote health store | None | Prediction state not sent | Not sent | Source records can be edited/deleted |
 | Estimated ovulation-timing range | Derived estimate | Computed/displayed locally after three completed cycle intervals | None | Not sent | Not sent | Not a fertile/safe-day label; source records can be edited/deleted |
 | Theme, reminders, private notification setting | User preferences | Native/local `preferences` store; web local app storage | None | Not sent | Not sent | Settings/Clear All Data; theme may be retained by product behavior |
+| Terms acceptance version and timestamp | Explicit first-launch action | Native/local `preferences` store; web local app storage | None | Not sent | Not sent | Clear All Data; a new terms version requires renewed acceptance |
 
 The current storage keys are `luna.periods.v1`, `luna.daily-logs.v1` and `luna.preferences.v1` for the web adapter. Native storage maps the same business data to native storage slots. This inventory does not make an absolute cryptographic or zero-risk claim.
 
 ## Backup and export
 
-The user-triggered JSON backup contains `schema`, `version`, `exportedAt`, `periodRecords`, `dailyLogs` and `preferences`. It is not designed to contain entitlement, raw advertising consent responses, purchase tokens or ad identifiers. An imported backup cannot unlock Luna Plus. An exported file is outside the app’s remote control once the user saves or shares it.
+The user-triggered JSON backup contains `schema`, `version`, `exportedAt`, `periodRecords`, `dailyLogs` and `preferences`, but excludes the device-specific terms-acceptance record. Import cannot create or replace that record. It is not designed to contain entitlement, raw advertising consent responses, purchase tokens or ad identifiers. An imported backup cannot unlock Luna Plus. An exported file is outside the app’s remote control once the user saves or shares it.
 
 ## Monetization and consent data
 

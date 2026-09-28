@@ -9,7 +9,7 @@ These Terms of Use are a pre-publication draft governing use of the Luna Cycle a
 
 ## 1. Acceptance
 
-By downloading, installing or using Luna Cycle, you acknowledge that you have read and accept these Terms to the extent applicable. Do not use the app if you do not accept them.
+On first launch, Luna Cycle presents versioned in-app terms and requires an explicit acceptance before the app opens. Downloading or installing alone does not replace the in-app acceptance. If you decline, you cannot enter the app. The accepted version and timestamp are stored only in local preferences, excluded from backup, and removed by Clear All Data. Material changes require acceptance of a new version. For App Store distributions, Apple's standard end-user license also applies unless a custom EULA is provided.
 
 ## 2. Eligibility
 

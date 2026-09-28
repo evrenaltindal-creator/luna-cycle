@@ -226,6 +226,38 @@ button:focus-visible { outline:3px solid var(--lemon); outline-offset:3px; }
 .dark-mode .day.ovulation,.dark-mode .large-day.ovulation { background:#492333; color:#ffd6e2; border-color:#ef8195; }
 .dark-mode .large-day.ovulation small,.dark-mode .ovulation-card small { color:#ffd6e2; }
 @media (max-width:640px) { .selected-day { display:block; }.selected-day .wide { margin-top:22px; width:100%; } }
+.terms-screen { min-height:100dvh; display:grid; place-items:center; padding:24px; background:radial-gradient(circle at 85% 5%,rgba(224,80,104,.15),transparent 28rem),var(--bone); }
+.terms-panel { width:min(100%,760px); height:min(850px,calc(100dvh - 48px)); display:flex; flex-direction:column; padding:clamp(24px,4vw,42px); border:1px solid var(--line); border-left:5px solid var(--sage); border-radius:16px; background:var(--paper); box-shadow:0 20px 55px rgba(67,16,39,.12); }
+.terms-panel h1 { margin:12px 0; font:400 clamp(36px,6vw,55px)/1.05 "DM Serif Display",serif; }
+.terms-intro,.terms-declined p { max-width:610px; color:var(--ink-soft); line-height:1.65; font-size:14px; }
+.terms-meta { margin:22px 0 12px; color:var(--sage); font-size:11px; font-weight:800; letter-spacing:.04em; }
+.terms-document { flex:1; min-height:110px; overflow-y:auto; padding:8px 22px; border:1px solid var(--line); border-radius:10px; background:var(--bone); }
+.terms-document:focus-visible { outline:3px solid var(--lemon); outline-offset:2px; }
+.terms-document section { padding:12px 0; border-bottom:1px solid var(--line); }
+.terms-document section:last-child { border-bottom:0; }
+.terms-document h2 { margin:0 0 8px; font-size:14px; color:var(--sage); }
+.terms-document p { margin:0 0 9px; color:var(--ink-soft); font-size:12px; line-height:1.65; }
+.terms-privacy-note { margin:13px 0 3px; color:var(--ink-soft); font-size:11px; line-height:1.5; }
+.terms-eula-link { display:inline-block; color:var(--sage); font-size:11px; font-weight:800; text-decoration:underline; text-underline-offset:3px; }
+.terms-checkbox { display:flex; align-items:flex-start; gap:11px; margin:20px 0 0; font-size:13px; font-weight:800; cursor:pointer; }
+.terms-checkbox input { width:19px; height:19px; flex:none; accent-color:var(--sage); }
+.terms-error { color:#a53340; font-size:12px; }
+.terms-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+.terms-primary,.terms-secondary { border-radius:10px; padding:12px 17px; font-size:12px; font-weight:800; }
+.terms-primary { background:var(--sage); color:#fff; }
+.terms-primary:disabled { opacity:.45; cursor:not-allowed; }
+.terms-secondary { border:1px solid var(--line); background:transparent; color:var(--ink-soft); }
+.terms-declined { height:auto; }
+.terms-declined .terms-primary { margin-top:14px; align-self:flex-start; }
+@media (max-width:640px) { .terms-screen { padding:12px; }.terms-panel { height:calc(100dvh - 24px); padding:22px; }.terms-document { padding:6px 14px; }.terms-actions { flex-direction:column-reverse; }.terms-actions button { width:100%; } }
+.legal-details { border:1px solid var(--line); border-radius:10px; background:var(--paper); }
+.legal-details summary { cursor:pointer; padding:15px; color:var(--sage); font-size:12px; font-weight:800; }
+.legal-details summary small { display:block; margin-top:4px; color:var(--ink-soft); font-size:10px; font-weight:400; }
+.legal-details-content { max-height:360px; overflow-y:auto; padding:0 15px 15px; }
+.legal-details-content section { padding:12px 0; border-bottom:1px solid var(--line); }
+.legal-details-content h3 { margin:0 0 7px; color:var(--sage); font-size:12px; }
+.legal-details-content p { margin:0 0 8px; color:var(--ink-soft); font-size:11px; line-height:1.6; }
+.legal-details-content a { display:inline-block; margin-top:12px; color:var(--sage); font-size:11px; font-weight:800; text-decoration:underline; }
 .form-error { color:#a85046; font-size:12px; line-height:1.5; }
 .primary-solid:disabled { opacity:.48; cursor:not-allowed; }
 @media (max-width:640px) {

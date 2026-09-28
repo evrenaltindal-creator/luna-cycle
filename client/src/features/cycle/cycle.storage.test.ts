@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { clearAllData, deleteDailyLog, exportBackup, getDailyLogs, getPeriodRecords, getPreferences, importBackup, saveDailyLog, savePeriodRecord, savePreferences, updatePeriodRecord, validateBackup } from "./cycle.storage";
+import { createTermsAcceptance } from "../legal/terms";
 
 class MemoryStorage {
   private values = new Map<string, string>();
@@ -30,6 +31,18 @@ describe("cycle storage adapter", () => {
     saveDailyLog({ id: "d1", date: "2026-01-02" }); const backup = exportBackup(); expect(JSON.parse(backup).schema).toBe("luna-cycle-backup");
     clearAllData(false); expect(getPeriodRecords()).toEqual([]); expect(getDailyLogs()).toEqual([]); expect(getPreferences().onboardingCompleted).toBe(false);
     importBackup(backup); expect(getPeriodRecords()).toHaveLength(1); expect(getDailyLogs()).toHaveLength(1);
+  });
+
+  it("sözleşme kabulünü yedeğe taşımaz; veri temizleme kabulü de sıfırlar", () => {
+    const accepted = createTermsAcceptance(new Date("2026-09-28T10:00:00.000Z"));
+    savePreferences({ ...getPreferences(), termsAcceptance: accepted });
+    const backup = exportBackup();
+    expect(JSON.parse(backup).preferences.termsAcceptance).toBeUndefined();
+    const forged = JSON.stringify({ ...JSON.parse(backup), preferences: { ...JSON.parse(backup).preferences, termsAcceptance: { version: accepted.version, acceptedAt: "2020-01-01T00:00:00.000Z" } } });
+    importBackup(forged);
+    expect(getPreferences().termsAcceptance).toEqual(accepted);
+    clearAllData();
+    expect(getPreferences().termsAcceptance).toBeUndefined();
   });
 
   it("valid backup yalnızca validation aşamasında storage’ı değiştirmez", () => {

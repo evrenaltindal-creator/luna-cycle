@@ -33,6 +33,7 @@ import {
 } from "../features/cycle/cycle.storage";
 import type { DailyLog } from "../features/symptoms/symptom.types";
 import { calculatePrediction } from "../features/cycle/cyclePrediction.service";
+import { TERMS_VERSION, termsSections } from "../features/legal/terms";
 import { periodLength, validatePeriodRange } from "../features/cycle/periodRecord.validation";
 import { DailyCheckin as RichDailyCheckin } from "../features/symptoms/DailyCheckin";
 import { PreferenceControls } from "../features/preferences/PreferenceControls";
@@ -1489,6 +1490,19 @@ function SettingsView({
         <div className="settings-group" aria-label="Ücretsiz sürüm">
           <span className="tiny-label">BU SÜRÜM</span>
           <p>Tüm mevcut özellikler ücretsizdir. Uygulama içi satın alma veya abonelik yoktur.</p>
+        </div>
+        <div className="settings-group" aria-label="Yasal bilgiler">
+          <span className="tiny-label">YASAL BİLGİLER</span>
+          <details className="legal-details">
+            <summary>Kullanım Koşullarını yeniden oku <small>Sürüm {TERMS_VERSION}</small></summary>
+            <div className="legal-details-content">
+              {termsSections.map(section => <section key={section.title}>
+                <h3>{section.title}</h3>
+                {section.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
+              </section>)}
+              <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple standart lisansı</a>
+            </div>
+          </details>
         </div>
         <div className="settings-group">
           <span className="tiny-label">GÖRÜNÜM</span>

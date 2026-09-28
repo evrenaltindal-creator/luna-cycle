@@ -22,7 +22,7 @@ The current release does not require a Luna account, remote registration or logi
 
 ## 3. Information you enter
 
-You may enter period start and end dates, period length, flow or spotting information, cramps, energy, moods, symptoms, free-text notes, preference and reminder settings, private notification text preference and theme preference. The app may use these inputs to produce cycle estimates and approximate ovulation information.
+You may enter period start and end dates, period length, flow or spotting information, cramps, energy, moods, symptoms, free-text notes, preference and reminder settings, private notification text preference and theme preference. If you accept the first-launch Terms, the accepted version and timestamp are stored in local preferences; this record is excluded from backup and removed when you clear local data. The app may use cycle records to produce estimates and approximate ovulation information.
 
 These records may be health-related and should be treated as sensitive. Health records are not used to target advertising, are not sent as advertising request parameters and are not shared with billing systems.
 
