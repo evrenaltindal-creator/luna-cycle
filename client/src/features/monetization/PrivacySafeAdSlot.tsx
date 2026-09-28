@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AdService, type AdSlot } from "./ad.service";
 import { useMonetization } from "./MonetizationContext";
 import { isAndroid } from "../../platform/platform";
+import { t } from "../../i18n";
 
 export function PrivacySafeAdSlot({ slot }: { slot: AdSlot }) {
   const { entitlement, adConsent } = useMonetization();
@@ -23,7 +24,7 @@ export function PrivacySafeAdSlot({ slot }: { slot: AdSlot }) {
   }, [adConsent, entitlement, slot]);
 
   if (!isAndroid() || entitlement === "luna_plus") return null;
-  return <div className="privacy-safe-ad-slot" data-ad-slot={slot} aria-label="Kişiselleştirilmemiş reklam alanı">
-    {filled ? <span className="ad-status">Kişiselleştirilmemiş reklam</span> : <span className="ad-placeholder">Reklam alanı</span>}
+  return <div className="privacy-safe-ad-slot" data-ad-slot={slot} aria-label={t("Kişiselleştirilmemiş reklam alanı")}>
+    {filled ? <span className="ad-status">{t("Kişiselleştirilmemiş reklam")}</span> : <span className="ad-placeholder">{t("Reklam alanı")}</span>}
   </div>;
 }

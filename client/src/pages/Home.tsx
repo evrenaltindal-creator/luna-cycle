@@ -32,6 +32,7 @@ import {
   validateBackup,
 } from "../features/cycle/cycle.storage";
 import type { DailyLog } from "../features/symptoms/symptom.types";
+import { energyOptions, flowOptions, labelFor, moodOptions } from "../features/symptoms/symptom.catalog";
 import { calculatePrediction } from "../features/cycle/cyclePrediction.service";
 import { TERMS_VERSION, termsSections } from "../features/legal/terms";
 import { periodLength, validatePeriodRange } from "../features/cycle/periodRecord.validation";
@@ -60,10 +61,11 @@ import {
 } from "../features/backup/nativeBackup.service";
 import {
   addDays as addLocalDays,
-  formatDateTR,
   parseLocalDate,
   toLocalDateKey,
 } from "../utils/date";
+import { formatLocalizedDate, getLanguage, localizedMonth, localizedWeekdays, msg, t } from "../i18n";
+import { LanguageSelector } from "../i18n/LanguageSelector";
 
 type Tab = "home" | "calendar" | "history" | "insights" | "settings";
 type RecordItem = {
@@ -75,21 +77,8 @@ type RecordItem = {
 
 const initialRecords: RecordItem[] = [];
 
-const monthNames = [
-  "Ocak",
-  "Şubat",
-  "Mart",
-  "Nisan",
-  "Mayıs",
-  "Haziran",
-  "Temmuz",
-  "Ağustos",
-  "Eylül",
-  "Ekim",
-  "Kasım",
-  "Aralık",
-];
-const weekdayNames = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
+const monthNames = () => Array.from({ length: 12 }, (_, month) => localizedMonth(new Date(2024, month, 1)));
+const weekdayNames = () => localizedWeekdays();
 
 function parseDate(value: string) {
   return parseLocalDate(value);
@@ -98,7 +87,7 @@ function iso(date: Date) {
   return toLocalDateKey(date);
 }
 function pretty(date: Date, withYear = true) {
-  return formatDateTR(date, withYear);
+  return formatLocalizedDate(date, withYear);
 }
 function addDays(date: Date, days: number) {
   return addLocalDays(date, days);
@@ -117,7 +106,7 @@ function actualPeriodDays(records: RecordItem[]) {
 }
 function greeting() {
   const hour = new Date().getHours();
-  return hour < 12 ? "Günaydın" : hour < 18 ? "İyi günler" : "İyi akşamlar";
+  return t(hour < 12 ? "Günaydın" : hour < 18 ? "İyi günler" : "İyi akşamlar");
 }
 
 const prediction = (records: RecordItem[]) => {
@@ -134,7 +123,7 @@ function Logo() {
       <img className="brand-icon" src="/luna-icon-192.png" alt="" />
       <span className="brand-word">
         <b>Luna</b>
-        <small>CYCLE</small>
+        <small>{t("CYCLE")}</small>
       </span>
     </div>
   );
@@ -167,14 +156,14 @@ function Nav({
             onClick={() => setActive(id)}
           >
             <Icon size={18} strokeWidth={1.8} />
-            <span>{label}</span>
+            <span>{t(label)}</span>
             {active === id && <i />}
           </button>
         ))}
       </div>
       <div className="privacy-mini">
         <LockKeyhole size={16} />
-        <span>Verilerin cihazında</span>
+        <span>{t("Verilerin cihazında")}</span>
         <ChevronRight size={14} />
       </div>
     </nav>
@@ -211,18 +200,18 @@ function Onboarding({
         <div className="onboarding-orbit">
           <CalendarDays size={30} strokeWidth={1.3} />
         </div>
-        <span className="eyebrow">LUNA CYCLE / KURULUM</span>
+        <span className="eyebrow">{t("LUNA CYCLE / KURULUM")}</span>
         <h2>
-          Ritmini
+          {t("Ritmini")}
           <br />
-          <em>buradan başlat.</em>
+          <em>{t("buradan başlat.")}</em>
         </h2>
         <p>
-          Bildiğin son adet başlangıcını ekle. Bitiş tarihini ve geçmiş başlangıçları sonra da girebilirsin; kişisel tahmin için birkaç döngüye zaman tanıyacağız.
+          {t("Bildiğin son adet başlangıcını ekle. Bitiş tarihini ve geçmiş başlangıçları sonra da girebilirsin; kişisel tahmin için birkaç döngüye zaman tanıyacağız.")}
         </p>
         <div className="setup-fields">
           <label>
-            Son adet başlangıcı
+            {t("Son adet başlangıcı")}
             <input
               type="date"
               max={iso(startOfToday())}
@@ -234,11 +223,11 @@ function Onboarding({
         <button
           className="secondary-button"
           onClick={() => {
-            if (validatePeriodRange(startDate, null, [])) { toast.error("Geçerli bir geçmiş başlangıç tarihi seç."); return; }
+            if (validatePeriodRange(startDate, null, [])) { toast.error(t("Geçerli bir geçmiş başlangıç tarihi seç.")); return; }
             onDone({ startDate });
           }}
         >
-          Takibi başlat <ChevronRight size={16} />
+          {t("Takibi başlat")} <ChevronRight size={16} />
         </button>
       </div>
     );
@@ -248,9 +237,9 @@ function Onboarding({
       <div className="onboarding-orbit">
         <current.icon size={30} strokeWidth={1.3} />
       </div>
-      <span className="eyebrow">LUNA CYCLE / 0{step + 1}</span>
-      <h2>{current.title}</h2>
-      <p>{current.text}</p>
+      <span className="eyebrow">{t("LUNA CYCLE / 0")}{step + 1}</span>
+      <h2>{t(current.title)}</h2>
+      <p>{t(current.text)}</p>
       <div className="onboarding-dots">
         {slides.map((_, index) => (
           <span className={index === step ? "active" : ""} key={index} />
@@ -263,7 +252,7 @@ function Onboarding({
           else setStep(3);
         }}
       >
-        {step === 2 ? "Başla" : "Devam et"}
+        {t(step === 2 ? "Başla" : "Devam et")}
         <ChevronRight size={16} />
       </button>
     </div>
@@ -275,23 +264,23 @@ function Header({ active, onAdd }: { active: Tab; onAdd: () => void }) {
     <header className="topbar">
       <div>
         <p className="eyebrow">
-          LUNA / {active === "home" ? "BUGÜN" : active.toUpperCase()}
+          {t("LUNA /")} {t(active === "home" ? "BUGÜN" : active === "calendar" ? "TAKVİM" : active === "history" ? "GEÇMİŞ" : active === "insights" ? "İÇGÖRÜLER" : "AYARLAR")}
         </p>
         <h1>
           {active === "home"
             ? greeting()
             : active === "calendar"
-              ? "Takvim"
+              ? t("Takvim")
               : active === "history"
-                ? "Geçmiş kayıtların"
+                ? t("Geçmiş kayıtların")
                 : active === "insights"
-                  ? "İçgörüler"
-                  : "Ayarlar"}
+                  ? t("İçgörüler")
+                  : t("Ayarlar")}
         </h1>
       </div>
       <div className="top-actions">
         <button className="secondary-button" onClick={onAdd}>
-          <Plus size={17} /> Adet başladı
+          <Plus size={17} /> {t("Adet başladı")}
         </button>
       </div>
     </header>
@@ -312,34 +301,36 @@ function HomeView({
     <div className="home-view">
       <section className="hero-card">
         <div className="hero-copy">
-          <span className="tiny-label">{p.hasPersonalizedPrediction ? "YAKLAŞIK BAŞLANGIÇ ARALIĞI" : "DÖNGÜNÜ TANIMAYA BAŞLIYORUZ"}</span>
+          <span className="tiny-label">{t(p.hasPersonalizedPrediction ? "YAKLAŞIK BAŞLANGIÇ ARALIĞI" : "DÖNGÜNÜ TANIMAYA BAŞLIYORUZ")}</span>
           {p.hasPersonalizedPrediction ? (
             <h2 className="hero-window">{pretty(p.futureWindows[0].start, false)} – {pretty(p.futureWindows[0].end, false)}</h2>
           ) : (
-            <h2 className="hero-learning-title">{p.stage === "stale" ? "Yeni bir kayıtla devam." : "Zamanla netleşir."}</h2>
+            <h2 className="hero-learning-title">{t(p.stage === "stale" ? "Yeni bir kayıtla devam." : "Zamanla netleşir.")}</h2>
           )}
           <p className="hero-guidance">
             {p.stage === "learning"
-              ? `${p.resetAfterLongGap ? "Uzun boşluktan sonra " : ""}${p.recordedStarts} başlangıç kayıtlı · kişisel aralık için ${p.remainingCycles} tamamlanmış döngü daha gerekiyor.`
+              ? p.resetAfterLongGap
+                ? msg("afterLongGap", { text: msg("homeLearning", { recorded: p.recordedStarts, remaining: p.remainingCycles }) })
+                : msg("homeLearning", { recorded: p.recordedStarts, remaining: p.remainingCycles })
               : p.stage === "stale"
-                ? "Önceki yaklaşık aralık geçti. Yeni başlangıç kaydı eklediğinde yeniden hesaplayacağız."
+                ? t("Önceki yaklaşık aralık geçti. Yeni başlangıç kaydı eklediğinde yeniden hesaplayacağız.")
                 : p.stage === "tentative"
-                  ? "Bu ilk yaklaşık aralık. Birkaç döngü daha kaydettikçe değişebilir."
-                  : "Bu aralık kendi kayıtlarından hesaplanır; kesin bir gün değildir."}
+                  ? t("Bu ilk yaklaşık aralık. Birkaç döngü daha kaydettikçe değişebilir.")
+                  : t("Bu aralık kendi kayıtlarından hesaplanır; kesin bir gün değildir.")}
           </p>
-          <p className="muted-note">{p.confidenceReason}</p>
+          <p className="muted-note">{t(p.confidenceReason)}</p>
           {!p.hasPersonalizedPrediction && (
             <button className="hero-history-link" onClick={() => setActive("history")}>
-              Geçmiş başlangıçları ekle <ChevronRight size={16} />
+              {t("Geçmiş başlangıçları ekle")} <ChevronRight size={16} />
             </button>
           )}
         </div>
         <div className="hero-art">
           <img className="rose-disc" src="/luna-icon-512.png" alt="" />
           <p>
-            kesinlik değil,
+            {t("kesinlik değil,")}
             <br />
-            <em>hazırlık.</em>
+            <em>{t("hazırlık.")}</em>
           </p>
         </div>
       </section>
@@ -347,45 +338,44 @@ function HomeView({
         <div className="surface today-card">
           <div className="section-top">
             <div>
-              <span className="tiny-label">BUGÜNÜN NOTU</span>
-              <h3>Ritmini dinle.</h3>
+              <span className="tiny-label">{t("BUGÜNÜN NOTU")}</span>
+              <h3>{t("Ritmini dinle.")}</h3>
             </div>
-            <button className="more-button" aria-label="Günlük kaydı aç" onClick={openDailyCheckin}>
+            <button className="more-button" aria-label={t("Günlük kaydı aç")} onClick={openDailyCheckin}>
               <MoreHorizontal size={19} />
             </button>
           </div>
           <p>
-            Takvimine küçük bir not bırakmak, bedenindeki değişimleri fark
-            etmenin nazik bir yolu olabilir.
+            {t("Takvimine küçük bir not bırakmak, bedenindeki değişimleri fark\n            etmenin nazik bir yolu olabilir.")}
           </p>
           <button className="text-link" onClick={openDailyCheckin}>
-            Bugünü kaydet <ChevronRight size={16} />
+            {t("Bugünü kaydet")} <ChevronRight size={16} />
           </button>
         </div>
         <div className="surface stats-card">
           <div className="section-top">
             <div>
-              <span className="tiny-label">DÖNGÜ ÖZETİ</span>
-              <h3>Son kayıtların</h3>
+              <span className="tiny-label">{t("DÖNGÜ ÖZETİ")}</span>
+              <h3>{t("Son kayıtların")}</h3>
             </div>
             <TrendingUp size={20} className="sage-icon" />
           </div>
           <div className="stat-row">
             <div>
               <strong>{p.hasPersonalizedPrediction ? p.average : "—"}</strong>
-              <span>{p.hasPersonalizedPrediction ? "yaklaşık döngü günü" : "ortalama için erken"}</span>
+              <span>{t(p.hasPersonalizedPrediction ? "yaklaşık döngü günü" : "ortalama için erken")}</span>
             </div>
             <div>
               <strong>{p.hasPeriodDurationEstimate ? p.averagePeriodLength : "—"}</strong>
-              <span>{p.hasPeriodDurationEstimate ? "ortalama adet günü" : "bitiş kaydı bekleniyor"}</span>
+              <span>{t(p.hasPeriodDurationEstimate ? "ortalama adet günü" : "bitiş kaydı bekleniyor")}</span>
             </div>
             <div>
               <strong>{p.lengths.length}</strong>
-              <span>kayıtlı döngü</span>
+              <span>{t("kayıtlı döngü")}</span>
             </div>
           </div>
           <button className="text-link" onClick={() => setActive("history")}>
-            Geçmiş kayıtları gör <ChevronRight size={16} />
+            {t("Geçmiş kayıtları gör")} <ChevronRight size={16} />
           </button>
         </div>
       </section>
@@ -395,14 +385,14 @@ function HomeView({
           <div className="section-top">
             <div>
               <span className="tiny-label">
-                {monthNames[startOfToday().getMonth()].toUpperCase()}{" "}
+                {monthNames()[startOfToday().getMonth()].toLocaleUpperCase(getLanguage())}{" "}
                 {startOfToday().getFullYear()}
               </span>
-              <h3>Bu ay</h3>
+              <h3>{t("Bu ay")}</h3>
             </div>
             <button
               className="round-arrow"
-              aria-label="Takvimi aç"
+              aria-label={t("Takvimi aç")}
               onClick={() => setActive("calendar")}
             >
               <ChevronRight size={17} />
@@ -415,18 +405,17 @@ function HomeView({
             <LockKeyhole size={17} />
           </div>
           <div>
-            <span className="tiny-label">GİZLİLİK NOTU</span>
+            <span className="tiny-label">{t("GİZLİLİK NOTU")}</span>
             <h3>
-              Senin verin,
+              {t("Senin verin,")}
               <br />
-              senin alanın.
+              {t("senin alanın.")}
             </h3>
             <p>
-              Luna Cycle kayıtlarını bu cihazda tutar. Hiçbir sunucuya
-              göndermez.
+              {t("Luna Cycle kayıtlarını bu cihazda tutar. Hiçbir sunucuya\n              göndermez.")}
             </p>
             <button className="text-link" onClick={() => setActive("settings")}>
-              Ayarları gör <ChevronRight size={16} />
+              {t("Ayarları gör")} <ChevronRight size={16} />
             </button>
           </div>
         </div>
@@ -453,7 +442,7 @@ function DailyCheckin() {
       [field]: value,
     } as DailyLog;
     saveDailyLog(next);
-    toast.success("Bugünkü notun kaydedildi");
+    toast.success(t("Bugünkü notun kaydedildi"));
   };
   const Chip = ({
     value,
@@ -477,14 +466,14 @@ function DailyCheckin() {
     <section className="checkin surface">
       <div className="section-top">
         <div>
-          <span className="tiny-label">BUGÜN NASILSIN?</span>
-          <h3>Kendine küçük bir not.</h3>
+          <span className="tiny-label">{t("BUGÜN NASILSIN?")}</span>
+          <h3>{t("Kendine küçük bir not.")}</h3>
         </div>
         <Droplets size={20} className="sage-icon" />
       </div>
       <div className="check-grid">
         <div>
-          <span>Kanama</span>
+          <span>{t("Kanama")}</span>
           <div className="check-chips">
             {[
               ["none", "Yok"],
@@ -506,7 +495,7 @@ function DailyCheckin() {
           </div>
         </div>
         <div>
-          <span>Kramp</span>
+          <span>{t("Kramp")}</span>
           <div className="check-chips">
             {[
               ["none", "Yok"],
@@ -528,7 +517,7 @@ function DailyCheckin() {
           </div>
         </div>
         <div>
-          <span>Enerji</span>
+          <span>{t("Enerji")}</span>
           <div className="check-chips">
             {[
               ["low", "Düşük"],
@@ -569,7 +558,7 @@ function MiniCalendar({
   return (
     <div className="mini-calendar">
       <div className="weekday-row">
-        {weekdayNames.map(day => (
+        {weekdayNames().map(day => (
           <span key={day}>{day}</span>
         ))}
       </div>
@@ -591,7 +580,7 @@ function MiniCalendar({
             >
               <span>{i + 1}</span>
               {hasDailyLog && (
-                <i className="daily-indicator" aria-label="Günlük kayıt" />
+                <i className="daily-indicator" aria-label={t("Günlük kayıt")} />
               )}
             </span>
           );
@@ -600,14 +589,14 @@ function MiniCalendar({
       <div className="calendar-legend">
         <span>
           <i className="dot actual-dot" />
-          Gerçek
+          {t("Gerçek")}
         </span>
         <span>
           <i className="dot predicted-dot" />
-          Yaklaşık başlangıç
+          {t("Yaklaşık başlangıç")}
         </span>
       </div>
-      <p className="calendar-safety-note">İşaretlenmeyen günler güvenli gün değildir; takvim doğum kontrolü için kullanılamaz.</p>
+      <p className="calendar-safety-note">{t("İşaretlenmeyen günler güvenli gün değildir; takvim doğum kontrolü için kullanılamaz.")}</p>
     </div>
   );
 }
@@ -645,15 +634,15 @@ function CalendarView({
     <div className="page-view calendar-page">
       <div className="calendar-heading">
         <div>
-          <span className="tiny-label">DÖNGÜ TAKVİMİ</span>
-          <h2>Her gün bir veri noktası değil.</h2>
+          <span className="tiny-label">{t("DÖNGÜ TAKVİMİ")}</span>
+          <h2>{t("Her gün bir veri noktası değil.")}</h2>
           <p>
-            Takvimini gözlemlemek için kullan; kendini yargılamak için değil.
+            {t("Takvimini gözlemlemek için kullan; kendini yargılamak için değil.")}
           </p>
         </div>
         <div className="month-switch">
           <button
-            aria-label="Önceki ay"
+            aria-label={t("Önceki ay")}
             onClick={() => {
               if (month === 0) {
                 setMonth(11);
@@ -664,10 +653,10 @@ function CalendarView({
             <ChevronLeft size={18} />
           </button>
           <strong>
-            {monthNames[month]} {year}
+            {monthNames()[month]} {year}
           </strong>
           <button
-            aria-label="Sonraki ay"
+            aria-label={t("Sonraki ay")}
             onClick={() => {
               if (month === 11) {
                 setMonth(0);
@@ -682,7 +671,7 @@ function CalendarView({
       <div className="calendar-layout">
         <div className="surface full-calendar">
           <div className="weekday-row">
-            {weekdayNames.map(day => (
+            {weekdayNames().map(day => (
               <span key={day}>{day}</span>
             ))}
           </div>
@@ -703,75 +692,74 @@ function CalendarView({
                   key={id}
                 >
                   <span>{i + 1}</span>
-                  {isActual && <small>kayıt</small>}
-                  {isPred && <small>yaklaşık</small>}
+                  {isActual && <small>{t("kayıt")}</small>}
+                  {isPred && <small>{t("yaklaşık")}</small>}
                   {hasDailyLog && (
-                    <i className="daily-indicator" aria-label="Günlük kayıt" />
+                    <i className="daily-indicator" aria-label={t("Günlük kayıt")} />
                   )}
                 </button>
               );
             })}
           </div>
           <div className="calendar-legend">
-            <span><i className="dot actual-dot" />Gerçek adet</span>
-            <span><i className="dot predicted-dot" />Yaklaşık başlangıç</span>
+            <span><i className="dot actual-dot" />{t("Gerçek adet")}</span>
+            <span><i className="dot predicted-dot" />{t("Yaklaşık başlangıç")}</span>
           </div>
-          <p className="calendar-safety-note">Bu takvim doğum kontrolü için kullanılamaz. İşaretlenmeyen günler güvenli gün anlamına gelmez.</p>
+          <p className="calendar-safety-note">{t("Bu takvim doğum kontrolü için kullanılamaz. İşaretlenmeyen günler güvenli gün anlamına gelmez.")}</p>
         </div>
         <aside className="surface selected-day">
-          <span className="tiny-label">SEÇİLİ GÜN</span>
+          <span className="tiny-label">{t("SEÇİLİ GÜN")}</span>
           <h3>
-            {selectedDay} {monthNames[month]}
+            {selectedDay} {monthNames()[month]}
           </h3>
           <div className="selected-state">
             <span className="state-dot" />
-            {actual.has(selectedId)
+            {t(actual.has(selectedId)
               ? "Gerçek adet günü"
               : selectedPredicted
                 ? "Yaklaşık başlangıç aralığı"
-                : "Henüz kayıt yok"}
+                : "Henüz kayıt yok")}
           </div>
-          <p>Bu tarihte adet işareti olmaması gebelik riskinin olmadığı anlamına gelmez. Bu uygulama doğum kontrolü için kullanılamaz.</p>
+          <p>{t("Bu tarihte adet işareti olmaması gebelik riskinin olmadığı anlamına gelmez. Bu uygulama doğum kontrolü için kullanılamaz.")}</p>
           <p>
-            Bir güne dokunarak adet başlangıcını veya gününü manuel olarak
-            ekleyebilirsin.
+            {t("Bir güne dokunarak adet başlangıcını veya gününü manuel olarak\n            ekleyebilirsin.")}
           </p>
           {selectedLog && (
             <div className="daily-summary">
-              <span className="tiny-label">GÜNLÜK ÖZET</span>
+              <span className="tiny-label">{t("GÜNLÜK ÖZET")}</span>
               {selectedLog.flow && (
                 <p>
-                  <b>Kanama</b>
-                  {selectedLog.flow}
+                  <b>{t("Kanama")}</b>
+                  {t(flowOptions.find(([key]) => key === selectedLog.flow)?.[1] ?? selectedLog.flow)}
                 </p>
               )}
               {selectedLog.cramps && selectedLog.cramps !== "none" && (
                 <p>
-                  <b>Kramp</b>
-                  {selectedLog.cramps}
+                  <b>{t("Kramp")}</b>
+                  {t(({ mild: "Hafif", medium: "Orta", severe: "Şiddetli" } as Record<string, string>)[selectedLog.cramps] ?? selectedLog.cramps)}
                 </p>
               )}
               {selectedLog.energy && (
                 <p>
-                  <b>Enerji</b>
-                  {selectedLog.energy}
+                  <b>{t("Enerji")}</b>
+                  {t(energyOptions.find(([key]) => key === selectedLog.energy)?.[1] ?? selectedLog.energy)}
                 </p>
               )}
               {selectedLog.mood?.length ? (
                 <p>
-                  <b>Ruh hali</b>
-                  {selectedLog.mood.join(", ")}
+                  <b>{t("Ruh hali")}</b>
+                  {selectedLog.mood.map(key => t(moodOptions.find(([value]) => value === key)?.[1] ?? key)).join(", ")}
                 </p>
               ) : null}
               {selectedLog.symptoms?.length ? (
                 <p>
-                  <b>Belirtiler</b>
-                  {selectedLog.symptoms.join(", ")}
+                  <b>{t("Belirtiler")}</b>
+                  {selectedLog.symptoms.map(key => t(labelFor(key))).join(", ")}
                 </p>
               ) : null}
               {selectedLog.note ? (
                 <p>
-                  <b>Not</b>
+                  <b>{t("Not")}</b>
                   {selectedLog.note}
                 </p>
               ) : null}
@@ -780,24 +768,24 @@ function CalendarView({
                   className="text-link"
                   onClick={() => setCheckinDate(selectedId)}
                 >
-                  Düzenle <ChevronRight size={15} />
+                  {t("Düzenle")} <ChevronRight size={15} />
                 </button>
                 <button
                   ref={deleteTriggerRef}
                   className="danger-link"
                   onClick={() => setDeleteDialogOpen(true)}
                 >
-                  Günlük kaydı sil
+                  {t("Günlük kaydı sil")}
                 </button>
               </div>
             </div>
           )}
           <ConfirmDialog
             open={deleteDialogOpen}
-            title="Bu günlük kaydı silinsin mi?"
-            description="Bu işlem yalnızca seçili günün belirtilerini, ruh hali kayıtlarını ve notunu silecektir. Adet kayıtların etkilenmez."
-            confirmLabel="Kaydı Sil"
-            cancelLabel="İptal"
+            title={t("Bu günlük kaydı silinsin mi?")}
+            description={t("Bu işlem yalnızca seçili günün belirtilerini, ruh hali kayıtlarını ve notunu silecektir. Adet kayıtların etkilenmez.")}
+            confirmLabel={t("Kaydı Sil")}
+            cancelLabel={t("İptal")}
             destructive
             loading={deleteBusy}
             onCancel={() => {
@@ -813,7 +801,7 @@ function CalendarView({
               setLogVersion(value => value + 1);
               setDeleteBusy(false);
               setDeleteDialogOpen(false);
-              toast.success("Günlük kayıt silindi.");
+              toast.success(t("Günlük kayıt silindi."));
               requestAnimationFrame(() => deleteTriggerRef.current?.focus());
             }}
           />
@@ -824,7 +812,7 @@ function CalendarView({
               setModalOpen(true);
             }}
           >
-            <Plus size={16} /> Bu günü düzenle
+            <Plus size={16} /> {t("Bu günü düzenle")}
           </button>
         </aside>
       </div>
@@ -898,7 +886,7 @@ function CalendarRecordModal({
   const validationError = validatePeriodRange(startDate, hasEndDate ? endDate : null, records, existing?.id);
   const calculatedLength = validationError || !hasEndDate ? 0 : periodLength(startDate, endDate);
   const save = () => {
-    if (validationError) { toast.error(validationError); return; }
+    if (validationError) { toast.error(t(validationError)); return; }
     const nextRecord = {
       id: existing?.id ?? Math.max(Date.now(), ...records.map(record => record.id + 1)),
       date: startDate,
@@ -909,18 +897,18 @@ function CalendarRecordModal({
       ? records.map(record => (record.id === existing.id ? nextRecord : record))
       : [...records, nextRecord];
     if (!onSave(next)) return;
-    toast.success(existing ? "Başlangıç kaydı güncellendi" : "Başlangıç kaydı eklendi", {
-      description: "Kişisel tahmin için geçmiş başlangıçlarını eklemeye devam edebilirsin.",
+    toast.success(t(existing ? "Başlangıç kaydı güncellendi" : "Başlangıç kaydı eklendi"), {
+      description: t("Kişisel tahmin için geçmiş başlangıçlarını eklemeye devam edebilirsin."),
     });
   };
   const remove = () => {
     if (!existing) {
-      toast.info("Bu gün için silinecek kayıt yok.");
+      toast.info(t("Bu gün için silinecek kayıt yok."));
       onClose();
       return;
     }
     if (!onDelete(records.filter(record => record.id !== existing.id))) return;
-    toast.success("Adet kaydı silindi");
+    toast.success(t("Adet kaydı silindi"));
   };
   return (
     <div
@@ -938,18 +926,18 @@ function CalendarRecordModal({
       >
         <div className="modal-heading">
           <div>
-            <span className="tiny-label">TAKVİM KAYDI</span>
+            <span className="tiny-label">{t("TAKVİM KAYDI")}</span>
             <h3 id="record-modal-title">
-              {confirming
+              {t(confirming
                 ? "Kaydı sil?"
                 : existing
                   ? "Kaydı düzenle"
-                  : forceCreate ? "Geçmiş başlangıç ekle" : "Bu günü kaydet"}
+                  : forceCreate ? "Geçmiş başlangıç ekle" : "Bu günü kaydet")}
             </h3>
           </div>
           <button
             className="icon-button"
-            aria-label="Modalı kapat"
+            aria-label={t("Modalı kapat")}
             onClick={onClose}
           >
             ×
@@ -960,17 +948,17 @@ function CalendarRecordModal({
             <div className="delete-symbol">
               <Trash2 size={22} />
             </div>
-            <p>Bu adet kaydını silmek istediğinizden emin misin?</p>
-            <span>Bu işlem tahmini tarihleri de yeniden hesaplar.</span>
+            <p>{t("Bu adet kaydını silmek istediğinizden emin misin?")}</p>
+            <span>{t("Bu işlem tahmini tarihleri de yeniden hesaplar.")}</span>
             <div className="modal-actions">
               <button
                 className="ghost-button"
                 onClick={() => setConfirming(false)}
               >
-                Vazgeç
+                {t("Vazgeç")}
               </button>
               <button className="danger-solid" onClick={remove}>
-                Evet, sil
+                {t("Evet, sil")}
               </button>
             </div>
           </div>
@@ -978,7 +966,7 @@ function CalendarRecordModal({
           <>
             <div className="modal-fields">
               <label className="field-label">
-                Başlangıç tarihi
+                {t("Başlangıç tarihi")}
                 <input
                   type="date"
                   max={iso(startOfToday())}
@@ -995,10 +983,10 @@ function CalendarRecordModal({
                   setHasEndDate(event.target.checked);
                   if (event.target.checked && !endDate) setEndDate(startDate);
                 }} />
-                Bitiş tarihini de biliyorum
+                {t("Bitiş tarihini de biliyorum")}
               </label>
               {hasEndDate && <label className="field-label">
-                Bitiş tarihi (isteğe bağlı)
+                {t("Bitiş tarihi (isteğe bağlı)")}
                 <input
                   type="date"
                   min={startDate}
@@ -1013,28 +1001,28 @@ function CalendarRecordModal({
               </label>}
             </div>
             {hasEndDate && <p className="calculated-duration">
-              Otomatik hesaplanan süre:{" "}
-              <strong>{calculatedLength ? `${calculatedLength} gün` : "—"}</strong>
+              {t("Otomatik hesaplanan süre:")}{" "}
+              <strong>{calculatedLength ? msg("days", { count: calculatedLength }) : "—"}</strong>
             </p>}
-            {validationError && <p className="form-error" role="alert">{validationError}</p>}
+            {validationError && <p className="form-error" role="alert">{t(validationError)}</p>}
             <p className="modal-note">
-              {futureStoredEnd && "Önceki kayıttaki bitiş tarihi henüz gelmediği için formda bugün gösteriliyor; kaydedene kadar mevcut kayıt değişmez. "}
-              Başlangıç günü yeterli; bitişi bilmiyorsan boş bırak. Adet süresi ancak bitişi eklediğinde hesaplanır. Kayıt yalnızca bu cihazda saklanır; tahmin kesin değildir.
+              {futureStoredEnd && <>{t("Önceki kayıttaki bitiş tarihi henüz gelmediği için formda bugün gösteriliyor; kaydedene kadar mevcut kayıt değişmez.")} </>}
+              {t("Başlangıç günü yeterli; bitişi bilmiyorsan boş bırak. Adet süresi ancak bitişi eklediğinde hesaplanır. Kayıt yalnızca bu cihazda saklanır; tahmin kesin değildir.")}
             </p>
             <div className="modal-actions">
               <button className="ghost-button" onClick={onClose}>
-                Vazgeç
+                {t("Vazgeç")}
               </button>
               {existing && (
                 <button
                   className="danger-link"
                   onClick={() => setConfirming(true)}
                 >
-                  Sil
+                  {t("Sil")}
                 </button>
               )}
               <button className="primary-solid" onClick={save} disabled={Boolean(validationError)}>
-                Kaydet
+                {t("Kaydet")}
               </button>
             </div>
           </>
@@ -1059,32 +1047,34 @@ function HistoryView({
   return (
     <div className="page-view">
       <div className="page-intro">
-        <span className="tiny-label">KAYIT ARŞİVİ</span>
+        <span className="tiny-label">{t("KAYIT ARŞİVİ")}</span>
         <h2>
-          Geçmiş, geleceği
+          {t("Geçmiş, geleceği")}
           <br />
-          <em>anlamak</em> için.
+          <em>{t("anlamak")}</em> {t("için.")}
         </h2>
         <p>
-          Geçmiş başlangıç günlerini ekle; bitişi bilmiyorsan boş bırakabilirsin. Herkesin döngüsü aynı uzunlukta değildir, bu yüzden kişisel tahmine birkaç kayıtla zaman tanıyoruz.
+          {t("Geçmiş başlangıç günlerini ekle; bitişi bilmiyorsan boş bırakabilirsin. Herkesin döngüsü aynı uzunlukta değildir, bu yüzden kişisel tahmine birkaç kayıtla zaman tanıyoruz.")}
         </p>
       </div>
       <div className="history-toolbar">
         <div>
-          <strong>{p.hasPersonalizedPrediction ? `${p.average} gün` : "—"}</strong><span>yaklaşık döngü ortalaması</span>
-          <strong>{p.hasPeriodDurationEstimate ? `${p.averagePeriodLength} gün` : "—"}</strong><span>adet süresi ortalaması</span>
+          <strong>{p.hasPersonalizedPrediction ? msg("days", { count: p.average }) : "—"}</strong><span>{t("yaklaşık döngü ortalaması")}</span>
+          <strong>{p.hasPeriodDurationEstimate ? msg("days", { count: p.averagePeriodLength }) : "—"}</strong><span>{t("adet süresi ortalaması")}</span>
         </div>
-        <button className="secondary-button" onClick={() => setAdding(true)}><Plus size={16} /> Geçmiş başlangıç ekle</button>
+        <button className="secondary-button" onClick={() => setAdding(true)}><Plus size={16} /> {t("Geçmiş başlangıç ekle")}</button>
       </div>
-      {!p.hasPersonalizedPrediction && <section className="learning-panel surface" aria-label="Kişisel tahmin durumu">
-        <span className="tiny-label">KİŞİSEL TAHMİN DURUMU</span>
-        <h3>{p.stage === "stale" ? "Yeni kayıtlarla devam edelim" : "Önce kendi ritmini tanıyalım"}</h3>
-        <p>{p.stage === "stale" ? "Önceki yaklaşık aralık geçti. Yeni bir başlangıç eklenmeden tahmini kendiliğinden sonraki aya taşımıyoruz." : `${p.resetAfterLongGap ? "Uzun boşluktan sonra " : "Şu anda "}${p.recordedStarts} başlangıç ve ${p.lengths.length} tamamlanmış döngü aralığı kayıtlı. İlk kişisel tahmin için ${p.remainingCycles} aralık daha gerekiyor.`}</p>
-        {p.stage === "learning" && <div className="learning-progress" role="progressbar" aria-label="Kişisel tahmin için tamamlanan döngüler" aria-valuenow={p.lengths.length} aria-valuemin={0} aria-valuemax={3}><span style={{ width: `${Math.min(100, p.lengths.length / 3 * 100)}%` }} /></div>}
-        <small>Bu bir tıbbi değerlendirme eşiği değil, erken ve yanıltıcı adet tahmini vermemek için uygulama kuralıdır.</small>
+      {!p.hasPersonalizedPrediction && <section className="learning-panel surface" aria-label={t("Kişisel tahmin durumu")}>
+        <span className="tiny-label">{t("KİŞİSEL TAHMİN DURUMU")}</span>
+        <h3>{t(p.stage === "stale" ? "Yeni kayıtlarla devam edelim" : "Önce kendi ritmini tanıyalım")}</h3>
+        <p>{p.stage === "stale" ? t("Önceki yaklaşık aralık geçti. Yeni bir başlangıç eklenmeden tahmini kendiliğinden sonraki aya taşımıyoruz.") : p.resetAfterLongGap
+          ? msg("afterLongGap", { text: msg("historyLearning", { recorded: p.recordedStarts, intervals: p.lengths.length, remaining: p.remainingCycles }) })
+          : msg("historyLearning", { recorded: p.recordedStarts, intervals: p.lengths.length, remaining: p.remainingCycles })}</p>
+        {p.stage === "learning" && <div className="learning-progress" role="progressbar" aria-label={t("Kişisel tahmin için tamamlanan döngüler")} aria-valuenow={p.lengths.length} aria-valuemin={0} aria-valuemax={3}><span style={{ width: `${Math.min(100, p.lengths.length / 3 * 100)}%` }} /></div>}
+        <small>{t("Bu bir tıbbi değerlendirme eşiği değil, erken ve yanıltıcı adet tahmini vermemek için uygulama kuralıdır.")}</small>
       </section>}
       <div className="history-list surface">
-        {ordered.length === 0 && <p className="history-empty">Henüz kayıt yok. İlk başlangıç gününü ekleyebilirsin.</p>}
+        {ordered.length === 0 && <p className="history-empty">{t("Henüz kayıt yok. İlk başlangıç gününü ekleyebilirsin.")}</p>}
         {ordered
           .slice().reverse()
           .map((record, index) => {
@@ -1105,21 +1095,21 @@ function HistoryView({
                   </span>
                   <div>
                     <strong>{pretty(date)}{endDate ? ` – ${pretty(parseDate(endDate))}` : ""}</strong>
-                    <span>{!endDate ? "Yalnızca başlangıç kayıtlı" : incomplete ? "Bitiş tarihi henüz gelmedi; düzenleyebilirsin" : "Başlangıç ve bitiş kayıtlı"}</span>
+                    <span>{t(!endDate ? "Yalnızca başlangıç kayıtlı" : incomplete ? "Bitiş tarihi henüz gelmedi; düzenleyebilirsin" : "Başlangıç ve bitiş kayıtlı")}</span>
                   </div>
                 </div>
                 <div className="history-metric">
-                  <strong>{endDate ? `${record.length} gün` : "—"}</strong>
-                  <span>{incomplete ? "planlanan süre" : "adet süresi"}</span>
+                  <strong>{endDate ? msg("days", { count: record.length }) : "—"}</strong>
+                  <span>{t(incomplete ? "planlanan süre" : "adet süresi")}</span>
                 </div>
                 <div className="history-metric">
-                  <strong>{cycle ?? "—"}{cycle ? " gün" : ""}</strong>
-                  <span>iki başlangıç arası</span>
+                  <strong>{cycle ? msg("days", { count: cycle }) : "—"}</strong>
+                  <span>{t("iki başlangıç arası")}</span>
                 </div>
-                <button className="text-link" aria-label={`${pretty(date)} kaydını düzenle`} onClick={() => setEditing(record)}>Düzenle</button>
+                <button className="text-link" aria-label={`${pretty(date)} ${t("kaydını düzenle")}`} onClick={() => setEditing(record)}>{t("Düzenle")}</button>
                 <button
                   className="delete-button"
-                  aria-label={`${pretty(date)} kaydını sil`}
+                  aria-label={`${pretty(date)} ${t("kaydını sil")}`}
                   onClick={() => setDeleting(record)}
                 >
                   <Trash2 size={17} />
@@ -1128,10 +1118,10 @@ function HistoryView({
             );
           })}
       </div>
-      {p.hasPersonalizedPrediction && <section className="future-periods surface" aria-label="Yaklaşık başlangıç aralıkları">
-        <span className="tiny-label">YAKLAŞIK BAŞLANGIÇ ARALIKLARI</span>
-        <p>Son {p.lengths.length} tamamlanmış aralığın ortalaması {p.average} gün. Bunlar kesin tarihler değil; yeni kayıtlarla değişir. {p.excludedGaps > 0 && "Uzun bir kayıt boşluğu tahmine katılmadı; atlanmış kayıt varsa ekleyebilirsin."}</p>
-        <ol>{p.futureWindows.map(window => <li key={iso(window.start)}><strong>{pretty(window.start)} – {pretty(window.end)}</strong><span>Olası adet başlangıcı</span></li>)}</ol>
+      {p.hasPersonalizedPrediction && <section className="future-periods surface" aria-label={t("Yaklaşık başlangıç aralıkları")}>
+        <span className="tiny-label">{t("YAKLAŞIK BAŞLANGIÇ ARALIKLARI")}</span>
+        <p>{t("Son")} {p.lengths.length} {t("tamamlanmış aralığın ortalaması")} {p.average} {t("gün. Bunlar kesin tarihler değil; yeni kayıtlarla değişir.")} {p.excludedGaps > 0 && t("Uzun bir kayıt boşluğu tahmine katılmadı; atlanmış kayıt varsa ekleyebilirsin.")}</p>
+        <ol>{p.futureWindows.map(window => <li key={iso(window.start)}><strong>{pretty(window.start)} – {pretty(window.end)}</strong><span>{t("Olası adet başlangıcı")}</span></li>)}</ol>
       </section>}
       {(adding || editing) && <CalendarRecordModal
         key={adding ? "new-history" : editing?.id}
@@ -1146,16 +1136,16 @@ function HistoryView({
       />}
       <ConfirmDialog
         open={Boolean(deleting)}
-        title="Bu adet kaydı silinsin mi?"
-        description="Bu işlem gelecekteki tahminleri yeniden hesaplar."
-        confirmLabel="Kaydı sil"
+        title={t("Bu adet kaydı silinsin mi?")}
+        description={t("Bu işlem gelecekteki tahminleri yeniden hesaplar.")}
+        confirmLabel={t("Kaydı sil")}
         destructive
         onCancel={() => setDeleting(null)}
         onConfirm={() => {
           if (!deleting) return;
           if (!setRecords(records.filter(record => record.id !== deleting.id))) return;
           setDeleting(null);
-          toast.success("Kayıt silindi");
+          toast.success(t("Kayıt silindi"));
         }}
       />
     </div>
@@ -1181,34 +1171,33 @@ function InsightsView({ records }: { records: RecordItem[] }) {
     <div className="page-view">
       <div className="page-intro split-intro">
         <div>
-          <span className="tiny-label">DÖNGÜLERİNİN RİTMİ</span>
+          <span className="tiny-label">{t("DÖNGÜLERİNİN RİTMİ")}</span>
           <h2>
-            Veri var.
+            {t("Veri var.")}
             <br />
-            <em>Yargı yok.</em>
+            <em>{t("Yargı yok.")}</em>
           </h2>
         </div>
         <p>
-          İçgörüler yalnızca kayıtlarını düzenli görmene yardım eder. Vücudun
-          bir grafik değildir; değişkenlik doğaldır.
+          {t("İçgörüler yalnızca kayıtlarını düzenli görmene yardım eder. Vücudun\n          bir grafik değildir; değişkenlik doğaldır.")}
         </p>
       </div>
       <div className="insight-grid">
         <div className="surface big-stat">
-          <span className="tiny-label">{p.hasPersonalizedPrediction ? "YAKLAŞIK DÖNGÜ ORTALAMASI" : "KAYIT BİRİKİYOR"}</span>
+          <span className="tiny-label">{t(p.hasPersonalizedPrediction ? "YAKLAŞIK DÖNGÜ ORTALAMASI" : "KAYIT BİRİKİYOR")}</span>
           <strong>
             {p.hasPersonalizedPrediction ? p.average : "—"}
-            {p.hasPersonalizedPrediction && <small> gün</small>}
+            {p.hasPersonalizedPrediction && <small> {t("gün")}</small>}
           </strong>
           <div className="trend">
-            <TrendingUp size={15} /> {p.hasPersonalizedPrediction ? "Kayıtlarına dayalı yaklaşık değer" : p.stage === "stale" ? "Yeni başlangıç kaydı bekleniyor" : `${p.remainingCycles} döngü aralığı daha bekleniyor`}
+            <TrendingUp size={15} /> {p.hasPersonalizedPrediction ? t("Kayıtlarına dayalı yaklaşık değer") : p.stage === "stale" ? t("Yeni başlangıç kaydı bekleniyor") : msg("remainingIntervals", { count: p.remainingCycles })}
           </div>
         </div>
         <div className="surface chart-card">
           <div className="section-top">
             <div>
-              <span className="tiny-label">SON 6 DÖNGÜ</span>
-              <h3>Uzunluk değişimi</h3>
+              <span className="tiny-label">{t("SON 6 DÖNGÜ")}</span>
+              <h3>{t("Uzunluk değişimi")}</h3>
             </div>
           </div>
           {bars.length ? (
@@ -1223,7 +1212,7 @@ function InsightsView({ records }: { records: RecordItem[] }) {
                   </div>
                   <small>
                     {index === bars.length - 1
-                      ? "şimdi"
+                      ? t("şimdi")
                       : `${bars.length - index}.`}
                   </small>
                 </div>
@@ -1231,42 +1220,42 @@ function InsightsView({ records }: { records: RecordItem[] }) {
             </div>
           ) : (
             <div className="empty-insight">
-              {p.stage === "stale" ? "Yeni bir başlangıç kaydıyla güncel içgörülere dön." : "Üç tamamlanmış döngü aralığından sonra kişisel değişimi göstereceğiz."}
+              {t(p.stage === "stale" ? "Yeni bir başlangıç kaydıyla güncel içgörülere dön." : "Üç tamamlanmış döngü aralığından sonra kişisel değişimi göstereceğiz.")}
             </div>
           )}
         </div>
         <div className="surface insight-note">
           <Sparkles size={20} />
-          <h3>Bir not düşelim</h3>
+          <h3>{t("Bir not düşelim")}</h3>
           <p>
-            {p.hasPersonalizedPrediction
+            {t(p.hasPersonalizedPrediction
               ? "Döngülerin arasında farklılıklar olabilir. Bu grafik bir sağlık değerlendirmesi değil, kaydettiklerinin özeti."
-              : "Bir veya iki aralıktan kişisel ritim belirlemiyoruz. Başlangıç günlerini kaydetmeye devam etmen yeterli."}
+              : "Bir veya iki aralıktan kişisel ritim belirlemiyoruz. Başlangıç günlerini kaydetmeye devam etmen yeterli.")}
           </p>
         </div>
       </div>
         <div className="personal-insights">
           <div>
-            <span className="tiny-label">KİŞİSEL İÇGÖRÜLER</span>
+            <span className="tiny-label">{t("KİŞİSEL İÇGÖRÜLER")}</span>
             {personal.length ? (
-              personal.map(insight => <p key={insight.kind}>{insight.text}</p>)
+              personal.map(insight => <p key={insight.kind}>{t(insight.text)}</p>)
             ) : (
-              <p>İçgörüler için birkaç döngü ve günlük kayıt daha gerekiyor.</p>
+              <p>{t("İçgörüler için birkaç döngü ve günlük kayıt daha gerekiyor.")}</p>
             )}
           </div>
           {frequent.length > 0 && (
             <div>
-              <span className="tiny-label">EN SIK BELİRTİLER</span>
+              <span className="tiny-label">{t("EN SIK BELİRTİLER")}</span>
               <p>
                 {frequent
-                  .map(item => `${item.label} ${item.count} kayıt`)
+                  .map(item => `${t(item.label)} · ${msg("records", { count: item.count })}`)
                   .join(" · ")}
               </p>
             </div>
           )}
         </div>
       <p className="disclaimer">
-        Bu bilgiler tıbbi değerlendirme yerine geçmez. Adet başlangıcı aralıkları yalnızca kayıtlarına dayalı yaklaşık hesaplardır. Uygulama yumurtlama, doğurgan veya güvenli günleri hesaplamaz; doğum kontrolü ya da gebelik planlaması için kullanılamaz.
+        {t("Bu bilgiler tıbbi değerlendirme yerine geçmez. Adet başlangıcı aralıkları yalnızca kayıtlarına dayalı yaklaşık hesaplardır. Uygulama yumurtlama, doğurgan veya güvenli günleri hesaplamaz; doğum kontrolü ya da gebelik planlaması için kullanılamaz.")}
       </p>
     </div>
   );
@@ -1302,9 +1291,9 @@ function NativeSettingsPanel() {
     const enabled = await enableBiometricLock();
     if (!enabled) {
       toast.error(
-        biometricAvailable === "unavailable"
+        t(biometricAvailable === "unavailable"
           ? "Bu cihazda biyometrik doğrulama kullanılamıyor."
-          : "Biyometrik doğrulama tamamlanmadı."
+          : "Biyometrik doğrulama tamamlanmadı.")
       );
       return;
     }
@@ -1314,7 +1303,7 @@ function NativeSettingsPanel() {
       biometricLockEnabled: true,
     } as UserPreferencesWithLock);
     window.dispatchEvent(new Event("luna-biometric-lock-change"));
-    toast.success("Uygulama kilidi etkinleştirildi.");
+    toast.success(t("Uygulama kilidi etkinleştirildi."));
   };
   const enableNotifications = async () => {
     if (notificationState === "prompt" && !showNotificationIntro) {
@@ -1327,29 +1316,27 @@ function NativeSettingsPanel() {
     if (permission === "granted") {
       savePreferences({ ...getPreferences(), notificationEnabled: true });
       toast.success(
-        native
+        t(native
           ? "Cihaz bildirimleri etkinleştirildi."
-          : "Tarayıcı bildirimleri etkinleştirildi."
+          : "Tarayıcı bildirimleri etkinleştirildi.")
       );
     } else {
       savePreferences({ ...getPreferences(), notificationEnabled: false });
       toast.error(
-        "Bildirim izni kapalı. Cihaz ayarlarından Luna bildirimlerine izin verebilirsin."
+        t("Bildirim izni kapalı. Cihaz ayarlarından Luna bildirimlerine izin verebilirsin.")
       );
     }
   };
   if (!native)
     return (
       <div className="settings-group native-settings-note">
-        <span className="tiny-label">MOBİL ÖZELLİKLER</span>
+        <span className="tiny-label">{t("MOBİL ÖZELLİKLER")}</span>
         <div className="privacy-panel">
           <LockKeyhole size={22} />
           <div>
-            <strong>Mobil uygulamada bildirim planlama etkinleşir.</strong>
+            <strong>{t("Mobil uygulamada bildirim planlama etkinleşir.")}</strong>
             <p>
-              Web sürümünde hatırlatma tercihi saklanır; native bildirim,
-              biyometrik kilit ve güvenli depolama Capacitor uygulamasında
-              kullanılır.
+              {t("Web sürümünde hatırlatma tercihi saklanır; native bildirim,\n              biyometrik kilit ve güvenli depolama Capacitor uygulamasında\n              kullanılır.")}
             </p>
           </div>
         </div>
@@ -1358,24 +1345,24 @@ function NativeSettingsPanel() {
   return (
     <>
       <div className="settings-group">
-        <span className="tiny-label">MOBİL GİZLİLİK</span>
+        <span className="tiny-label">{t("MOBİL GİZLİLİK")}</span>
         <div className="setting-row">
           <div className="setting-icon">
             <Cloud size={17} />
           </div>
           <div>
-            <strong>Yerel bildirimler</strong>
+            <strong>{t("Yerel bildirimler")}</strong>
             <span>
-              {notificationState === "denied"
+              {t(notificationState === "denied"
                 ? "Bildirim izni kapalı"
                 : notificationState === "granted"
                   ? "Cihazda planlanır"
-                  : "İzin bekleniyor"}
+                  : "İzin bekleniyor")}
             </span>
           </div>
           <button
             className="toggle"
-            aria-label="Yerel bildirimleri etkinleştir"
+            aria-label={t("Yerel bildirimleri etkinleştir")}
             onClick={enableNotifications}
           >
             <span className={notificationState === "granted" ? "on" : ""} />
@@ -1386,21 +1373,21 @@ function NativeSettingsPanel() {
             <LockKeyhole size={17} />
           </div>
           <div>
-            <strong>Uygulamayı biyometrik kilitle koru</strong>
+            <strong>{t("Uygulamayı biyometrik kilitle koru")}</strong>
             <span>
-              {biometricAvailable === "unavailable"
+              {t(biometricAvailable === "unavailable"
                 ? "Bu cihazda biyometrik doğrulama kullanılamıyor."
                 : biometricAvailable === "not-enrolled"
                   ? "Cihaz ayarlarından parmak izi ekle."
                   : biometricEnabled
                     ? "Açılışta doğrulama istenir"
-                    : "Kapalı"}
+                    : "Kapalı")}
             </span>
           </div>
           <button
             className="toggle"
             disabled={biometricAvailable !== "available"}
-            aria-label="Biyometrik uygulama kilidini değiştir"
+            aria-label={t("Biyometrik uygulama kilidini değiştir")}
             onClick={toggleBiometric}
           >
             <span className={biometricEnabled ? "on" : ""} />
@@ -1410,9 +1397,9 @@ function NativeSettingsPanel() {
       {showNotificationIntro && (
         <ConfirmDialog
           open
-          title="Cihazında hatırlat"
-          description="Luna, yaklaşan tahmini dönemini cihazında hatırlatabilir. Bildirim verileri cihazında planlanır."
-          confirmLabel="İzin iste"
+          title={t("Cihazında hatırlat")}
+          description={t("Luna, yaklaşan tahmini dönemini cihazında hatırlatabilir. Bildirim verileri cihazında planlanır.")}
+          confirmLabel={t("İzin iste")}
           onConfirm={() => void enableNotifications()}
           onCancel={() => setShowNotificationIntro(false)}
         />
@@ -1442,53 +1429,55 @@ function SettingsView({
     setRecords([]);
     setOnboarded(false);
     setConfirmClear(false);
-    toast.success("Tüm yerel sağlık verilerin temizlendi");
+    toast.success(t("Tüm yerel sağlık verilerin temizlendi"));
   };
   return (
     <div className="page-view">
       <div className="page-intro">
-        <span className="tiny-label">KONTROL SENDE</span>
+        <span className="tiny-label">{t("KONTROL SENDE")}</span>
         <h2>
-          Alanını
+          {t("Alanını")}
           <br />
-          <em>kendin kur.</em>
+          <em>{t("kendin kur.")}</em>
         </h2>
         <p>
-          Luna Cycle’ın temel ayarları bu cihazda saklanır. Burada yaptığın
-          değişiklikler başka yere gitmez.
+          {t("Luna Cycle’ın temel ayarları bu cihazda saklanır. Burada yaptığın\n          değişiklikler başka yere gitmez.")}
         </p>
       </div>
       <div className="settings-layout">
-        <div className="settings-group" aria-label="Ücretsiz sürüm">
-          <span className="tiny-label">BU SÜRÜM</span>
-          <p>Tüm mevcut özellikler ücretsizdir. Uygulama içi satın alma veya abonelik yoktur.</p>
+        <div className="settings-group" aria-label={t("Ücretsiz sürüm")}>
+          <span className="tiny-label">{t("BU SÜRÜM")}</span>
+          <p>{t("Tüm mevcut özellikler ücretsizdir. Uygulama içi satın alma veya abonelik yoktur.")}</p>
         </div>
-        <div className="settings-group" aria-label="Yasal bilgiler">
-          <span className="tiny-label">YASAL BİLGİLER</span>
+        <div className="settings-group" aria-label={t("Yasal bilgiler")}>
+          <span className="tiny-label">{t("YASAL BİLGİLER")}</span>
           <details className="legal-details">
-            <summary>Kullanım Koşullarını yeniden oku <small>Sürüm {TERMS_VERSION}</small></summary>
+            <summary>{t("Kullanım Koşullarını yeniden oku")} <small>{t("Sürüm")} {TERMS_VERSION}</small></summary>
             <div className="legal-details-content">
               {termsSections.map(section => <section key={section.title}>
-                <h3>{section.title}</h3>
-                {section.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
+                <h3>{t(section.title)}</h3>
+                {section.paragraphs.map(paragraph => <p key={paragraph}>{t(paragraph)}</p>)}
               </section>)}
-              <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Apple standart lisansı</a>
+              <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">{t("Apple standart lisansı")}</a>
             </div>
           </details>
         </div>
         <div className="settings-group">
-          <span className="tiny-label">GÖRÜNÜM</span>
+          <LanguageSelector />
+        </div>
+        <div className="settings-group">
+          <span className="tiny-label">{t("GÖRÜNÜM")}</span>
           <div className="setting-row">
             <div className="setting-icon">
               <Sun size={17} />
             </div>
             <div>
-              <strong>Renk modu</strong>
-              <span>{dark ? "Gece paleti" : "Gündüz paleti"}</span>
+              <strong>{t("Renk modu")}</strong>
+              <span>{t(dark ? "Gece paleti" : "Gündüz paleti")}</span>
             </div>
             <button
               className="toggle"
-              aria-label="Renk modunu değiştir"
+              aria-label={t("Renk modunu değiştir")}
               onClick={() => {
                 const next = !dark;
                 setDark(next);
@@ -1505,19 +1494,18 @@ function SettingsView({
           <ThemeSelector />
         </div>
         <div className="settings-group">
-          <span className="tiny-label">GİZLİLİK</span>
+          <span className="tiny-label">{t("GİZLİLİK")}</span>
           <div className="privacy-panel">
             <LockKeyhole size={22} />
             <div>
-              <strong>Verilerin cihazında</strong>
+              <strong>{t("Verilerin cihazında")}</strong>
               <p>
-                Adet döngüsü ve kişisel sağlık kayıtların bir sunucuya
-                gönderilmez.
+                {t("Adet döngüsü ve kişisel sağlık kayıtların bir sunucuya\n                gönderilmez.")}
               </p>
             </div>
           </div>
           <button className="danger-row" onClick={() => setConfirmClear(true)}>
-            <Trash2 size={17} /> Tüm yerel kayıtları sil
+            <Trash2 size={17} /> {t("Tüm yerel kayıtları sil")}
           </button>
         </div>
         <NativeSettingsPanel />
@@ -1526,10 +1514,10 @@ function SettingsView({
       </div>
       <ConfirmDialog
         open={confirmClear}
-        eyebrow="GİZLİLİK MERKEZİ"
-        title="Tüm yerel kayıtlar silinsin mi?"
-        description="Adet dönemleri, günlük kayıtlar ve tercihler bu cihazdan kalıcı olarak silinecek. Bu işlem geri alınamaz."
-        confirmLabel="Tümünü Sil"
+        eyebrow={t("GİZLİLİK MERKEZİ")}
+        title={t("Tüm yerel kayıtlar silinsin mi?")}
+        description={t("Adet dönemleri, günlük kayıtlar ve tercihler bu cihazdan kalıcı olarak silinecek. Bu işlem geri alınamaz.")}
+        confirmLabel={t("Tümünü Sil")}
         destructive
         onConfirm={clearDeviceData}
         onCancel={() => setConfirmClear(false)}
@@ -1591,12 +1579,12 @@ function ImportConfirmDialog({
       >
         <div className="modal-heading">
           <div>
-            <span className="tiny-label">GİZLİLİK MERKEZİ</span>
-            <h3 id="import-dialog-title">Yedeği geri yükle</h3>
+            <span className="tiny-label">{t("GİZLİLİK MERKEZİ")}</span>
+            <h3 id="import-dialog-title">{t("Yedeği geri yükle")}</h3>
           </div>
           <button
             className="icon-button"
-            aria-label="İçe aktarmayı kapat"
+            aria-label={t("İçe aktarmayı kapat")}
             onClick={onCancel}
             disabled={busy}
           >
@@ -1604,12 +1592,10 @@ function ImportConfirmDialog({
           </button>
         </div>
         <p id="import-dialog-description" className="import-warning">
-          Bu işlem mevcut Luna Cycle kayıtlarının üzerine yazacaktır. Devam
-          etmek istiyor musun?
+          {t("Bu işlem mevcut Luna Cycle kayıtlarının üzerine yazacaktır. Devam\n          etmek istiyor musun?")}
         </p>
         <p className="modal-note">
-          Mevcut adet ve günlük kayıtların, seçtiğin yedekteki verilerle
-          değiştirilecektir.
+          {t("Mevcut adet ve günlük kayıtların, seçtiğin yedekteki verilerle\n          değiştirilecektir.")}
         </p>
         <div className="modal-actions">
           <button
@@ -1618,10 +1604,10 @@ function ImportConfirmDialog({
             onClick={onCancel}
             disabled={busy}
           >
-            İptal
+            {t("İptal")}
           </button>
           <button className="danger-solid" onClick={onConfirm} disabled={busy}>
-            {busy ? "Geri yükleniyor…" : "Yedeği Geri Yükle"}
+            {t(busy ? "Geri yükleniyor…" : "Yedeği Geri Yükle")}
           </button>
         </div>
       </section>
@@ -1645,12 +1631,12 @@ function DataTools({
     const date = iso(startOfToday());
     if (isNativePlatform()) {
       toast.info(
-        "Bu dosya adet ve günlük sağlık kayıtlarını içerir. Yalnızca güvendiğin bir yerde sakla veya paylaş."
+        t("Bu dosya adet ve günlük sağlık kayıtlarını içerir. Yalnızca güvendiğin bir yerde sakla veya paylaş.")
       );
       const shared = await exportNativeBackup(raw, date);
-      if (shared) toast.success("Yedek paylaşım ekranı açıldı");
+      if (shared) toast.success(t("Yedek paylaşım ekranı açıldı"));
       else
-        toast.error("Yedek dışa aktarılamadı. Dosya paylaşımı kullanılamıyor.");
+        toast.error(t("Yedek dışa aktarılamadı. Dosya paylaşımı kullanılamıyor."));
       return;
     }
     const blob = new Blob([raw], { type: "application/json" });
@@ -1660,7 +1646,7 @@ function DataTools({
     anchor.download = `luna-cycle-backup-${date}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
-    toast.success("Yedek dosyası indirildi");
+    toast.success(t("Yedek dosyası indirildi"));
   };
   const importNative = async () => {
     const result = await importNativeBackup();
@@ -1673,9 +1659,9 @@ function DataTools({
           length: item.length ?? 5,
         }))
       );
-      toast.success("Yedek başarıyla geri yüklendi.");
+      toast.success(t("Yedek başarıyla geri yüklendi."));
     } else if (result === "invalid")
-      toast.error("Bu dosya geçerli bir Luna yedeği değil.");
+      toast.error(t("Bu dosya geçerli bir Luna yedeği değil."));
   };
   const importFile = (file?: File) => {
     if (!file) return;
@@ -1687,7 +1673,7 @@ function DataTools({
         setPendingRaw(raw);
       } catch {
         resetInput();
-        toast.error("Bu dosya geçerli bir Luna yedeği değil");
+        toast.error(t("Bu dosya geçerli bir Luna yedeği değil"));
       }
     };
     reader.readAsText(file);
@@ -1709,41 +1695,40 @@ function DataTools({
         length: item.length ?? 5,
       }));
       setRecords(next);
-      toast.success("Yedek başarıyla geri yüklendi.");
+      toast.success(t("Yedek başarıyla geri yüklendi."));
       cancelImport();
     } catch {
       setBusy(false);
       resetInput();
-      toast.error("Yedek geri yüklenemedi. Mevcut verilerin korunuyor.");
+      toast.error(t("Yedek geri yüklenemedi. Mevcut verilerin korunuyor."));
     }
   };
   return (
     <div className="settings-group">
-      <span className="tiny-label">GİZLİLİK MERKEZİ</span>
+      <span className="tiny-label">{t("GİZLİLİK MERKEZİ")}</span>
       <div className="privacy-panel">
         <LockKeyhole size={22} />
         <div>
-          <strong>Sağlık verisi sunucuya gönderimi: Yok</strong>
+          <strong>{t("Sağlık verisi sunucuya gönderimi: Yok")}</strong>
           <p>
-            Adet ve semptom kayıtların cihazında tutulur; analytics olaylarına
-            veya reklam isteklerine eklenmez.
+            {t("Adet ve semptom kayıtların cihazında tutulur; analytics olaylarına\n            veya reklam isteklerine eklenmez.")}
           </p>
         </div>
       </div>
       <div className="data-actions">
         <button className="secondary-button" onClick={download}>
-          JSON dışa aktar
+          {t("JSON dışa aktar")}
         </button>
         {isNativePlatform() && (
           <button
             className="secondary-button"
             onClick={() => void importNative()}
           >
-            Yedek seç
+            {t("Yedek seç")}
           </button>
         )}
         <label className="import-button">
-          Yedek içe aktar
+          {t("Yedek içe aktar")}
           <input
             ref={inputRef}
             type="file"
@@ -1764,6 +1749,7 @@ function DataTools({
 }
 
 export default function Home() {
+  const language = getLanguage();
   const [active, setActive] = useState<Tab>("home");
   const [recordModalOpen, setRecordModalOpen] = useState(false);
   useEffect(() => { window.scrollTo(0, 0); }, [active]);
@@ -1842,7 +1828,7 @@ export default function Home() {
   useEffect(() => {
     const current = prediction(records);
     void syncCycleReminder(current.futureWindows[0]?.start ?? null, getPreferences());
-  }, [records, onboarded]);
+  }, [records, onboarded, language]);
   const saveRecords = (next: RecordItem[]) => {
     const ordered = next.slice().sort((a, b) => a.date.localeCompare(b.date));
     const previous = new Map(getPeriodRecords().map(item => [item.id, item]));
@@ -1857,7 +1843,7 @@ export default function Home() {
       }))
     );
     if (!saved) {
-      toast.error("Kayıt kaydedilemedi. Lütfen tekrar dene.");
+      toast.error(t("Kayıt kaydedilemedi. Lütfen tekrar dene."));
       return false;
     }
     setRecords(ordered);
@@ -1895,7 +1881,7 @@ export default function Home() {
               length: 0,
             };
             if (!savePeriodRecords([record]) || !savePreferences({ ...getPreferences(), onboardingCompleted: true })) {
-              toast.error("Başlangıç kaydı saklanamadı. Lütfen tekrar dene.");
+              toast.error(t("Başlangıç kaydı saklanamadı. Lütfen tekrar dene."));
               return;
             }
             setRecords([
@@ -1920,9 +1906,9 @@ export default function Home() {
           <Header active={active} onAdd={add} />
           {view}
           <footer className="app-footer">
-            <span>v1.0 · Tasarım gereği özel</span>
+            <span>{t("v1.0 · Tasarım gereği özel")}</span>
             <span>
-              <LockKeyhole size={13} /> kayıtların cihazında kalır
+              <LockKeyhole size={13} /> {t("kayıtların cihazında kalır")}
             </span>
           </footer>
         </main>
@@ -1943,7 +1929,7 @@ export default function Home() {
             >
               <Icon size={19} />
               <span>
-                {id === "home"
+                {t(id === "home"
                   ? "Ana"
                   : id === "calendar"
                     ? "Takvim"
@@ -1951,7 +1937,7 @@ export default function Home() {
                       ? "Geçmiş"
                     : id === "insights"
                       ? "İçgörü"
-                      : "Ayarlar"}
+                      : "Ayarlar")}
               </span>
             </button>
           ))}
@@ -1987,16 +1973,16 @@ export default function Home() {
             <span className="tiny-label">LUNA CYCLE</span>
             <LockKeyhole size={28} />
             <h2 id="native-lock-title">
-              {lifecycle.locked
+              {t(lifecycle.locked
                 ? "Verilerini açmak için doğrula"
-                : "Özel alanın gizlendi"}
+                : "Özel alanın gizlendi")}
             </h2>
             {lifecycle.locked && (
               <button
                 className="primary-solid"
                 onClick={() => void lifecycle.unlock()}
               >
-                Kilidi Aç
+                {t("Kilidi Aç")}
               </button>
             )}
           </div>

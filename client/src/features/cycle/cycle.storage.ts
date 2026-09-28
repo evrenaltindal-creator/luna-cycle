@@ -2,10 +2,11 @@
 import type { PeriodRecord, UserPreferences } from "./cycle.types";
 import { isNativePlatform } from "@/platform/platform";
 import { nativeReplace, nativeSnapshot, nativeStorageReady } from "./nativeStorage.adapter";
+import { detectLanguage, normalizeLanguage } from "@/i18n/language";
 
 export const VERSION = 1;
 const keys = { periods: "luna.periods.v1", logs: "luna.daily-logs.v1", preferences: "luna.preferences.v1" } as const;
-const defaultPreferences: UserPreferences = { averageCycleLength: 28, averagePeriodLength: 5, onboardingCompleted: false, notificationEnabled: false, notificationDaysBefore: 3, privateNotificationText: true, theme: "system" };
+const defaultPreferences: UserPreferences = { averageCycleLength: 28, averagePeriodLength: 5, onboardingCompleted: false, notificationEnabled: false, notificationDaysBefore: 3, privateNotificationText: true, language: detectLanguage(), theme: "system" };
 
 type NativeKey = "periods" | "logs" | "preferences";
 const nativeKey = (key: string): NativeKey | null => key === keys.periods ? "periods" : key === keys.logs ? "logs" : key === keys.preferences ? "preferences" : null;
@@ -40,7 +41,7 @@ export const savePeriodRecords = (records: PeriodRecord[]) => safeWrite(keys.per
 export const deletePeriodRecord = (id: string) => safeWrite(keys.periods, getPeriodRecords().filter((item) => item.id !== id));
 export const getPreferences = (): UserPreferences => {
   const raw = safeRead(keys.preferences, {} as Partial<UserPreferences> & { darkMode?: unknown }); const cycle = Number(raw.averageCycleLength); const period = Number(raw.averagePeriodLength); const days = Number(raw.notificationDaysBefore);
-  return { ...defaultPreferences, ...raw, averageCycleLength: Number.isInteger(cycle) && cycle >= 15 && cycle <= 90 ? cycle : defaultPreferences.averageCycleLength, averagePeriodLength: Number.isInteger(period) && period >= 1 && period <= 14 ? period : defaultPreferences.averagePeriodLength, notificationDaysBefore: ([1, 2, 3, 5] as number[]).includes(days) ? days as 1 | 2 | 3 | 5 : defaultPreferences.notificationDaysBefore, privateNotificationText: typeof raw.privateNotificationText === "boolean" ? raw.privateNotificationText : defaultPreferences.privateNotificationText, theme: raw.theme === "light" || raw.theme === "dark" || raw.theme === "system" ? raw.theme : typeof raw.darkMode === "boolean" ? (raw.darkMode ? "dark" : "light") : defaultPreferences.theme };
+  return { ...defaultPreferences, ...raw, averageCycleLength: Number.isInteger(cycle) && cycle >= 15 && cycle <= 90 ? cycle : defaultPreferences.averageCycleLength, averagePeriodLength: Number.isInteger(period) && period >= 1 && period <= 14 ? period : defaultPreferences.averagePeriodLength, notificationDaysBefore: ([1, 2, 3, 5] as number[]).includes(days) ? days as 1 | 2 | 3 | 5 : defaultPreferences.notificationDaysBefore, privateNotificationText: typeof raw.privateNotificationText === "boolean" ? raw.privateNotificationText : defaultPreferences.privateNotificationText, language: normalizeLanguage(raw.language) ?? defaultPreferences.language, theme: raw.theme === "light" || raw.theme === "dark" || raw.theme === "system" ? raw.theme : typeof raw.darkMode === "boolean" ? (raw.darkMode ? "dark" : "light") : defaultPreferences.theme };
 };
 export const savePreferences = (preferences: UserPreferences) => safeWrite(keys.preferences, preferences);
 export const getDailyLogs = <T = unknown>(): T[] => safeRead(keys.logs, []);
@@ -48,8 +49,9 @@ export const saveDailyLog = <T extends { id: string; date: string }>(log: T) => 
 export const deleteDailyLog = (id: string) => safeWrite(keys.logs, getDailyLogs<{ id: string }>().filter((item) => item.id !== id));
 export const clearAllData = (keepTheme = true) => {
   const theme = keepTheme ? getPreferences().theme : "system";
-  if (isNativePlatform()) nativeReplace({ periods: [], logs: [], preferences: { ...defaultPreferences, theme } });
-  else { localStorage.removeItem(keys.periods); localStorage.removeItem(keys.logs); localStorage.removeItem(keys.preferences); savePreferences({ ...defaultPreferences, theme }); }
+  const language = getPreferences().language;
+  if (isNativePlatform()) nativeReplace({ periods: [], logs: [], preferences: { ...defaultPreferences, theme, language } });
+  else { localStorage.removeItem(keys.periods); localStorage.removeItem(keys.logs); localStorage.removeItem(keys.preferences); savePreferences({ ...defaultPreferences, theme, language }); }
   if (typeof window !== "undefined") window.dispatchEvent(new Event("luna-terms-cleared"));
 };
 export const exportBackup = () => {
@@ -67,4 +69,4 @@ export const validateBackup = (raw: string) => {
   return backup;
 };
 
-export const importBackup = (raw: string) => { const backup = validateBackup(raw); const previous = { periods: getPeriodRecords(), logs: getDailyLogs(), preferences: getPreferences() }; try { if (!safeWrite(keys.periods, backup.periodRecords) || !safeWrite(keys.logs, backup.dailyLogs) || !safeWrite(keys.preferences, { ...(backup.preferences as Record<string, unknown>), termsAcceptance: previous.preferences.termsAcceptance })) throw new Error("Yedek yazılamadı"); } catch (error) { safeWrite(keys.periods, previous.periods); safeWrite(keys.logs, previous.logs); safeWrite(keys.preferences, previous.preferences); throw error; } };
+export const importBackup = (raw: string) => { const backup = validateBackup(raw); const previous = { periods: getPeriodRecords(), logs: getDailyLogs(), preferences: getPreferences() }; try { if (!safeWrite(keys.periods, backup.periodRecords) || !safeWrite(keys.logs, backup.dailyLogs) || !safeWrite(keys.preferences, { ...(backup.preferences as Record<string, unknown>), language: previous.preferences.language, termsAcceptance: previous.preferences.termsAcceptance })) throw new Error("Yedek yazılamadı"); } catch (error) { safeWrite(keys.periods, previous.periods); safeWrite(keys.logs, previous.logs); safeWrite(keys.preferences, previous.preferences); throw error; } };

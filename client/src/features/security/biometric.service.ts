@@ -2,6 +2,7 @@
 import { registerPlugin } from "@capacitor/core";
 import { isNativePlatform } from "@/platform/platform";
 import { normalizeBiometricAvailability } from "./biometric.policy";
+import { t } from "@/i18n";
 
 interface NativeBiometricBridge {
   isAvailable(): Promise<{ isAvailable: boolean; status?: BiometricState }>;
@@ -23,7 +24,7 @@ export async function checkBiometricAvailability(): Promise<BiometricState> {
 
 export async function authenticateBiometric(reason = "Verilerini açmak için doğrula"): Promise<boolean> {
   if (!isNativePlatform()) return false;
-  try { await NativeBiometric.verifyIdentity({ reason, title: "Luna Cycle", subtitle: "Özel sağlık kayıtların", description: "Kayıtlarını görmek için biyometrik doğrulama yap." }); return true; } catch { return false; }
+  try { await NativeBiometric.verifyIdentity({ reason: t(reason), title: "Luna Cycle", subtitle: t("Özel sağlık kayıtların"), description: t("Kayıtlarını görmek için biyometrik doğrulama yap.") }); return true; } catch { return false; }
 }
 
 export async function enableBiometricLock(): Promise<boolean> {

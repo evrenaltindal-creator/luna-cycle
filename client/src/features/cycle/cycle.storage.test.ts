@@ -45,6 +45,16 @@ describe("cycle storage adapter", () => {
     expect(getPreferences().termsAcceptance).toBeUndefined();
   });
 
+  it("yedek içe aktarma ve veri temizleme seçili dili korur", () => {
+    savePreferences({ ...getPreferences(), language: "de" });
+    const backup = JSON.parse(exportBackup());
+    backup.preferences.language = "tr";
+    importBackup(JSON.stringify(backup));
+    expect(getPreferences().language).toBe("de");
+    clearAllData();
+    expect(getPreferences().language).toBe("de");
+  });
+
   it("valid backup yalnızca validation aşamasında storage’ı değiştirmez", () => {
     savePeriodRecord({ id: "existing", startDate: "2026-01-01", endDate: null, createdAt: "now", updatedAt: "now" });
     const candidate = JSON.stringify({ schema: "luna-cycle-backup", version: 1, exportedAt: "now", periodRecords: [{ id: "new", startDate: "2026-02-01", endDate: null }], dailyLogs: [], preferences: getPreferences() });

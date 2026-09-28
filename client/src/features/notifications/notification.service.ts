@@ -2,6 +2,7 @@
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { isNativePlatform } from "@/platform/platform";
 import type { UserPreferences } from "../cycle/cycle.types";
+import { t } from "@/i18n";
 
 export type NotificationPermission = "prompt" | "granted" | "denied";
 export const LUNA_REMINDER_ID = 21001;
@@ -30,8 +31,8 @@ export async function cancelCycleReminders() {
 export async function scheduleCycleReminder(predictedStart: Date, preferences: Pick<UserPreferences, "notificationDaysBefore" | "privateNotificationText">) {
   const reminderDate = new Date(predictedStart); reminderDate.setHours(9, 0, 0, 0); reminderDate.setDate(reminderDate.getDate() - preferences.notificationDaysBefore);
   if (reminderDate.getTime() <= Date.now()) return false;
-  const title = "Luna'dan bir hatırlatman var.";
-  const body = preferences.privateNotificationText ? title : "Yaklaşık adet başlangıç aralığın yaklaşıyor; bu kesin bir tarih değil.";
+  const title = t("Luna'dan bir hatırlatman var.");
+  const body = preferences.privateNotificationText ? title : t("Yaklaşık adet başlangıç aralığın yaklaşıyor; bu kesin bir tarih değil.");
   if (!isNativePlatform()) return false;
   try { await cancelCycleReminders(); await LocalNotifications.schedule({ notifications: [{ id: LUNA_REMINDER_ID, title, body, isExactNotification: false, schedule: { at: reminderDate, allowWhileIdle: true }, extra: { source: "luna-cycle" } }] }); return true; } catch { return false; }
 }

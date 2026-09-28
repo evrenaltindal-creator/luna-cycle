@@ -1,3 +1,4 @@
+import { t } from "../../i18n";
 // Style: Sessiz Ay Takvimi — premium gate davetkâr ama baskısız; temel veriyi saklamaz.
 
 import { useState, type ReactNode } from "react";
@@ -13,8 +14,8 @@ export function PremiumInsightsGate({ children }: { children: ReactNode }) {
   return <>
     <section className="surface premium-insights-gate" aria-labelledby="premium-insights-title">
       <LockKeyhole size={20} />
-      <div><span className="tiny-label">LUNA PLUS</span><h3 id="premium-insights-title">Kayıtlarına daha uzun bir pencereden bak.</h3><p>Gelişmiş kişisel içgörüler temel döngü takibinden ayrı, isteğe bağlı bir katmandır.</p></div>
-      <button className="text-link" onClick={() => setOpen(true)}>Luna Plus’ı keşfet</button>
+      <div><span className="tiny-label">{t("LUNA PLUS")}</span><h3 id="premium-insights-title">{t("Kayıtlarına daha uzun bir pencereden bak.")}</h3><p>{t("Gelişmiş kişisel içgörüler temel döngü takibinden ayrı, isteğe bağlı bir katmandır.")}</p></div>
+      <button className="text-link" onClick={() => setOpen(true)}>{t("Luna Plus’ı keşfet")}</button>
     </section>
     {open && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}><LunaPlusPanel onClose={() => setOpen(false)} /></div>}
   </>;
