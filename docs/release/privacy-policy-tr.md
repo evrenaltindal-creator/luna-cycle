@@ -12,7 +12,7 @@ Bu Gizlilik Politikası, Luna Cycle’ın mevcut sürümünde hangi bilgilerin u
 
 ## 1. Luna Cycle nedir?
 
-Luna Cycle; adet döngüsü kaydı, günlük check-in, takvim, tahmini döngü bilgileri, içgörüler, yerel hatırlatmalar ve gizlilik kontrolleri sunan bir tüketici uygulamasıdır. Luna Cycle bir tıbbi cihaz değildir. Döngü, adet, ovülasyon veya doğurganlık penceresine ilişkin çıktılar yaklaşık ve bilgilendirme amaçlı tahminlerdir.
+Luna Cycle; adet döngüsü kaydı, günlük check-in, takvim, tahmini döngü ve yumurtlama zamanı aralıkları, içgörüler, yerel hatırlatmalar ve gizlilik kontrolleri sunan bir tüketici uygulamasıdır. Luna Cycle bir tıbbi cihaz değildir. Döngü, adet ve yumurtlama zamanına ilişkin çıktılar yaklaşık ve bilgilendirme amaçlı tahminlerdir; doğurgan veya güvenli günleri belirlemez.
 
 Bu çıktılar doğum kontrolü, gebelikten korunma, tanı, tedavi veya acil tıbbi kararlar için kullanılmamalıdır. Sağlıkla ilgili bir endişeniz varsa yetkin bir sağlık profesyoneline başvurun; acil durumlarda bulunduğunuz yerdeki yerel acil yardım hizmetlerini kullanın.
 

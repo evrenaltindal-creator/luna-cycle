@@ -21,7 +21,7 @@ Luna Cycle, adet ve döngü kayıtları, Daily Check-In, takvim, yaklaşık dön
 
 ## 4. Tıbbi tavsiye değildir
 
-Luna Cycle bir tıbbi cihaz değildir ve tıbbi tavsiye, tanı veya tedavi sağlamaz. Döngü, adet, ovülasyon ve doğurganlık penceresi bilgileri yalnızca yaklaşık ve bilgilendirme amaçlı tahminlerdir. Bu bilgiler doğum kontrolü, gebelikten korunma, tanı, tedavi veya acil tıbbi kararlar için kullanılmamalıdır.
+Luna Cycle bir tıbbi cihaz değildir ve tıbbi tavsiye, tanı veya tedavi sağlamaz. Döngü, adet ve yumurtlama zamanı bilgileri yalnızca yaklaşık ve bilgilendirme amaçlı tahminlerdir; doğurgan veya güvenli günleri belirlemez. Bu bilgiler doğum kontrolü, gebelikten korunma, gebelik planlama, tanı, tedavi veya acil tıbbi kararlar için tek başına kullanılmamalıdır.
 
 Sağlıkla ilgili bir endişeniz varsa yetkin bir sağlık profesyoneline başvurun. Acil bir durumda uygulamaya güvenmek yerine bulunduğunuz yerdeki yerel acil yardım hizmetlerini kullanın; bu koşullar belirli bir acil numara taahhüt etmez.
 

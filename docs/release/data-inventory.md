@@ -17,7 +17,7 @@
 | `moods`, `symptoms` | Daily Check-In multi-selects | Inside DailyLog | None | Not sent | Not sent | Via DailyLog controls |
 | `notes` | User free-text note | Inside DailyLog | None | Not sent | Not sent | Edit/delete, Clear All Data |
 | Cycle dates / predictions | Derived from local records | Computed in app; no remote health store | None | Prediction state not sent | Not sent | Source records can be edited/deleted |
-| Estimated ovulation / fertile-window information | Derived estimate | Computed/displayed locally | None | Not sent | Not sent | It is an estimate; source records can be edited/deleted |
+| Estimated ovulation-timing range | Derived estimate | Computed/displayed locally after three completed cycle intervals | None | Not sent | Not sent | Not a fertile/safe-day label; source records can be edited/deleted |
 | Theme, reminders, private notification setting | User preferences | Native/local `preferences` store; web local app storage | None | Not sent | Not sent | Settings/Clear All Data; theme may be retained by product behavior |
 
 The current storage keys are `luna.periods.v1`, `luna.daily-logs.v1` and `luna.preferences.v1` for the web adapter. Native storage maps the same business data to native storage slots. This inventory does not make an absolute cryptographic or zero-risk claim.

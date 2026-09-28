@@ -15,6 +15,7 @@ export type PredictionResult = {
   end: Date;
   futurePeriods: PredictedPeriod[];
   futureWindows: PredictedPeriod[];
+  estimatedOvulationWindows: PredictedPeriod[];
   lengths: number[];
   periodLengths: number[];
   recordedStarts: number;
@@ -94,11 +95,21 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
   const spread = Math.min(14, Math.max(stage === "familiar" ? 2 : 4, Math.ceil(variability * 1.5)));
   let next = addDays(last, cycleDays);
   while (next < reference) next = addDays(next, cycleDays);
+  const windowSpread = (index: number) => Math.min(21, Math.floor((cycleDays - 1) / 2), spread + index * 2);
   const futureWindows = hasPersonalizedPrediction ? Array.from({ length: stage === "familiar" ? 3 : 1 }, (_, index) => {
     const start = addDays(next, cycleDays * index);
-    const windowSpread = Math.min(21, Math.floor((cycleDays - 1) / 2), spread + index * 2);
-    const earliest = addDays(start, -windowSpread);
-    return { start: index === 0 && earliest < reference ? reference : earliest, end: addDays(start, windowSpread) };
+    const earliest = addDays(start, -windowSpread(index));
+    return { start: index === 0 && earliest < reference ? reference : earliest, end: addDays(start, windowSpread(index)) };
+  }) : [];
+  // Ovulation is commonly about 10–16 days before the *actual* next period.
+  // Propagate the period-start uncertainty rather than presenting a single "fertile day".
+  const estimatedOvulationWindows = hasPersonalizedPrediction ? futureWindows.map((_, index) => {
+    const expectedStart = addDays(next, cycleDays * index);
+    const earliest = addDays(expectedStart, -windowSpread(index) - 16);
+    return {
+      start: index === 0 && earliest <= last ? addDays(last, 1) : earliest,
+      end: addDays(expectedStart, windowSpread(index) - 10),
+    };
   }) : [];
   const futurePeriods = hasPersonalizedPrediction && hasPeriodDurationEstimate ? Array.from({ length: stage === "familiar" ? 3 : 1 }, (_, index) => {
     const start = addDays(next, cycleDays * index);
@@ -120,6 +131,7 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
     end: addDays(next, spread),
     futurePeriods,
     futureWindows,
+    estimatedOvulationWindows,
     lengths,
     periodLengths,
     recordedStarts: recent.length,

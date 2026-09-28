@@ -307,6 +307,7 @@ function HomeView({
   const [checkinRequest, setCheckinRequest] = useState(0);
   const openDailyCheckin = () => setCheckinRequest(value => value + 1);
   const p = prediction(records);
+  const ovulationWindow = p.estimatedOvulationWindows[0];
   return (
     <div className="home-view">
       <section className="hero-card">
@@ -386,6 +387,19 @@ function HomeView({
           <button className="text-link" onClick={() => setActive("history")}>
             Geçmiş kayıtları gör <ChevronRight size={16} />
           </button>
+        </div>
+      </section>
+      <section className="surface ovulation-card" aria-label="Yaklaşık yumurtlama zamanı">
+        <Flower2 size={22} aria-hidden="true" />
+        <div>
+          <span className="tiny-label">YAKLAŞIK YUMURTLAMA ZAMANI</span>
+          <h3>{ovulationWindow ? `${pretty(ovulationWindow.start)} – ${pretty(ovulationWindow.end)}` : "Önce döngünü tanıyalım."}</h3>
+          <p>{ovulationWindow
+            ? "Bu geniş aralık, sonraki adet tarihinin belirsizliğini de içerir; yumurtlamanın günlerce sürdüğü anlamına gelmez. Takvimle kesin gün doğrulanamaz."
+            : p.stage === "stale"
+              ? "Önceki tahmin aralığı geçti. Yeni bir adet başlangıcı eklediğinde yeniden hesaplayacağız."
+              : `Yaklaşık yumurtlama aralığını göstermek için ${p.remainingCycles} tamamlanmış döngü aralığı daha gerekiyor.`}</p>
+          <small>Gebelikten korunmak veya gebelik planlamak için yalnızca bu hesaba güvenme.</small>
         </div>
       </section>
       <RichDailyCheckin key={checkinRequest} openInitially={checkinRequest > 0} />
@@ -581,11 +595,12 @@ function MiniCalendar({
           const id = iso(d);
           const isActual = actual.has(id);
           const isPred = p.futureWindows.some(window => d >= window.start && d <= window.end);
+          const isOvulation = p.estimatedOvulationWindows.some(window => d >= window.start && d <= window.end);
           const isToday = d.toDateString() === startOfToday().toDateString();
           const hasDailyLog = dailyLogDates.has(id);
           return (
             <span
-              className={`day ${isActual ? "actual" : ""} ${isPred ? "predicted" : ""} ${isToday ? "today" : ""}`}
+              className={`day ${isActual ? "actual" : ""} ${isPred ? "predicted" : ""} ${isOvulation && !isActual && !isPred ? "ovulation" : ""} ${isToday ? "today" : ""}`}
               key={id}
             >
               <span>{i + 1}</span>
@@ -605,6 +620,10 @@ function MiniCalendar({
           <i className="dot predicted-dot" />
           Yaklaşık başlangıç
         </span>
+        {p.estimatedOvulationWindows.length > 0 && <span>
+          <i className="dot ovulation-dot" />
+          Yaklaşık yumurtlama
+        </span>}
       </div>
     </div>
   );
@@ -636,6 +655,8 @@ function CalendarView({
   const dailyLogs = getDailyLogs<DailyLog>();
   const dailyLogDates = new Set(dailyLogs.map(log => log.date));
   const selectedId = iso(new Date(year, month, selectedDay, 12));
+  const selectedPredicted = p.futureWindows.some(window => selectedId >= iso(window.start) && selectedId <= iso(window.end));
+  const selectedOvulation = !actual.has(selectedId) && !selectedPredicted && p.estimatedOvulationWindows.some(window => selectedId >= iso(window.start) && selectedId <= iso(window.end));
   const selectedLog = dailyLogs.find(log => log.date === selectedId);
   void logVersion;
   return (
@@ -692,22 +713,29 @@ function CalendarView({
               const id = iso(d);
               const isActual = actual.has(id);
               const isPred = p.futureWindows.some(window => d >= window.start && d <= window.end);
+              const isOvulation = p.estimatedOvulationWindows.some(window => d >= window.start && d <= window.end);
               const hasDailyLog = dailyLogDates.has(id);
               return (
                 <button
-                  className={`large-day ${isActual ? "actual" : ""} ${isPred ? "predicted" : ""} ${selectedDay === i + 1 ? "selected" : ""}`}
+                  className={`large-day ${isActual ? "actual" : ""} ${isPred ? "predicted" : ""} ${isOvulation && !isActual && !isPred ? "ovulation" : ""} ${selectedDay === i + 1 ? "selected" : ""}`}
                   onClick={() => setSelected(i + 1)}
                   key={id}
                 >
                   <span>{i + 1}</span>
                   {isActual && <small>kayıt</small>}
                   {isPred && <small>yaklaşık</small>}
+                  {isOvulation && !isActual && !isPred && <small>aralık</small>}
                   {hasDailyLog && (
                     <i className="daily-indicator" aria-label="Günlük kayıt" />
                   )}
                 </button>
               );
             })}
+          </div>
+          <div className="calendar-legend">
+            <span><i className="dot actual-dot" />Gerçek adet</span>
+            <span><i className="dot predicted-dot" />Yaklaşık başlangıç</span>
+            {p.estimatedOvulationWindows.length > 0 && <span><i className="dot ovulation-dot" />Yaklaşık yumurtlama</span>}
           </div>
         </div>
         <aside className="surface selected-day">
@@ -719,12 +747,13 @@ function CalendarView({
             <span className="state-dot" />
             {actual.has(selectedId)
               ? "Gerçek adet günü"
-              : p.futureWindows.some(window =>
-                  new Date(year, month, selectedDay, 12) >= window.start &&
-                  new Date(year, month, selectedDay, 12) <= window.end)
+              : selectedPredicted
                 ? "Yaklaşık başlangıç aralığı"
-                : "Henüz kayıt yok"}
+                : selectedOvulation
+                  ? "Yaklaşık yumurtlama aralığı"
+                  : "Henüz kayıt yok"}
           </div>
+          {selectedOvulation && <p>Bu yalnızca adet kayıtlarından hesaplanan geniş bir aralıktır; doğurgan veya güvenli günleri göstermez.</p>}
           <p>
             Bir güne dokunarak adet başlangıcını veya gününü manuel olarak
             ekleyebilirsin.
@@ -1074,7 +1103,7 @@ function HistoryView({
         <h3>{p.stage === "stale" ? "Yeni kayıtlarla devam edelim" : "Önce kendi ritmini tanıyalım"}</h3>
         <p>{p.stage === "stale" ? "Önceki yaklaşık aralık geçti. Yeni bir başlangıç eklenmeden tahmini kendiliğinden sonraki aya taşımıyoruz." : `${p.resetAfterLongGap ? "Uzun boşluktan sonra " : "Şu anda "}${p.recordedStarts} başlangıç ve ${p.lengths.length} tamamlanmış döngü aralığı kayıtlı. İlk kişisel tahmin için ${p.remainingCycles} aralık daha gerekiyor.`}</p>
         {p.stage === "learning" && <div className="learning-progress" role="progressbar" aria-label="Kişisel tahmin için tamamlanan döngüler" aria-valuenow={p.lengths.length} aria-valuemin={0} aria-valuemax={3}><span style={{ width: `${Math.min(100, p.lengths.length / 3 * 100)}%` }} /></div>}
-        <small>Bu bir tıbbi değerlendirme eşiği değil, erken ve yanıltıcı tahmin vermemek için uygulama kuralıdır.</small>
+        <small>Bu bir tıbbi değerlendirme eşiği değil, erken ve yanıltıcı adet veya yumurtlama tahmini vermemek için uygulama kuralıdır.</small>
       </section>}
       <div className="history-list surface">
         {ordered.length === 0 && <p className="history-empty">Henüz kayıt yok. İlk başlangıç gününü ekleyebilirsin.</p>}
@@ -1125,6 +1154,11 @@ function HistoryView({
         <span className="tiny-label">YAKLAŞIK BAŞLANGIÇ ARALIKLARI</span>
         <p>Son {p.lengths.length} tamamlanmış aralığın ortalaması {p.average} gün. Bunlar kesin tarihler değil; yeni kayıtlarla değişir. {p.excludedGaps > 0 && "Uzun bir kayıt boşluğu tahmine katılmadı; atlanmış kayıt varsa ekleyebilirsin."}</p>
         <ol>{p.futureWindows.map(window => <li key={iso(window.start)}><strong>{pretty(window.start)} – {pretty(window.end)}</strong><span>Olası adet başlangıcı</span></li>)}</ol>
+      </section>}
+      {p.estimatedOvulationWindows.length > 0 && <section className="future-periods surface" aria-label="Yaklaşık yumurtlama aralıkları">
+        <span className="tiny-label">YAKLAŞIK YUMURTLAMA ZAMANI</span>
+        <p>Sonraki adet başlangıcı tahmininden 10–16 gün geriye gidilir; adet tarihi belirsizliği de aralığı genişletir. Yumurtlama tüm bu günler boyunca sürmez. Bu bir doğurganlık veya doğum kontrolü takvimi değildir.</p>
+        <ol>{p.estimatedOvulationWindows.map(window => <li key={iso(window.start)}><strong>{pretty(window.start)} – {pretty(window.end)}</strong><span>Olası zaman aralığı · kesin değil</span></li>)}</ol>
       </section>}
       {(adding || editing) && <CalendarRecordModal
         key={adding ? "new-history" : editing?.id}
@@ -1259,7 +1293,7 @@ function InsightsView({ records }: { records: RecordItem[] }) {
           )}
         </div>
       <p className="disclaimer">
-        Bu bilgiler tıbbi değerlendirme yerine geçmez. Takvim yalnızca yaklaşık adet başlangıcını gösterir; ovülasyon, doğurganlık veya gebelikten korunma amacıyla kullanılmamalıdır.
+        Bu bilgiler tıbbi değerlendirme yerine geçmez. Adet başlangıcı ve yumurtlama aralıkları yalnızca kayıtlarına dayalı yaklaşık hesaplardır; gerçek ovülasyonu doğrulamaz. Gebelikten korunmak veya gebelik planlamak için tek başına kullanılmamalıdır.
       </p>
     </div>
   );

@@ -32,7 +32,7 @@ Record flow, spotting, cramps, energy, moods, symptoms and personal notes in a d
 
 ### Estimates and insights
 
-After enough period starts are recorded, Luna Cycle may provide approximate start windows and personal insights. It does not present a precise date after only one or two cycles. Do not use these outputs for contraception, pregnancy prevention, diagnosis, treatment or emergency medical decisions.
+After at least three completed cycle intervals are recorded, Luna Cycle may show broad estimated period-start and ovulation-timing ranges alongside personal insights. The ovulation estimate is derived from the expected next period; it does not confirm ovulation or identify fertile days. It does not present a personal date after only one or two cycles. Do not rely on these outputs alone for contraception, pregnancy planning, diagnosis, treatment or emergency medical decisions.
 
 ### Reminders
 

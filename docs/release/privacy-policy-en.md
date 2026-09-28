@@ -12,7 +12,7 @@ This Privacy Policy describes how information is handled in the current release 
 
 ## 1. What is Luna Cycle?
 
-Luna Cycle is a consumer application for period and cycle records, daily check-ins, calendar views, estimated cycle information, insights, local reminders and privacy controls. Luna Cycle is not a medical device. Cycle, period, ovulation and fertile-window outputs are approximate estimates provided for informational purposes.
+Luna Cycle is a consumer application for period and cycle records, daily check-ins, calendar views, estimated cycle and ovulation-timing ranges, insights, local reminders and privacy controls. Luna Cycle is not a medical device. Cycle, period and ovulation-timing outputs are approximate estimates provided for informational purposes; they do not identify fertile or safe days.
 
 These outputs must not be used for contraception, pregnancy prevention, diagnosis, treatment or emergency medical decisions. Consult a qualified healthcare professional about medical concerns. In an emergency, use the local emergency services available where you are.
 
