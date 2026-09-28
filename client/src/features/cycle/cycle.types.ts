@@ -1,4 +1,4 @@
 // Style: Sessiz Ay Takvimi — model katmanı UI’dan bağımsız tutulur.
 export interface PeriodRecord { id: string; startDate: string; endDate?: string | null; createdAt: string; updatedAt: string; length?: number; }
 export interface UserPreferences { averageCycleLength: number; averagePeriodLength: number; onboardingCompleted: boolean; notificationEnabled: boolean; notificationDaysBefore: 1 | 2 | 3 | 5; privateNotificationText: boolean; theme?: "light" | "dark" | "system"; biometricLockEnabled?: boolean; termsAcceptance?: { version: string; acceptedAt: string }; }
-export interface CyclePrediction { predictedStart: Date; rangeStart: Date; rangeEnd: Date; cycleLength: number; uncertaintyDays: number; confidence: "Yüksek" | "Orta" | "Düşük"; confidenceReason: string; cycleDay: number; phase: "Adet dönemi" | "Foliküler faz" | "Tahmini ovülasyon dönemi" | "Luteal faz"; }
+export interface CyclePrediction { predictedStart: Date; rangeStart: Date; rangeEnd: Date; cycleLength: number; uncertaintyDays: number; confidence: "Yüksek" | "Orta" | "Düşük"; confidenceReason: string; cycleDay: number; }

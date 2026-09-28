@@ -56,7 +56,6 @@ button:focus-visible { outline:3px solid var(--lemon); outline-offset:3px; }
 .progress-heading strong { color:#fff; font-size:13px; line-height:1.35; }
 .progress-track { height:5px; margin:15px 0 13px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.18); }
 .progress-track span { display:block; height:100%; border-radius:inherit; background:var(--lemon); }
-.phase-rail { display:grid; grid-template-columns:1fr 1fr; gap:7px 10px; color:#efdce2; font-size:8px; line-height:1.25; }
 .hero-art { width:240px; position:relative; display:flex; justify-content:center; align-items:center; z-index:1; }
 .hero-art p { position:absolute; right:0; bottom:2px; font:23px/1.05 "DM Serif Display",serif; text-align:right; color:#e8eee6; }
 .hero-art em { color:var(--lemon); font-style:normal; }
@@ -84,12 +83,12 @@ button:focus-visible { outline:3px solid var(--lemon); outline-offset:3px; }
 .day { position:relative; display:grid; place-items:center; height:24px; border-radius:50%; font-size:11px; }
 .day.actual { background:var(--sage); color:#fff; }
 .day.predicted { border:1px dashed #c9ad45; color:#977d20; }
-.day.ovulation { background:#f9e8ed; color:#8d3552; border:1px dashed #b45e79; }
 .day.today { box-shadow:0 0 0 2px var(--lemon) inset; font-weight:800; }
 .day.muted { opacity:0; }
 .calendar-legend { display:flex; flex-wrap:wrap; gap:8px 15px; margin-top:18px; color:var(--ink-soft); font-size:10px; }
 .calendar-legend span { display:flex; align-items:center; gap:5px; }
-.dot { width:7px; height:7px; border-radius:50%; display:block; }.actual-dot{background:var(--sage)}.predicted-dot{border:1px dashed #b8972d}.ovulation-dot{background:#f9e8ed;border:1px dashed #b45e79}
+.dot { width:7px; height:7px; border-radius:50%; display:block; }.actual-dot{background:var(--sage)}.predicted-dot{border:1px dashed #b8972d}
+.calendar-safety-note { margin:14px 0 0; padding:10px 12px; border-left:3px solid var(--sage); background:var(--sage-soft); color:var(--ink); font-size:10px; font-weight:700; line-height:1.5; }
 .side-note { display:flex; align-items:flex-start; gap:18px; padding:30px 18px 25px 28px; border-top:1px solid var(--sage); }
 .note-icon,.setting-icon { display:grid; place-items:center; flex:none; width:39px; height:39px; border-radius:50%; color:var(--sage); background:var(--sage-soft); }
 .side-note h3 { font:29px/1.04 "DM Serif Display",serif; margin:12px 0; }.side-note p { color:var(--ink-soft); font-size:12px; line-height:1.6; max-width:240px; }
@@ -216,15 +215,6 @@ button:focus-visible { outline:3px solid var(--lemon); outline-offset:3px; }
 .future-periods li { display:flex; flex-direction:column; gap:6px; padding:13px; border:1px solid var(--line); border-radius:10px; }
 .future-periods li strong { font-size:12px; line-height:1.45; }
 .future-periods li span { color:var(--ink-soft); font-size:10px; }
-.ovulation-card { display:flex; gap:17px; align-items:flex-start; padding:23px 26px; margin:18px 0; border-left:4px solid #b45e79; }
-.ovulation-card > svg { flex:none; color:#a74868; margin-top:4px; }
-.ovulation-card h3 { margin:8px 0; font:28px/1.15 "DM Serif Display",serif; }
-.ovulation-card p { margin:0 0 9px; color:var(--ink-soft); font-size:12px; line-height:1.65; }
-.ovulation-card small { display:block; color:#8d3552; font-size:10px; line-height:1.5; }
-.large-day.ovulation { border-style:dashed; border-color:#b45e79; background:#f9e8ed; color:#8d3552; }
-.large-day.ovulation small { color:#8d3552; }
-.dark-mode .day.ovulation,.dark-mode .large-day.ovulation { background:#492333; color:#ffd6e2; border-color:#ef8195; }
-.dark-mode .large-day.ovulation small,.dark-mode .ovulation-card small { color:#ffd6e2; }
 @media (max-width:640px) { .selected-day { display:block; }.selected-day .wide { margin-top:22px; width:100%; } }
 .terms-screen { min-height:100dvh; display:grid; place-items:center; padding:24px; background:radial-gradient(circle at 85% 5%,rgba(224,80,104,.15),transparent 28rem),var(--bone); }
 .terms-panel { width:min(100%,760px); height:min(850px,calc(100dvh - 48px)); display:flex; flex-direction:column; padding:clamp(24px,4vw,42px); border:1px solid var(--line); border-left:5px solid var(--sage); border-radius:16px; background:var(--paper); box-shadow:0 20px 55px rgba(67,16,39,.12); }

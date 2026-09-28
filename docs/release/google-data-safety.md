@@ -24,7 +24,7 @@ Google Play Data Safety beyanında “collected” kavramı yalnızca uygulama i
 
 ## Sağlık verisi açıklaması
 
-Luna Cycle’ın current release uygulama mantığında PeriodRecord, DailyLog, flow, spotting, cramps, energy, moods, symptoms, notes, cycle dates, predictions ve estimated ovulation cihazda tutulur. Bu kayıtlar Luna’nın uzak health backend’ine, analytics servisine, reklam isteğine veya billing payload’ına gönderilmez. “Local-only” ifadesi üçüncü taraf platformların bağımsız teknik işleyişi için blanket garanti değildir.
+Luna Cycle’ın current release uygulama mantığında PeriodRecord, DailyLog, flow, spotting, cramps, energy, moods, symptoms, notes, cycle dates ve yaklaşık adet başlangıcı tahminleri cihazda tutulur veya hesaplanır. Yumurtlama veya doğurgan/güvenli gün tahmini üretilmez. Bu kayıtlar Luna’nın uzak health backend’ine, analytics servisine, reklam isteğine veya billing payload’ına gönderilmez. “Local-only” ifadesi üçüncü taraf platformların bağımsız teknik işleyişi için blanket garanti değildir.
 
 ## Final form öncesi kontrol
 

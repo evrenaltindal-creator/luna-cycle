@@ -1,4 +1,4 @@
-export const TERMS_VERSION = "2026-09-28.1";
+export const TERMS_VERSION = "2026-09-28.2";
 
 export type TermsAcceptance = { version: string; acceptedAt: string };
 
@@ -24,7 +24,7 @@ export const termsSections = [
   },
   {
     title: "3. Tıbbi kullanım sınırı",
-    paragraphs: ["Uygulama tıbbi cihaz, tanı, tedavi veya acil yardım hizmeti değildir. Adet ve yumurtlama zamanı aralıkları yalnızca girilen kayıtlardan türetilen yaklaşık tahminlerdir; gerçek yumurtlamayı, doğurgan veya güvenli günleri doğrulamaz.", "Gebelikten korunma veya gebelik planlama, ilaç kullanımı, tanı, tedavi ya da acil kararlar için yalnızca uygulamaya güvenme. Sağlık sorularında yetkin bir sağlık profesyoneline, acil durumlarda yerel acil yardım hizmetlerine başvur."],
+    paragraphs: ["Uygulama tıbbi cihaz, tanı, tedavi veya acil yardım hizmeti değildir. Adet başlangıcı aralıkları yalnızca girilen kayıtlardan türetilen yaklaşık tahminlerdir. Luna Cycle yumurtlama zamanını, doğurgan veya güvenli günleri hesaplamaz. Takvimde işaretlenmeyen bir gün gebelik riskinin olmadığı anlamına gelmez.", "Luna Cycle'ı doğum kontrolü, gebelikten korunma veya gebelik planlama amacıyla kullanma. İlaç kullanımı, tanı, tedavi ya da acil kararlar için uygulamaya güvenme. Sağlık sorularında yetkin bir sağlık profesyoneline, acil durumlarda yerel acil yardım hizmetlerine başvur."],
   },
   {
     title: "4. Kayıtlar ve cihaz güvenliği",

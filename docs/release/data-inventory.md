@@ -17,7 +17,6 @@
 | `moods`, `symptoms` | Daily Check-In multi-selects | Inside DailyLog | None | Not sent | Not sent | Via DailyLog controls |
 | `notes` | User free-text note | Inside DailyLog | None | Not sent | Not sent | Edit/delete, Clear All Data |
 | Cycle dates / predictions | Derived from local records | Computed in app; no remote health store | None | Prediction state not sent | Not sent | Source records can be edited/deleted |
-| Estimated ovulation-timing range | Derived estimate | Computed/displayed locally after three completed cycle intervals | None | Not sent | Not sent | Not a fertile/safe-day label; source records can be edited/deleted |
 | Theme, reminders, private notification setting | User preferences | Native/local `preferences` store; web local app storage | None | Not sent | Not sent | Settings/Clear All Data; theme may be retained by product behavior |
 | Terms acceptance version and timestamp | Explicit first-launch action | Native/local `preferences` store; web local app storage | None | Not sent | Not sent | Clear All Data; a new terms version requires renewed acceptance |
 

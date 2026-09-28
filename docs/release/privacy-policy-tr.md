@@ -12,7 +12,7 @@ Bu Gizlilik Politikası, Luna Cycle’ın mevcut sürümünde hangi bilgilerin u
 
 ## 1. Luna Cycle nedir?
 
-Luna Cycle; adet döngüsü kaydı, günlük check-in, takvim, tahmini döngü ve yumurtlama zamanı aralıkları, içgörüler, yerel hatırlatmalar ve gizlilik kontrolleri sunan bir tüketici uygulamasıdır. Luna Cycle bir tıbbi cihaz değildir. Döngü, adet ve yumurtlama zamanına ilişkin çıktılar yaklaşık ve bilgilendirme amaçlı tahminlerdir; doğurgan veya güvenli günleri belirlemez.
+Luna Cycle; adet döngüsü kaydı, günlük check-in, takvim, yaklaşık adet başlangıcı aralıkları, içgörüler, yerel hatırlatmalar ve gizlilik kontrolleri sunan bir tüketici uygulamasıdır. Luna Cycle bir tıbbi cihaz değildir. Adet başlangıcı çıktıları yaklaşık ve bilgilendirme amaçlıdır. Yumurtlama zamanı, doğurgan veya güvenli günleri hesaplamaz.
 
 Bu çıktılar doğum kontrolü, gebelikten korunma, tanı, tedavi veya acil tıbbi kararlar için kullanılmamalıdır. Sağlıkla ilgili bir endişeniz varsa yetkin bir sağlık profesyoneline başvurun; acil durumlarda bulunduğunuz yerdeki yerel acil yardım hizmetlerini kullanın.
 
@@ -22,7 +22,7 @@ Mevcut sürümde Luna hesabı, uzaktan kayıt veya giriş/kayıt akışı gerekm
 
 ## 3. Sizin girdiğiniz veriler
 
-Uygulama kullanırken aşağıdaki türlerde bilgileri cihazınıza girebilirsiniz: adet dönemi başlangıç ve bitiş tarihleri, adet süresi, akış veya lekelenme bilgileri, kramplar, enerji, ruh hâlleri, belirtiler, serbest metin notları, tercih ve hatırlatma ayarları, özel bildirim metni tercihi ve tema tercihi. İlk açılıştaki kullanım koşullarını kabul ederseniz kabul edilen sürüm ve zaman cihazdaki tercihlerde saklanır; bu kayıt yedeğe eklenmez ve yerel verileri temizlediğinizde silinir. Uygulama döngü kayıtlarından tahmin ve yaklaşık ovülasyon bilgilendirmesi üretebilir.
+Uygulama kullanırken aşağıdaki türlerde bilgileri cihazınıza girebilirsiniz: adet dönemi başlangıç ve bitiş tarihleri, adet süresi, akış veya lekelenme bilgileri, kramplar, enerji, ruh hâlleri, belirtiler, serbest metin notları, tercih ve hatırlatma ayarları, özel bildirim metni tercihi ve tema tercihi. İlk açılıştaki kullanım koşullarını kabul ederseniz kabul edilen sürüm ve zaman cihazdaki tercihlerde saklanır; bu kayıt yedeğe eklenmez ve yerel verileri temizlediğinizde silinir. Uygulama döngü kayıtlarından yaklaşık adet başlangıcı tahmini üretebilir.
 
 Bu bilgiler sağlıkla ilişkili olabileceğinden hassas kabul edilmelidir. Sağlık kayıtları reklam hedeflemesi için kullanılmaz, reklam isteği parametresi olarak gönderilmez ve faturalandırma sistemleriyle paylaşılmaz.
 

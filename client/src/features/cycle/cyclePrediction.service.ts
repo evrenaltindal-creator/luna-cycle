@@ -1,5 +1,4 @@
-// Predictions use real start-to-start intervals and completed period lengths; dates remain local.
-import { getCyclePhase } from "./cyclePhase.service";
+// Period predictions use real start-to-start intervals and completed period lengths; dates remain local.
 
 export type PredictionConfidence = "high" | "medium" | "low";
 export type PredictedPeriod = { start: Date; end: Date };
@@ -15,7 +14,6 @@ export type PredictionResult = {
   end: Date;
   futurePeriods: PredictedPeriod[];
   futureWindows: PredictedPeriod[];
-  estimatedOvulationWindows: PredictedPeriod[];
   lengths: number[];
   periodLengths: number[];
   recordedStarts: number;
@@ -30,7 +28,6 @@ export type PredictionResult = {
   confidenceKey: PredictionConfidence;
   confidenceReason: string;
   cycleDay: number;
-  phase: string;
 };
 
 type InputRecord = { startDate?: string; date?: string; endDate?: string | null; length?: number };
@@ -101,16 +98,6 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
     const earliest = addDays(start, -windowSpread(index));
     return { start: index === 0 && earliest < reference ? reference : earliest, end: addDays(start, windowSpread(index)) };
   }) : [];
-  // Ovulation is commonly about 10–16 days before the *actual* next period.
-  // Propagate the period-start uncertainty rather than presenting a single "fertile day".
-  const estimatedOvulationWindows = hasPersonalizedPrediction ? futureWindows.map((_, index) => {
-    const expectedStart = addDays(next, cycleDays * index);
-    const earliest = addDays(expectedStart, -windowSpread(index) - 16);
-    return {
-      start: index === 0 && earliest <= last ? addDays(last, 1) : earliest,
-      end: addDays(expectedStart, windowSpread(index) - 10),
-    };
-  }) : [];
   const futurePeriods = hasPersonalizedPrediction && hasPeriodDurationEstimate ? Array.from({ length: stage === "familiar" ? 3 : 1 }, (_, index) => {
     const start = addDays(next, cycleDays * index);
     return { start, end: addDays(start, periodDays - 1) };
@@ -120,7 +107,6 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
   const confidenceReason = stage === "learning" && resetAfterLongGap ? "Uzun kayıt boşluğundan sonra yakın dönem kayıtlarıyla yeniden öğreniyoruz." : stage === "learning" ? "Kişisel aralık için üç tamamlanmış döngü kaydı bekleniyor." : stage === "stale" ? "Önceki yaklaşık aralık geçti; yeni kayıt olmadan ileri tarih tahmini yapmıyoruz." : excludedGaps ? "Uzun bir kayıt aralığı tahmine katılmadı; atlanmış bir kayıt olabilir." : variability > 5 ? "Döngüler arasındaki değişkenlik tahmini aralığı genişletiyor." : "Bu aralık kayıtlarına dayanır, kesin bir tarih değildir.";
   const elapsed = Math.max(0, dayGap(last, reference));
   const cycleDay = distinct.length ? elapsed + 1 : 1;
-  const phase = getCyclePhase(cycleDay, cycleDays, periodDays, hasPersonalizedPrediction);
   return {
     last,
     average: Number(average.toFixed(1)),
@@ -131,7 +117,6 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
     end: addDays(next, spread),
     futurePeriods,
     futureWindows,
-    estimatedOvulationWindows,
     lengths,
     periodLengths,
     recordedStarts: recent.length,
@@ -146,6 +131,5 @@ export function calculatePrediction(records: InputRecord[], options: PredictionO
     confidenceKey,
     confidenceReason,
     cycleDay,
-    phase,
   };
 }

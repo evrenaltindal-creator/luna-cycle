@@ -1,5 +1,7 @@
 # LUNA CYCLE — STEP 5 PHASE 1 RELEASE READINESS
 
+> **Historical report:** This August 2026 snapshot predates the free-first-release decision and the September 2026 removal of ovulation estimates. Its old monetization and health-feature descriptions must not be used as current store declarations.
+
 **Tarih:** 23 Ağustos 2026  
 **Uygulama:** Luna Cycle  
 **Package / Bundle ID:** `com.lunacycle.app`  

@@ -10,7 +10,7 @@ Luna Cycle için en doğru ürün açıklaması **period / menstrual cycle track
 
 ## Sağlık işlevi
 
-Uygulamanın sağlıkla ilişkili işlevi, kullanıcının girdiği period/cycle kayıtlarını cihazda saklamak ve en az üç tamamlanmış döngü aralığından sonra yaklaşık adet başlangıcı ve yumurtlama zamanı aralıkları göstermektir. Yumurtlama hesabı beklenen sonraki adet tarihinden 10–16 gün geriye gidilerek ve adet tarihi belirsizliği eklenerek yapılır; gerçek ovülasyonu doğrulamaz ve doğurgan/güvenli gün belirlemez. Çıktılar tanı, tedavi veya klinik karar desteği değildir.
+Uygulamanın sağlıkla ilişkili işlevi, kullanıcının girdiği period/cycle kayıtlarını cihazda saklamak ve en az üç tamamlanmış döngü aralığından sonra yaklaşık adet başlangıcı aralıkları göstermektir. Yumurtlama zamanı, doğurgan veya güvenli gün hesaplanmaz; işaretlenmeyen günler gebelik riski yok anlamına gelmez. Çıktılar doğum kontrolü, tanı, tedavi veya klinik karar desteği değildir.
 
 ## Medical device değerlendirmesi
 

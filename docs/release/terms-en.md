@@ -21,7 +21,7 @@ Luna Cycle provides period and cycle records, Daily Check-In, calendar views, ap
 
 ## 4. No medical advice
 
-Luna Cycle is not a medical device and does not provide medical advice, diagnosis or treatment. Period, cycle and ovulation-timing information are approximate estimates for informational purposes only; they do not identify fertile or safe days. Do not rely on the app alone for contraception, pregnancy planning, diagnosis, treatment or emergency medical decisions.
+Luna Cycle is not a medical device and does not provide medical advice, diagnosis or treatment. Approximate period-start ranges are for information only. The app does not calculate ovulation timing or identify fertile or safe days; unmarked calendar days do not mean there is no pregnancy risk. Do not use Luna Cycle for contraception, pregnancy planning, diagnosis, treatment or emergency medical decisions.
 
 Consult a qualified healthcare professional about medical concerns. In an emergency, do not rely on the app; use the local emergency services available where you are. These Terms do not specify or guarantee an emergency telephone number.
 

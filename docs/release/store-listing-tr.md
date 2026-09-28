@@ -32,7 +32,7 @@ Flow, lekelenme, kramplar, enerji, ruh hâli, belirtiler ve kişisel notlarla g�
 
 ### Tahminler ve içgörüler
 
-Luna Cycle, en az üç tamamlanmış döngü aralığı kaydedildikten sonra yaklaşık adet başlangıcı ve yumurtlama zamanı aralıkları ile kişisel içgörüler sunabilir. Yumurtlama hesabı sonraki adet tahmininden türetilir; gerçek ovülasyonu veya doğurgan günleri doğrulamaz. Bir veya iki döngüyle kişisel tarih üretmez. Bu çıktılar gebelikten korunma, gebelik planlama, tanı, tedavi veya acil tıbbi kararlar için tek başına kullanılmamalıdır.
+Luna Cycle, en az üç tamamlanmış döngü aralığı kaydedildikten sonra yaklaşık adet başlangıcı aralıkları ve kişisel içgörüler sunabilir. Bir veya iki döngüyle kişisel tarih üretmez. Yumurtlama, doğurgan veya güvenli gün hesabı yapmaz; takvimde işaretlenmeyen günler gebelik açısından güvenli sayılmaz. Bu uygulama doğum kontrolü, gebelik planlama, tanı, tedavi veya acil tıbbi kararlar için kullanılamaz.
 
 ### Hatırlatmalar
 

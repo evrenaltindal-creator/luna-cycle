@@ -1,3 +1,0 @@
-// Style: Sessiz Ay Takvimi — faz adları daima tahmini bağlamı korur.
-export type CyclePhase = "Adet dönemi" | "Foliküler faz" | "Tahmini ovülasyon" | "Luteal faz" | "Yetersiz veri";
-export function getCyclePhase(cycleDay: number, cycleLength = 28, periodLength = 5, hasData = true): CyclePhase { if (!hasData || cycleDay < 1) return "Yetersiz veri"; const ovulation = Math.max(periodLength + 1, cycleLength - 14); if (cycleDay <= periodLength) return "Adet dönemi"; if (cycleDay < ovulation - 1) return "Foliküler faz"; if (cycleDay <= ovulation + 1) return "Tahmini ovülasyon"; return "Luteal faz"; }

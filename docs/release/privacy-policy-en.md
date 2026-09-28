@@ -12,7 +12,7 @@ This Privacy Policy describes how information is handled in the current release 
 
 ## 1. What is Luna Cycle?
 
-Luna Cycle is a consumer application for period and cycle records, daily check-ins, calendar views, estimated cycle and ovulation-timing ranges, insights, local reminders and privacy controls. Luna Cycle is not a medical device. Cycle, period and ovulation-timing outputs are approximate estimates provided for informational purposes; they do not identify fertile or safe days.
+Luna Cycle is a consumer application for period and cycle records, daily check-ins, calendar views, estimated period-start ranges, insights, local reminders and privacy controls. Luna Cycle is not a medical device. Period-start outputs are approximate and informational. The app does not calculate ovulation timing or identify fertile or safe days.
 
 These outputs must not be used for contraception, pregnancy prevention, diagnosis, treatment or emergency medical decisions. Consult a qualified healthcare professional about medical concerns. In an emergency, use the local emergency services available where you are.
 
@@ -22,7 +22,7 @@ The current release does not require a Luna account, remote registration or logi
 
 ## 3. Information you enter
 
-You may enter period start and end dates, period length, flow or spotting information, cramps, energy, moods, symptoms, free-text notes, preference and reminder settings, private notification text preference and theme preference. If you accept the first-launch Terms, the accepted version and timestamp are stored in local preferences; this record is excluded from backup and removed when you clear local data. The app may use cycle records to produce estimates and approximate ovulation information.
+You may enter period start and end dates, period length, flow or spotting information, cramps, energy, moods, symptoms, free-text notes, preference and reminder settings, private notification text preference and theme preference. If you accept the first-launch Terms, the accepted version and timestamp are stored in local preferences; this record is excluded from backup and removed when you clear local data. The app may use cycle records to estimate approximate period-start ranges.
 
 These records may be health-related and should be treated as sensitive. Health records are not used to target advertising, are not sent as advertising request parameters and are not shared with billing systems.
 

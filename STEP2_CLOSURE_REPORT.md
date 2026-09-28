@@ -1,5 +1,7 @@
 # Luna Cycle — Step 2 Kapanış Raporu
 
+> Tarihsel rapor: Burada anılan döngü fazı ve ovülasyon tahmini, Eylül 2026'da ilk sürümden kaldırılmıştır. Güncel uygulama bu hesaplamaları yapmaz.
+
 **Tarih:** 22 Ağustos 2026  
 **Sürüm:** DailyLog confirmation blocker closure  
 **Yazar:** Manus AI

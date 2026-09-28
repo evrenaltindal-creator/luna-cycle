@@ -6,7 +6,7 @@ Luna Cycle is a local-first period and menstrual cycle tracking application. No 
 
 Core health records are designed to remain primarily on the device. The current release does not operate a remote health-data backend or health analytics service.
 
-After three completed cycle intervals, the app may display a broad ovulation-timing estimate derived from its approximate next-period range (10–16 days before that period, including date uncertainty). It never confirms ovulation, labels fertile or safe days, or makes a contraception recommendation. Estimates are informational, not a diagnosis, treatment or emergency medical decision. The store listing and in-app disclaimer communicate this limitation.
+After three completed cycle intervals, the app may display a broad approximate next-period start range. It does not calculate or display ovulation timing, label fertile or safe days, or make a contraception recommendation. Unmarked calendar days must not be interpreted as safe. Estimates are informational, not a diagnosis, treatment or emergency medical decision. The store listing and in-app disclaimer communicate this limitation.
 
 ## Free-release review note
 

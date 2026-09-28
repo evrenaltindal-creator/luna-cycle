@@ -24,7 +24,6 @@ describe("calculatePrediction", () => {
       expect(result.hasPersonalizedPrediction).toBe(false);
       expect(result.futureWindows).toEqual([]);
       expect(result.futurePeriods).toEqual([]);
-      expect(result.estimatedOvulationWindows).toEqual([]);
       expect(result.remainingCycles).toBe(3 - intervals.length);
     }
   });
@@ -40,16 +39,8 @@ describe("calculatePrediction", () => {
     expect(result.futureWindows).toHaveLength(1);
     expect(result.futureWindows[0].start >= referenceDate).toBe(true);
     expect(result.futureWindows[0].end > result.futureWindows[0].start).toBe(true);
-    expect(result.estimatedOvulationWindows).toHaveLength(1);
-    expect(key(result.estimatedOvulationWindows[0].start)).toBe("2026-03-11");
-    expect(key(result.estimatedOvulationWindows[0].end)).toBe("2026-03-25");
-  });
-
-  it("28 günlük döngüde tek gün yerine sonraki adet belirsizliğini de içeren ovülasyon aralığı verir", () => {
-    const dates = starts([28, 28, 28]);
-    const result = calculatePrediction(records(dates), { referenceDate: afterLast(dates) });
-    expect(key(result.estimatedOvulationWindows[0].start)).toBe("2026-04-03");
-    expect(key(result.estimatedOvulationWindows[0].end)).toBe("2026-04-17");
+    expect(result).not.toHaveProperty("estimatedOvulationWindows");
+    expect(result).not.toHaveProperty("phase");
   });
 
   it("altı birbirine yakın döngüde aralığı daraltır fakat tek kesin gün iddia etmez", () => {
@@ -58,7 +49,6 @@ describe("calculatePrediction", () => {
     expect(result.stage).toBe("familiar");
     expect(result.lengths).toHaveLength(6);
     expect(result.futureWindows).toHaveLength(3);
-    expect(result.estimatedOvulationWindows).toHaveLength(3);
     expect(result.futureWindows[0].start < result.futureWindows[0].end).toBe(true);
     expect(result.futureWindows[0].end < result.futureWindows[1].start).toBe(true);
   });
@@ -81,7 +71,6 @@ describe("calculatePrediction", () => {
     expect(result.lengths).toEqual([23, 24]);
     expect(result.stage).toBe("learning");
     expect(result.futureWindows).toEqual([]);
-    expect(result.estimatedOvulationWindows).toEqual([]);
     expect(result.confidenceReason).toContain("yeniden öğreniyoruz");
   });
 
@@ -114,7 +103,6 @@ describe("calculatePrediction", () => {
     expect(result.stage).toBe("stale");
     expect(result.hasPersonalizedPrediction).toBe(false);
     expect(result.futureWindows).toEqual([]);
-    expect(result.estimatedOvulationWindows).toEqual([]);
   });
 
   it("eski başlangıçlardan bugüne otomatik yeni tarih taşımayı durdurur", () => {
