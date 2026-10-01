@@ -1,4 +1,5 @@
 export const TERMS_VERSION = "2026-10-01.1";
+export const PRIVACY_POLICY_URL = "https://github.com/evrenaltindal-creator/luna-cycle/blob/main/docs/release/privacy-ios-en.md";
 
 export type TermsAcceptance = { version: string; acceptedAt: string };
 

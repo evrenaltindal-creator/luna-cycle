@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Home from "./pages/Home";
 import { getPreferences, savePreferences } from "./features/cycle/cycle.storage";
-import { createTermsAcceptance, hasCurrentTermsAcceptance, TERMS_VERSION, termsSections } from "./features/legal/terms";
+import { createTermsAcceptance, hasCurrentTermsAcceptance, PRIVACY_POLICY_URL, TERMS_VERSION, termsSections } from "./features/legal/terms";
 import { getLanguage, initializeLanguage, t } from "./i18n";
 import { LanguageSelector } from "./i18n/LanguageSelector";
 import { detectLanguage } from "./i18n/language";
@@ -41,6 +41,7 @@ function TermsGate({ onAccept }: { onAccept: () => boolean }) {
           ))}
         </div>
         <p className="terms-privacy-note">{t("Bu kabul, kişisel verilerin işlenmesi için ayrı bir açık rıza yerine geçmez.")}</p>
+        <a className="terms-eula-link" href={PRIVACY_POLICY_URL} target="_blank" rel="noopener noreferrer">{t("Gizlilik politikasını oku")}</a>
         <a className="terms-eula-link" href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">{t("Apple standart lisansını oku")}</a>
         <label className="terms-checkbox"><input type="checkbox" checked={checked} onChange={event => setChecked(event.target.checked)} />{t("Kullanım koşullarını okudum ve kabul ediyorum.")}</label>
         {error && <p className="terms-error" role="alert">{t("Kabul kaydı cihazda saklanamadı. Lütfen yeniden dene.")}</p>}

@@ -81,6 +81,7 @@ export const overrides: Record<string, [string, string, string, string]> = {
   "Kabul etmiyorum": ["I do not agree", "Не принимаю", "Ich stimme nicht zu", "No acepto"],
   "Koşulları yeniden oku": ["Read the terms again", "Прочитать условия ещё раз", "Bedingungen erneut lesen", "Leer los términos de nuevo"],
   "Kullanım Koşulları": ["Terms of Use", "Условия использования", "Nutzungsbedingungen", "Términos de uso"],
+  "Gizlilik politikasını oku": ["Read the privacy policy", "Прочитать политику конфиденциальности", "Datenschutzerklärung lesen", "Leer la política de privacidad"],
   "Kullanım Koşullarını yeniden oku": ["Read the Terms of Use again", "Прочитать условия использования ещё раз", "Nutzungsbedingungen erneut lesen", "Volver a leer los términos de uso"],
   "Sürüm": ["Version", "Версия", "Version", "Versión"],
   "TestFlight taslağı": ["TestFlight draft", "Черновик для TestFlight", "TestFlight-Entwurf", "Borrador para TestFlight"],

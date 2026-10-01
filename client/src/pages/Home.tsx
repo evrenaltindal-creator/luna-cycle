@@ -34,7 +34,7 @@ import {
 import type { DailyLog } from "../features/symptoms/symptom.types";
 import { energyOptions, flowOptions, labelFor, moodOptions } from "../features/symptoms/symptom.catalog";
 import { calculatePrediction } from "../features/cycle/cyclePrediction.service";
-import { TERMS_VERSION, termsSections } from "../features/legal/terms";
+import { PRIVACY_POLICY_URL, TERMS_VERSION, termsSections } from "../features/legal/terms";
 import { periodLength, validatePeriodRange } from "../features/cycle/periodRecord.validation";
 import { DailyCheckin as RichDailyCheckin } from "../features/symptoms/DailyCheckin";
 import { PreferenceControls } from "../features/preferences/PreferenceControls";
@@ -1451,6 +1451,7 @@ function SettingsView({
         </div>
         <div className="settings-group" aria-label={t("Yasal bilgiler")}>
           <span className="tiny-label">{t("YASAL BİLGİLER")}</span>
+          <a href={PRIVACY_POLICY_URL} target="_blank" rel="noopener noreferrer">{t("Gizlilik politikasını oku")}</a>
           <details className="legal-details">
             <summary>{t("Kullanım Koşullarını yeniden oku")} <small>{t("Sürüm")} {TERMS_VERSION}</small></summary>
             <div className="legal-details-content">
