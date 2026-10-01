@@ -1,4 +1,4 @@
-// TestFlight translation drafts, not jurisdiction-specific legal advice. Match termsSections order.
+// Product-specific terms in the supported languages. Match termsSections order.
 import { termsSections } from "@/features/legal/terms";
 import type { Language } from "./language";
 
@@ -32,7 +32,7 @@ const localized: Record<Exclude<Language, "tr">, Section[]> = {
     ] },
     { title: "8. Changes and contact", paragraphs: [
       "If the terms change materially, we will show the new version and ask for express acceptance before use. The accepted version and time are stored only on your device and are deleted when you clear the app's data.",
-      "The legal provider's name, contact address, and country-specific provisions must be completed and reviewed by a legal professional before store release. This TestFlight text is not yet a final legal agreement.",
+      "Luna Cycle's service provider is Evren Altındal (Türkiye). For questions about the app, these terms, or privacy, contact info@ewocom.com. These terms take effect on October 1, 2026. Mandatory consumer and personal-data rights applicable in your country remain unaffected.",
     ] },
   ],
   ru: [
@@ -63,7 +63,7 @@ const localized: Record<Exclude<Language, "tr">, Section[]> = {
     ] },
     { title: "8. Изменения и контакты", paragraphs: [
       "При существенном изменении условий мы покажем новую версию и попросим явно принять её до использования. Версия и время принятия хранятся только на вашем устройстве и удаляются при очистке данных приложения.",
-      "Имя юридического поставщика, контактный адрес и положения для отдельных стран должны быть дополнены и проверены юристом до публикации в магазине. Этот текст для TestFlight ещё не является окончательным юридическим соглашением.",
+      "Поставщик Luna Cycle — Evren Altındal (Турция). По вопросам приложения, этих условий или конфиденциальности пишите на info@ewocom.com. Условия вступают в силу 1 октября 2026 года. Обязательные права потребителей и права в отношении персональных данных, действующие в вашей стране, сохраняются.",
     ] },
   ],
   de: [
@@ -94,7 +94,7 @@ const localized: Record<Exclude<Language, "tr">, Section[]> = {
     ] },
     { title: "8. Änderungen und Kontakt", paragraphs: [
       "Bei wesentlichen Änderungen zeigen wir die neue Fassung vor der Nutzung an und bitten erneut um ausdrückliche Zustimmung. Fassung und Zeitpunkt der Zustimmung werden nur auf deinem Gerät gespeichert und beim Löschen der App-Daten entfernt.",
-      "Der Name des rechtlichen Anbieters, die Kontaktadresse und länderspezifische Bestimmungen müssen vor der Veröffentlichung im Store ergänzt und juristisch geprüft werden. Dieser TestFlight-Text ist noch keine endgültige rechtliche Vereinbarung.",
+      "Der Anbieter von Luna Cycle ist Evren Altındal (Türkei). Bei Fragen zur App, zu diesen Bedingungen oder zum Datenschutz schreibe an info@ewocom.com. Diese Bedingungen gelten ab dem 1. Oktober 2026. Zwingende Verbraucher- und Datenschutzrechte in deinem Land bleiben unberührt.",
     ] },
   ],
   es: [
@@ -125,7 +125,7 @@ const localized: Record<Exclude<Language, "tr">, Section[]> = {
     ] },
     { title: "8. Cambios y contacto", paragraphs: [
       "Si las condiciones cambian de forma importante, mostraremos la nueva versión y pediremos una aceptación expresa antes de usar la aplicación. La versión aceptada y la fecha se guardan solo en tu dispositivo y se eliminan al borrar los datos de la aplicación.",
-      "El nombre del proveedor legal, la dirección de contacto y las disposiciones específicas de cada país deben completarse y ser revisados por un profesional del derecho antes de publicar en la tienda. Este texto para TestFlight aún no es un acuerdo legal definitivo.",
+      "El proveedor de Luna Cycle es Evren Altındal (Turquía). Para preguntas sobre la aplicación, estas condiciones o la privacidad, escribe a info@ewocom.com. Estas condiciones entran en vigor el 1 de octubre de 2026. Se mantienen los derechos irrenunciables de los consumidores y relativos a los datos personales que se apliquen en tu país.",
     ] },
   ],
 };

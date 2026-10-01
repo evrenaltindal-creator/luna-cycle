@@ -1,12 +1,15 @@
 # Luna Cycle Privacy Policy
 
-**Last updated / effective date:** [EFFECTIVE DATE]  
+**Last updated / effective date:** October 1, 2026
+
 **Application:** Luna Cycle  
 **iOS bundle identifier:** `com.lunacycle.tracker` · **Android package:** `com.lunacycle.app`
 
-**Developer / data controller:** [LEGAL NAME]  
-**Contact:** [CONTACT EMAIL]  
-**Jurisdiction:** [JURISDICTION]
+**Developer / data controller:** Evren Altındal
+
+**Contact:** info@ewocom.com
+
+**Provider country:** Türkiye
 
 This Privacy Policy describes how information is handled in the current release of Luna Cycle. It is a product-reality and store-readiness draft. The developer’s legal identity, contact address, governing law and country-specific obligations must be completed and legally reviewed before publication.
 
@@ -98,6 +101,6 @@ This policy may be updated when product behavior or legal requirements change. T
 
 ## 19. Contact
 
-For privacy questions, data requests or notices about this policy, contact [CONTACT EMAIL]. The real [LEGAL NAME], [BUSINESS ADDRESS] and [JURISDICTION] details must replace the placeholders before publication.
+For privacy questions, data requests or notices about this policy, contact info@ewocom.com. The provider is Evren Altındal (Türkiye).
 
 **Note:** This document is a product and store-readiness draft and is not a substitute for jurisdiction-specific legal advice.

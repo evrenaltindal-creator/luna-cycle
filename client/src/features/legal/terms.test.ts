@@ -7,6 +7,7 @@ describe("terms acceptance", () => {
     expect(accepted).toEqual({ version: TERMS_VERSION, acceptedAt: "2026-09-28T10:00:00.000Z" });
     expect(hasCurrentTermsAcceptance(accepted)).toBe(true);
     expect(hasCurrentTermsAcceptance({ ...accepted, version: "older" })).toBe(false);
+    expect(hasCurrentTermsAcceptance({ ...accepted, version: "2026-09-28.2" })).toBe(false);
     expect(hasCurrentTermsAcceptance({ ...accepted, acceptedAt: "invalid" })).toBe(false);
     expect(hasCurrentTermsAcceptance(undefined)).toBe(false);
   });

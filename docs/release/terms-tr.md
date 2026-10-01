@@ -1,11 +1,14 @@
 # Luna Cycle Kullanım Koşulları
 
-**Yürürlük tarihi:** [EFFECTIVE DATE]  
-**Hizmet sağlayıcı:** [LEGAL NAME]  
-**İletişim:** [CONTACT EMAIL]  
-**Uygulanacak hukuk / yetkili merci:** [JURISDICTION]
+**Yürürlük tarihi:** 1 Ekim 2026
 
-Bu Kullanım Koşulları, Luna Cycle uygulamasının kullanımını düzenleyen yayın öncesi taslaktır. [LEGAL NAME], [CONTACT EMAIL], [BUSINESS ADDRESS] ve [JURISDICTION] alanları gerçek bilgilerle doldurulmalı ve yayın öncesinde ülkeye özgü hukuki incelemeden geçirilmelidir.
+**Hizmet sağlayıcı:** Evren Altındal
+
+**İletişim:** info@ewocom.com
+
+**Sağlayıcının ülkesi:** Türkiye
+
+Bu Kullanım Koşulları, Luna Cycle uygulamasının kullanımını düzenler. App Store sürümünde Apple'ın standart son kullanıcı lisansı da uygulanır. Bulunduğunuz ülkede geçerli olan emredici tüketici ve kişisel veri hakları saklıdır.
 
 ## 1. Koşulların kabulü
 
@@ -75,10 +78,10 @@ Koşullara aykırı kullanım veya uygulanabilir hukuki/mağaza gereklilikleri n
 
 ## 17. Uygulanacak hukuk
 
-Bu bölüm, gerçek şirket bilgileri ve [JURISDICTION] için hukuki inceleme sonrasında doldurulacaktır. Bu taslak belirli bir ülkenin hukukunu veya yetkili merciini varsaymaz.
+Bu koşullar, uygulanabilir hukukun tanıdığı emredici tüketici ve kişisel veri haklarını sınırlamaz. Sağlayıcının Türkiye'de bulunması, başka bir ülkedeki kullanıcının kanunen vazgeçilemeyen haklarını veya yetkili mercilere başvurma hakkını ortadan kaldırmaz.
 
 ## 18. İletişim
 
-Koşullar hakkında sorular için [CONTACT EMAIL] adresine başvurun. Yasal geliştirici adı, adresi, ülke ve gizlilik iletişim bilgileri yayın öncesinde gerçek bilgilerle değiştirilmelidir.
+Koşullar hakkında sorular için info@ewocom.com adresine başvurun. Hizmet sağlayıcı Evren Altındal'dır (Türkiye).
 
 **Not:** Bu belge hukuki danışmanlık değildir; mağaza yayını öncesinde yetkin hukuk danışmanı tarafından incelenmelidir.

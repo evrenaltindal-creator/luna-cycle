@@ -1,12 +1,15 @@
 # Luna Cycle Gizlilik Politikası
 
-**Son güncelleme / yürürlük tarihi:** [EFFECTIVE DATE]  
+**Son güncelleme / yürürlük tarihi:** 1 Ekim 2026
+
 **Uygulama:** Luna Cycle  
 **iOS bundle kimliği:** `com.lunacycle.tracker` · **Android paket kimliği:** `com.lunacycle.app`
 
-**Geliştirici / veri sorumlusu:** [LEGAL NAME]  
-**İletişim:** [CONTACT EMAIL]  
-**Yargı alanı:** [JURISDICTION]
+**Geliştirici / veri sorumlusu:** Evren Altındal
+
+**İletişim:** info@ewocom.com
+
+**Sağlayıcının ülkesi:** Türkiye
 
 Bu Gizlilik Politikası, Luna Cycle’ın mevcut sürümünde hangi bilgilerin uygulama içinde nasıl işlendiğini açıklar. Bu metin mağaza başvurusu öncesi ürün-gerçeklik taslağıdır; geliştirici tüzel kişiliği, iletişim adresi, uygulanacak hukuk ve ülkeye özgü yükümlülükler için yayın öncesinde hukuki inceleme yapılmalıdır.
 
@@ -98,6 +101,6 @@ Uygulama Android ve iOS platformlarında çalışabilir. Üçüncü taraf platfo
 
 ## 19. İletişim
 
-Gizlilik soruları, veri talepleri veya bu politika hakkında bildirimler için [CONTACT EMAIL] adresi kullanılmalıdır. [LEGAL NAME], [BUSINESS ADDRESS] ve [JURISDICTION] bilgileri yayın öncesinde gerçek bilgilerle doldurulmalıdır.
+Gizlilik soruları, veri talepleri veya bu politika hakkında bildirimler için info@ewocom.com adresini kullanabilirsiniz. Sağlayıcı Evren Altındal'dır (Türkiye).
 
 **Not:** Bu belge ürün ve mağaza metadata hazırlığı için bir taslaktır; ülkeye özgü hukuki danışmanlık yerine geçmez.

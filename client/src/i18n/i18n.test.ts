@@ -37,4 +37,16 @@ describe("app languages", () => {
       expect(localized.length).toBeGreaterThan(180);
     }
   });
+
+  it("makes the provider and contact available in every supported language", () => {
+    const contact = termsSections[7].paragraphs[1];
+    for (const language of supportedLanguages) {
+      initializeLanguage(language);
+      const localized = t(contact);
+      expect(localized).toContain("Evren Altındal");
+      expect(localized).toContain("info@ewocom.com");
+      expect(localized).not.toContain("TestFlight");
+      if (language !== "tr") expect(localized).not.toBe(contact);
+    }
+  });
 });

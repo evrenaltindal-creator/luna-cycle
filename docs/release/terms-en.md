@@ -1,11 +1,14 @@
 # Luna Cycle Terms of Use
 
-**Effective date:** [EFFECTIVE DATE]  
-**Service provider:** [LEGAL NAME]  
-**Contact:** [CONTACT EMAIL]  
-**Governing law / forum:** [JURISDICTION]
+**Effective date:** October 1, 2026
 
-These Terms of Use are a pre-publication draft governing use of the Luna Cycle application. The real [LEGAL NAME], [CONTACT EMAIL], [BUSINESS ADDRESS] and [JURISDICTION] details must be completed and legally reviewed for the countries in which the app will be offered.
+**Service provider:** Evren Altındal
+
+**Contact:** info@ewocom.com
+
+**Provider country:** Türkiye
+
+These Terms of Use govern use of the Luna Cycle application. Apple's standard end-user license also applies to the App Store version. Mandatory consumer and personal-data rights applicable in your country remain unaffected.
 
 ## 1. Acceptance
 
@@ -73,12 +76,12 @@ Access may be terminated for misuse or when required by law or store requirement
 
 These Terms may change when product behavior, store rules or legal requirements change. The effective date at the top should be updated for each published version. Material changes should be communicated through available channels.
 
-## 17. Governing law placeholder
+## 17. Applicable law
 
-This section will be completed after legal review for the actual company and [JURISDICTION]. This draft does not assume a country’s law or a competent forum.
+These terms do not restrict mandatory consumer and personal-data rights under applicable law. The provider's location in Türkiye does not remove a user's non-waivable rights or right to contact competent authorities in another country.
 
 ## 18. Contact
 
-For questions about these Terms, contact [CONTACT EMAIL]. The legal developer name, address, country and privacy contact details must replace the placeholders before publication.
+For questions about these Terms, contact info@ewocom.com. The service provider is Evren Altındal (Türkiye).
 
 **Note:** This document is not legal advice and should be reviewed by qualified counsel before store publication.

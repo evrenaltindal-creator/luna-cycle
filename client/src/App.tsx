@@ -31,7 +31,7 @@ function TermsGate({ onAccept }: { onAccept: () => boolean }) {
         <LanguageSelector compact />
         <h1 id="terms-title">{t("Devam etmeden önce.")}</h1>
         <p className="terms-intro">{t("Kullanım koşullarını okuyup kabul ettikten sonra kişisel alanın açılır. İndirmek tek başına kabul sayılmaz.")}</p>
-        <div className="terms-meta">{t("Kullanım Koşulları")} · {t("Sürüm")} {TERMS_VERSION} · {t("TestFlight taslağı")}</div>
+        <div className="terms-meta">{t("Kullanım Koşulları")} · {t("Sürüm")} {TERMS_VERSION}</div>
         <div className="terms-document" tabIndex={0} aria-label={t("Luna Cycle kullanım koşullarının tam metni")}>
           {termsSections.map(section => (
             <section key={section.title}>

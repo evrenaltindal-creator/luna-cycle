@@ -1,4 +1,4 @@
-export const TERMS_VERSION = "2026-09-28.2";
+export const TERMS_VERSION = "2026-10-01.1";
 
 export type TermsAcceptance = { version: string; acceptedAt: string };
 
@@ -12,7 +12,7 @@ export function createTermsAcceptance(now = new Date()): TermsAcceptance {
   return { version: TERMS_VERSION, acceptedAt: now.toISOString() };
 }
 
-// This text is an in-app TestFlight draft, not a substitute for jurisdiction-specific legal review.
+// Product-specific terms supplement Apple's standard EULA; mandatory rights remain unaffected.
 export const termsSections = [
   {
     title: "1. Kabul ve kapsam",
@@ -44,6 +44,6 @@ export const termsSections = [
   },
   {
     title: "8. Değişiklikler ve iletişim",
-    paragraphs: ["Koşullarda önemli bir değişiklik yapılırsa yeni sürümü kullanım öncesinde yeniden göstereceğiz ve açık kabul isteyeceğiz. Kabul kaydının sürümü ve zamanı yalnızca cihazında saklanır; uygulama verilerini temizlediğinde bu kayıt da silinir.", "Yasal sağlayıcı adı, iletişim adresi ve ülkeye özgü hükümler mağaza yayını öncesinde tamamlanıp hukuk uzmanına inceletilmelidir. Bu TestFlight metni henüz nihai hukuki sözleşme değildir."],
+    paragraphs: ["Koşullarda önemli bir değişiklik yapılırsa yeni sürümü kullanım öncesinde yeniden göstereceğiz ve açık kabul isteyeceğiz. Kabul kaydının sürümü ve zamanı yalnızca cihazında saklanır; uygulama verilerini temizlediğinde bu kayıt da silinir.", "Luna Cycle'ın hizmet sağlayıcısı Evren Altındal'dır (Türkiye). Uygulama, kullanım koşulları ve gizlilikle ilgili soruların için info@ewocom.com adresine yazabilirsin. Bu koşulların yürürlük tarihi 1 Ekim 2026'dır. Bulunduğun ülkede geçerli olan emredici tüketici ve kişisel veri hakların saklıdır."],
   },
 ] as const;
