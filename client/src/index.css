@@ -267,3 +267,12 @@ button:focus-visible { outline:3px solid var(--lemon); outline-offset:3px; }
   .history-row > .text-link { min-height:40px; }
   .future-periods ol { grid-template-columns:1fr; }
 }
+/* Decorative labels must follow the selected interface language too. */
+html[lang="en"] .nav-brand:after { content:"CYCLE JOURNAL / 01"; }
+html[lang="ru"] .nav-brand:after { content:"ДНЕВНИК ЦИКЛА / 01"; }
+html[lang="de"] .nav-brand:after { content:"ZYKLUSTAGEBUCH / 01"; }
+html[lang="es"] .nav-brand:after { content:"DIARIO DEL CICLO / 01"; }
+html[lang="en"] :is(.section-top,.page-intro,.calendar-heading) .tiny-label:after { content:"  ─────  CYCLE NOTE"; }
+html[lang="ru"] :is(.section-top,.page-intro,.calendar-heading) .tiny-label:after { content:"  ─────  ЗАМЕТКА О ЦИКЛЕ"; }
+html[lang="de"] :is(.section-top,.page-intro,.calendar-heading) .tiny-label:after { content:"  ─────  ZYKLUSNOTIZ"; }
+html[lang="es"] :is(.section-top,.page-intro,.calendar-heading) .tiny-label:after { content:"  ─────  NOTA DEL CICLO"; }
