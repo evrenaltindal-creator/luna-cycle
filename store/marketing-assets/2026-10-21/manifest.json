@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-21",
+  "appId": "6805474239",
+  "sourceCommit": "879337f1f16e2fdb8d86b3a6f27138e1603e8b56",
+  "generationMethod": "built-in image_gen",
+  "finalDirection": "Natural use, phone screen faces woman; camera sees phone back. No generated UI.",
+  "exportFormat": "PNG 24-bit RGB, no alpha",
+  "exports": [
+    {
+      "file": "luna-tr-poster-1206x2622.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "50e4de16437135590a30b1b8c6bb7c99041daef652a960525452d4427abd30ae",
+      "bytes": 5723352
+    },
+    {
+      "file": "luna-tr-header-3840x1646.png",
+      "width": 3840,
+      "height": 1646,
+      "sha256": "eed245c62e9bbf66f73021f6df5c9c0ab9290e3c10cd2cd69b8b33e791ecb4ae",
+      "bytes": 10051824
+    },
+    {
+      "file": "luna-tr-search-1920x1280.png",
+      "width": 1920,
+      "height": 1280,
+      "sha256": "74112e9a342019eb3d6e302c8af7c89b29f3de340c2b9fcf58b2e5dc3a1c4e6b",
+      "bytes": 4491257
+    },
+    {
+      "file": "luna-tr-real-home-1206x2622.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "403e05f6f6ce529776a302a7aacd061f38aa339723f9d17fa18d2f463fed211c",
+      "bytes": 1291793,
+      "uploaded": false
+    },
+    {
+      "file": "luna-tr-real-calendar-1206x2622.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "db1426172c1796b981906a2a98dea3e639e57b3d98297819307589f599e52190",
+      "bytes": 1149598,
+      "uploaded": false
+    },
+    {
+      "file": "luna-tr-real-history-1206x2622.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "fd865aba5eb7cbf917a28147f367c771397b5a000c237a333d8002e2cd0651a3",
+      "bytes": 1085868,
+      "uploaded": false
+    }
+  ],
+  "cppName": "Luna Cycle — İyi ki Luna var. — TR",
+  "cppUrl": "https://appstoreconnect.apple.com/apps/6805474239/distribution/productpages/e0436eb0-72fa-41fc-9ecd-e03d80bac8ac",
+  "productPageId": "5590836c-4c97-45a8-b91b-db71f971007f",
+  "localizations": ["tr"],
+  "keywords": { "tr": ["adet", "döngü", "takvim", "günlük", "regl"] },
+  "promotionalText": "Döngünü sade ve huzurlu takip et. Takvimin, notların ve döngün tek yerde. İyi ki Luna var.",
+  "appVersionStatus": "READY_FOR_DISTRIBUTION",
+  "appVersion": "1.0.0",
+  "build": 22,
+  "cppStatus": "DRAFT_SAVED_READY_TO_ADD_FOR_REVIEW_PENDING_USER_CONFIRMATION",
+  "assets": {
+    "header": {
+      "file": "luna-tr-header-3840x1646.png",
+      "assetId": "a1c00019-5a34-8bbf-803b-18490af9f89e",
+      "counter": "1 of 1 Header Asset",
+      "libraryStatus": "Add for Review"
+    },
+    "search": {
+      "file": "luna-tr-search-1920x1280.png",
+      "assetId": "6f400019-5a34-8bbf-8006-03ed95ff427d",
+      "counter": "1 of 1 Search Results Asset",
+      "libraryStatus": "Add for Review"
+    },
+    "poster": {
+      "file": "luna-tr-poster-1206x2622.png",
+      "uploaded": false,
+      "reason": "Lifestyle artwork without app UI is kept separate from App Screenshots."
+    },
+    "screenshots": {
+      "mode": "Reused existing approved Apple Asset Library images",
+      "iphone": {
+        "counter": "3 of 10 App Screenshots",
+        "width": 1242,
+        "height": 2688,
+        "files": ["tr-home-iphone.jpg", "tr-calendar-iphone.jpg", "tr-history-iphone.jpg"]
+      },
+      "ipad": {
+        "counter": "3 of 10 App Screenshots",
+        "width": 2048,
+        "height": 2732,
+        "files": ["tr-home-ipad.jpg", "tr-history-ipad.jpg", "tr-insights-ipad.jpg"]
+      },
+      "mediumIphone": "Using Existing Assets; zero local overrides is expected"
+    }
+  },
+  "previousMultilingualDraft": {
+    "url": "https://appstoreconnect.apple.com/apps/6805474239/distribution/productpages/ffadcf06-da76-4c8a-91a4-9be7c6657268",
+    "deleted": false,
+    "submitted": false,
+    "note": "Initial TR uploads and TR keywords saved here; English automatically fell back to Turkish artwork. Separate TR-only campaign created without deleting localizations."
+  },
+  "qa": {
+    "turkishText": "Visually checked",
+    "pose": "Corrected after user feedback; no phone screen shown",
+    "smallPreviews": ["proof/poster-thumbnail-302x656.png", "proof/header-thumbnail-960x412.png", "proof/search-thumbnail-480x320.png"],
+    "proof": ["proof/cpp-header-1-of-1.jpg", "proof/cpp-search-1-of-1.jpg", "proof/screenshots-iphone-ipad.jpg", "proof/asset-library-review-pending.jpg"]
+  },
+  "remaining": ["Explicit user approval before Add for Review / final Submit for Review", "Apple content review", "No localized creative variants outside Turkish; no conversion increase measured"],
+  "reviewSubmitted": false,
+  "paidCampaignStarted": false,
+  "noChangesToAppPriceCountriesPrivacy": true
+}
