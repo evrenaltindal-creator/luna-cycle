@@ -44,7 +44,7 @@ Görsel kontrol: Türkçe reklam metinleri doğru; yüz/telefon/el pozu doğal, 
 
 - App: 6805474239, Luna Cycle 1.0.0 (22). 21 Ekim'de canlı App Store Connect'te **Ready for Distribution** doğrulandı; ana sayfa değiştirilmez.
 - Kampanya CPP: **Luna Cycle — İyi ki Luna var. — TR**; yalnız Turkish yerelleştirmesi.
-- Taslak URL: https://appstoreconnect.apple.com/apps/6805474239/distribution/productpages/e0436eb0-72fa-41fc-9ecd-e03d80bac8ac
+- CPP URL: https://appstoreconnect.apple.com/apps/6805474239/distribution/productpages/e0436eb0-72fa-41fc-9ecd-e03d80bac8ac
 - Product Page ID: 5590836c-4c97-45a8-b91b-db71f971007f.
 - Önceki çok dilli “Luna Cycle — Adet Günlüğü” taslağı silinmedi veya gönderilmedi. İlk iki yükleme bu taslakta yapıldı, sonra aynı kitaplık varlıkları yeni TR kampanyada yeniden kullanıldı; ek ikili yükleme yapılmadı. Eski taslakta TR keyword'leri de kaydedildi. İngilizce görünümde “Using Turkish search results asset” otomatik geri dönüşü görüldüğü için yalnız Türkçe yeni kampanya ayrıldı. Eski taslak yayın hedefi değildir.
 - Dar görünümdeki medya türü menüsünden App Previews and Screenshots ve Media Manager açıldı. Büyük Face ID iPhone setinde 3/10; iPad 13 inç setinde 3/10 gerçek, önceden onaylanmış ekran seçildi. Küçük/orta iPhone kategorisi aynı ekranları “Using Existing Assets” ile ölçekli kullanıyor; oradaki 0/10 override sayacı eksik ekran anlamına gelmez.
@@ -63,7 +63,9 @@ Görsel kontrol: Türkçe reklam metinleri doğru; yüz/telefon/el pozu doğal, 
 
 ## İşlem kaydı
 
-Üretim/export tamamlandı. Türkçe kampanya header/arama varlıkları yüklendi, mevcut onaylı iPhone/iPad ekranları bağlandı, keyword/promo taslak olarak kaydedildi. Kitaplıkta iki yeni görselin durumu “Add for Review”; hâlâ incelemeye gönderilmemiştir. İnceleme gönderimi kullanıcı onayını bekler; yayınlanmış kampanya olarak raporlanmaz. Git commit/push sonucu teslim raporunda tam SHA ile verilir (kendi SHA'sını içeren commit oluşturulamaz).
+Üretim/export tamamlandı. Türkçe kampanya header/arama varlıkları yüklendi, mevcut onaylı iPhone/iPad ekranları bağlandı, keyword/promo kaydedildi. Kullanıcının açık “evet” onayından sonra Add for Review ve son Submit for Review tamamlandı. Apple'ın gösterdiği tarih: **Oct 21, 2026 at 6:00 PM**. Gönderim ID: **a6d92a49-e5ec-40a6-94bd-1c1212290b69**. [Gönderim ayrıntıları](https://appstoreconnect.apple.com/apps/6805474239/distribution/reviewsubmissions/details/a6d92a49-e5ec-40a6-94bd-1c1212290b69) ve Türkçe CPP **Waiting for Review** durumunda doğrulandı. Header ve Search Results varlıkları da Asset Library'de ayrı ayrı **Waiting for Review** olarak doğrulandı. Apple, CPP'ye atanmış varlıkları aynı gönderime otomatik dahil ettiği için gönderim ekranı tek CPP öğesi gösterir; görseller ayrı bir gönderimle tekrar gönderilmedi. Önceki çok dilli taslak gönderilmedi; binary, fiyat, ülke, gizlilik ve sözleşmeler değiştirilmedi. Kampanya henüz onaylanmış/yayınlanmış olarak raporlanmaz. Git commit/push sonucu teslim raporunda tam SHA ile verilir (kendi SHA'sını içeren commit oluşturulamaz).
+
+Gönderim kanıtları: proof/review-submitted-2026-10-21.jpg, proof/submission-details-2026-10-21.jpg ve proof/assets-waiting-for-review-2026-10-21.jpg. [Apple'ın atanmış varlıkların otomatik incelemeye dahil edilmesi açıklaması](https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-assets-from-asset-library).
 
 Gerçek ekran sırası: iPhone **Ana ekran → Takvim → Geçmiş** (1242 × 2688 JPEG); iPad **Ana ekran → Geçmiş → İçgörüler** (2048 × 2732 JPEG). Apple kitaplığından aynı önceden onaylı dosyalar yeniden kullanıldı. Yerel referanslar references/ altındadır. 1206 × 2622 RGB PNG gerçek iPhone ekran export'ları da hazırlandı, ancak tekrar yüklenmedi; ana kaynaklar aynen kullanıldı.
 

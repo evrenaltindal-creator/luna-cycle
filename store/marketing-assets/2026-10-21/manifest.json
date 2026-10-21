@@ -61,19 +61,29 @@
   "appVersionStatus": "READY_FOR_DISTRIBUTION",
   "appVersion": "1.0.0",
   "build": 22,
-  "cppStatus": "DRAFT_SAVED_READY_TO_ADD_FOR_REVIEW_PENDING_USER_CONFIRMATION",
+  "cppStatus": "WAITING_FOR_REVIEW",
+  "submission": {
+    "id": "a6d92a49-e5ec-40a6-94bd-1c1212290b69",
+    "url": "https://appstoreconnect.apple.com/apps/6805474239/distribution/reviewsubmissions/details/a6d92a49-e5ec-40a6-94bd-1c1212290b69",
+    "dateDisplayedByApple": "Oct 21, 2026 at 6:00 PM",
+    "status": "Waiting for Review",
+    "itemCount": 1,
+    "itemType": "Custom Product Pages",
+    "assignedAssetsIncludedAutomatically": true,
+    "userApprovalReceived": true
+  },
   "assets": {
     "header": {
       "file": "luna-tr-header-3840x1646.png",
       "assetId": "a1c00019-5a34-8bbf-803b-18490af9f89e",
       "counter": "1 of 1 Header Asset",
-      "libraryStatus": "Add for Review"
+      "libraryStatus": "Waiting for Review"
     },
     "search": {
       "file": "luna-tr-search-1920x1280.png",
       "assetId": "6f400019-5a34-8bbf-8006-03ed95ff427d",
       "counter": "1 of 1 Search Results Asset",
-      "libraryStatus": "Add for Review"
+      "libraryStatus": "Waiting for Review"
     },
     "poster": {
       "file": "luna-tr-poster-1206x2622.png",
@@ -107,10 +117,10 @@
     "turkishText": "Visually checked",
     "pose": "Corrected after user feedback; no phone screen shown",
     "smallPreviews": ["proof/poster-thumbnail-302x656.png", "proof/header-thumbnail-960x412.png", "proof/search-thumbnail-480x320.png"],
-    "proof": ["proof/cpp-header-1-of-1.jpg", "proof/cpp-search-1-of-1.jpg", "proof/screenshots-iphone-ipad.jpg", "proof/asset-library-review-pending.jpg"]
+    "proof": ["proof/cpp-header-1-of-1.jpg", "proof/cpp-search-1-of-1.jpg", "proof/screenshots-iphone-ipad.jpg", "proof/asset-library-review-pending.jpg", "proof/review-submitted-2026-10-21.jpg", "proof/submission-details-2026-10-21.jpg", "proof/assets-waiting-for-review-2026-10-21.jpg"]
   },
-  "remaining": ["Explicit user approval before Add for Review / final Submit for Review", "Apple content review", "No localized creative variants outside Turkish; no conversion increase measured"],
-  "reviewSubmitted": false,
+  "remaining": ["Apple content review", "No localized creative variants outside Turkish; no conversion increase measured"],
+  "reviewSubmitted": true,
   "paidCampaignStarted": false,
   "noChangesToAppPriceCountriesPrivacy": true
 }
